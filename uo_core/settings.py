@@ -76,7 +76,7 @@ INSTALLED_APPS = [
     # 'account.social_auth.apps.SocialAuthConfig',
 ]
 
-CKEDITOR_UPLOAD_PATH = 'zss_package_pics'
+CKEDITOR_UPLOAD_PATH = 'uo_core_package_pics'
 
 
 CKEDITOR_CONFIGS = {
@@ -168,7 +168,7 @@ MIDDLEWARE = [
     'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
-ROOT_URLCONF = 'zss.urls'
+ROOT_URLCONF = 'uo_core.urls'
 
 TEMPLATES = [
     {
