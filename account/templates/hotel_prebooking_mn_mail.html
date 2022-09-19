@@ -1,0 +1,494 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="supported-color-schemes" content="light dark" />
+    <title></title>
+    <style type="text/css" rel="stylesheet" media="all">
+      /* Base ------------------------------ */
+
+      @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&display=swap');
+      
+      body {
+        width: 100% !important;
+        height: 100%;
+        margin: 0;
+        -webkit-text-size-adjust: none;
+      }
+
+      a {
+        color: #3869d4;
+      }
+
+      a img {
+        border: none;
+      }
+
+      td {
+        word-break: break-word;
+      }
+
+      /* Type ------------------------------ */
+
+      body,
+      td,
+      th {
+        font-family: "Roboto", Arial, sans-serif;
+      }
+
+      h1 {
+        margin-top: 0;
+        color: #333333;
+        font-size: 22px;
+        font-weight: bold;
+        text-align: left;
+      }
+
+      h2 {
+        margin-top: 0;
+        color: #333333;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: left;
+      }
+
+      h3 {
+        margin-top: 0;
+        color: #333333;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: left;
+      }
+
+      td {
+        font-size: 16px;
+      }
+
+      th {
+        font-size: 12px;
+        border-bottom: rgb(190, 190, 190) dotted 2px;
+        width: 20%;
+      }
+
+      p,
+      ul,
+      ol,
+      blockquote {
+        margin: 0.4em 0 1.1875em;
+        font-size: 16px;
+        line-height: 1.625;
+      }
+
+      p.sub {
+        font-size: 13px;
+      }
+
+      /* Utilities ------------------------------ */
+
+      .align-right {
+        text-align: right;
+      }
+
+      .align-left {
+        text-align: left;
+      }
+
+      .align-center {
+        text-align: center;
+      }
+
+      @media only screen and (max-width: 500px) {
+        .button {
+          width: 100% !important;
+          text-align: center !important;
+        }
+      }
+
+
+      body {
+        background-color: #f4f4f7;
+        color: #51545e;
+      }
+
+      p {
+        color: #51545e;
+      }
+
+      p.sub {
+        color: #6b6e76;
+      }
+
+      .email-wrapper {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        -premailer-width: 100%;
+        -premailer-cellpadding: 0;
+        -premailer-cellspacing: 0;
+        background-color: #f4f4f7;
+      }
+
+      .email-content {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        -premailer-width: 100%;
+        -premailer-cellpadding: 0;
+        -premailer-cellspacing: 0;
+      }
+
+      /* Masthead ----------------------- */
+
+      .email-masthead {
+        padding: 25px 0;
+        text-align: center;
+      }
+
+      .email-masthead_logo {
+        width: 94px;
+      }
+
+      .email-masthead_name {
+        font-size: 16px;
+        font-weight: bold;
+        color: #a8aaaf;
+        text-decoration: none;
+        text-shadow: 0 1px 0 white;
+      }
+
+      /* Body ------------------------------ */
+
+      .email-body {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        -premailer-width: 100%;
+        -premailer-cellpadding: 0;
+        -premailer-cellspacing: 0;
+        background-color: #ffffff;
+      }
+
+      .email-body_inner {
+        width: 570px;
+        margin: 0 auto;
+        padding: 0;
+        -premailer-width: 570px;
+        -premailer-cellpadding: 0;
+        -premailer-cellspacing: 0;
+        background-color: #ffffff;
+      }
+
+      .email-footer {
+        width: 570px;
+        margin: 0 auto;
+        padding: 0;
+        -premailer-width: 570px;
+        -premailer-cellpadding: 0;
+        -premailer-cellspacing: 0;
+        text-align: center;
+      }
+
+      .email-footer p {
+        color: #6b6e76;
+      }
+
+      .body-action {
+        width: 100%;
+        margin: 30px auto;
+        padding: 0;
+        -premailer-width: 100%;
+        -premailer-cellpadding: 0;
+        -premailer-cellspacing: 0;
+        text-align: center;
+      }
+
+      .body-sub {
+        margin-top: 25px;
+        padding-top: 25px;
+        border-top: 1px solid #eaeaec;
+      }
+
+      .content-cell {
+        padding: 35px;
+      }
+      .table-body{
+        width: 100%;
+        border:0;
+        text-align: left;
+      }
+      .payment-body{
+        background-color:#eff9ff;
+        padding-top : 20px;
+      }
+      .logo-image{
+        width: 300px;
+        height: 80px;
+      }
+    
+      /*Media Queries ------------------------------ */
+
+      @media only screen and (max-width: 600px) {
+        .email-body_inner,
+        .email-footer {
+          width: 100% !important;
+        }
+      }
+      @media only screen and (max-width: 900px) {
+        .logo-image {
+          width: 150px;
+          height: 50px;
+        }
+      }
+      @media (prefers-color-scheme: dark) {
+        body,
+        .email-body,
+        .email-body_inner,
+        .email-content,
+        .email-wrapper,
+        .email-masthead,
+        .email-footer {
+          background-color: #333333 !important;
+          color: #fff !important;
+        }
+
+        p,
+        ul,
+        ol,
+        blockquote,
+        h1,
+        h2,
+        h3,
+        span,
+        .purchase_item {
+          color: #fff !important;
+        }
+
+        .attributes_content,
+        .discount {
+          background-color: #222 !important;
+        }
+
+        .email-masthead_name {
+          text-shadow: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <table
+      class="email-wrapper"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      role="presentation"
+    >
+      <tr>
+          <table
+            class="email-content"
+            width="100%"
+            cellpadding="0"
+            cellspacing="0"
+            role="presentation"
+          >
+            <tr>
+              <td class="email-masthead">
+                <a
+                  href="https://tapatrip.com"
+                  class="f-fallback email-masthead_name"
+                >
+                <img class="logo-image" src="https://i.ibb.co/fQq24RR/logo.png" />
+                </a>
+              </td>
+            </tr>
+            <!-- Email Body -->
+            <tr>
+              <td
+                class="email-body"
+                width="100%"
+                cellpadding="0"
+                cellspacing="0"
+              >
+                <table
+                  class="email-body_inner"
+                  width="570"
+                  cellpadding="0"
+                  cellspacing="0"
+                  role="presentation"
+                >
+                  <!-- Body content -->
+                  <br>
+                    <br class="content-cell">
+                        <h1>Сайн байна уу! {{holders_name}}</h1>
+                        <p>
+                          Та {{ check_in }}-оос {{ check_out }}-ны өдрийн <strong>{{hotel_name}}</strong> 
+                          буудлын захиалга хийлээ.
+                        </p>
+                        <p style="color: red"> Та 30 минутын дотор төлбөрөө төлж
+                        захиалгаа баталгаажуулаагүй тохиолдолд таны захиалга автоматаар
+                        цуцлагдана.
+                        </p>
+                        <p>Захиалгын дугаар: {{ booking_number }}</p>
+                        <p>
+                          Таны захиалганд алдаатай зүйл байвал та манай үйлчилгээний ажилтантай холбогдоно уу!
+                        </p>
+                        <h1>Захиалгын дэлгэрэнгүй</h1>
+                        <table class="table-body">
+                        <tr>
+                        <th><img src={{ images }} style ="width: 128px; height:128px"/></th>
+                        <th>
+                          <h2 style='color:#0066CC ; font-size: 30px'>{{ hotel_name }}</h2>
+                          <address><a href="https://www.google.com/maps/search/?api=1&query={{ latitude }},{{ longitude }}"><img src="https://www.gstatic.com/images/icons/material/system/1x/room_black_20dp.png"
+                            style="width: 12px; height: 12px;"/>{{ address }}</a></address>
+                          <a href="#"><img src="https://www.gstatic.com/images/icons/material/system/1x/phone_black_20dp.png" style="width: 12px; height: 12px;"/>{{ phone }}</a>
+                        </th>
+                        </tr>
+                        <tr>
+                          <th>
+                            <h2>Захиалга</h2>
+                          </th>
+                          <th>
+                            <p>{{ room_count }} өрөө, {{ day_count }} өдөр</p>
+                          </th>
+                        </tr>
+                        <tr>
+                          <th>
+                            <h2>Check-in</h2>
+                          </th>
+                          <th>
+                            <p>{{ check_in }} өдөр</p>
+                            <p style="color:#b1b2b6; font: 8px ">Check-in хийх цагаас хоцрохгүй байхыг хүсье!</p>
+                          </th>
+                        </tr>
+                        <tr>
+                          <th>
+                            <h2>Check-out</h2>
+                          </th>
+                          <th>
+                            <p>{{ check_out }} өдөр</p>
+                          </th>
+                        </tr>
+                        <tr>
+                          <th>
+                            <h2>Үйлчлүүлэгчид</h2>
+                          </th>
+                          <th>
+                            {% for pax in paxes %}
+                            <p>{{pax.lastName }} {{ pax.firstName }}</p>
+                            {% endfor %}
+                          </th>
+                        </tr>
+                        </table>
+                        <table class="table-body payment-body">
+                          <h1>Төлбөр</h1>
+                        <tr>
+                          <th>
+                            <h2>Мөнгөн дүн</h2>
+                          </th>
+                          <th>
+                            <p>{{ net }}MNT</p>
+                          </th>
+                        </tr>
+                        <tr>
+                          <th>
+                            <h2>Татвар болон үйлчилгээ</h2>
+                          </th>
+                          <th>
+                            <p>{{ tax }}MNT</p>
+                          </th>
+                        </tr>
+                        <tr>
+                          <th>
+                            <h2>Нийт дүн</h2>
+                          </th>
+                          <th>
+                            <p style="color:#0066CC">{{ total_net }}MNT</p>
+                          </th>
+                        </tr>
+                        </table>
+                        <br/>
+                        <h1>Өрөөний мэдээлэл</h1>
+                        <table class="table-body">
+                        <tr>
+                          <th>
+                            <h2>Өрөөний төрөл</h2>
+                          </th>
+                          <th>
+                            <p>{{ room_type }} x {{ room_count }} өрөө</p>
+                          </th>
+                        </tr>
+                        <tr>
+                          <th>
+                            <h2>Хүний тоо</h2>
+                          </th>
+                          <th>
+                            <p>{{ adults }} том хүн
+                              {% if children >= 1 %}
+                              , {{ children }} хүүхэд
+                              {% else %}
+                              
+                              {% endif %}</p>
+                          </th>
+                        </tr>
+                        <tr>
+                          <th>
+                            <h2>Хоолны төрөл</h2>
+                          </th>
+                          <th>
+                            <p>{{ meal_type }}</p>
+                          </th>
+                        </tr>
+                        <tr>
+                          <th>
+                            <h2>Дэлгэрэнгүй</h2>
+                          </th>
+                          <th>
+                            <p>{{ room_desc }}</p>
+                          </th>
+                        </tr>
+                        <tr>
+                          <th>
+                            <h2>Цуцлах</h2>
+                          </th>
+                          <th>
+                            <p style='color:red'>{{ cancel }}</p>
+                          </th>
+                        </tr>
+                        </table>
+                        <br />
+                        <p>Tapatrip.com-оор үйлчлүүлсэн танд баярлалаа.<br />The TAPATRIP LLC</p>
+                      </br>
+                </table>
+              </td>
+            </tr>
+          </table>
+      </tr>
+      <tr>
+        <td>
+          <table
+            class="email-footer"
+            width="570"
+            cellpadding="0"
+            cellspacing="0"
+            role="presentation"
+          >
+            <tr>
+              <td class="content-cell">
+                <p class="f-fallback sub align-center">
+                  &copy; 2022. All rights reserved.
+                </p>
+                <p class="f-fallback sub align-center">
+                  <br />TapaTrip LLC, 308 River Gardan, Ikh Mongol Uls
+                  street, 11-st khoroo, Khank-Uul district, Ulaanbaatar,
+                  Mongolia
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

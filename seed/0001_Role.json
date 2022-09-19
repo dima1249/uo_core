@@ -1,0 +1,64 @@
+[
+{
+    "model": "account.rolemodel",
+    "pk": 1,
+    "fields": {
+        "created_at": "2022-03-14T17:57:07.827",
+        "updated_at": "2022-03-14T17:57:07.827",
+        "deleted_at": null,
+        "name": "Admin",
+        "code": "admin"
+    }
+},
+{
+    "model": "account.rolemodel",
+    "pk": 2,
+    "fields": {
+        "created_at": "2022-03-14T17:57:19.928",
+        "updated_at": "2022-03-14T17:57:19.928",
+        "deleted_at": null,
+        "name": "User",
+        "code": "user"
+    }
+},
+{
+    "model": "account.rolemodel",
+    "pk": 3,
+    "fields": {
+        "created_at": "2022-03-14T17:57:30.745",
+        "updated_at": "2022-03-14T17:57:30.746",
+        "deleted_at": null,
+        "name": "Agency",
+        "code": "agency"
+    }
+},
+{
+    "model": "account.usermodel",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$216000$5z79hQGl1vzv$QnHHQUdGAUXJeFVdhEgbsObDYkwlD/8NAAnEfDO6J4g=",
+        "last_login": "2022-03-08T12:21:15.506",
+        "is_superuser": true,
+        "created_at": "2022-03-08T12:20:43.088",
+        "updated_at": "2022-03-08T12:20:43.093",
+        "deleted_at": null,
+        "username": "admin",
+        "first_name": null,
+        "last_name": null,
+        "gender": null,
+        "profile_picture": null,
+        "birthday": null,
+        "dial_code": null,
+        "phone": null,
+        "email": "no-reply@mail.tapatrip.com",
+        "fb_user_id": null,
+        "google_user_id": null,
+        "apple_user_id": null,
+        "role": null,
+        "is_active": true,
+        "is_staff": true,
+        "groups": [],
+        "user_permissions": []
+    }
+}
+]

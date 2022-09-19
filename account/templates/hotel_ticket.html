@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>buudal ticket</title>
+</head>
+<style type="text/css">
+    html,
+    body {
+        padding: 0;
+        width: 1420px;
+    }
+
+    .table {
+        display: table;
+        width: 100%;
+        height: 100%;
+    }
+
+    .row {
+        display: table-row;
+    }
+
+    .cell1, .cell2 {
+        display: table-cell;
+        width: 50%;
+        height: 100%;
+        font-family: Roboto;
+
+    }
+
+    .c1 {
+        display: table-cell;
+        width: 30%;
+        height: 100%;
+        font-family: Roboto;
+
+    }
+
+    .c2 {
+        display: table-cell;
+        width: 70%;
+        height: 100%;
+        font-family: Roboto;
+    }
+
+    .c3 {
+        display: table-cell;
+        width: 30%;
+        height: 100%;
+        font-family: Roboto;
+
+    }
+
+    .c4 {
+        display: table-cell;
+        width: 70%;
+        height: 100%;
+        font-family: Roboto;
+    }
+
+    .web {
+        float: left;
+        width: 30%;
+        padding: 20px 0px 20px 50px;
+
+    }
+
+    .call {
+        float: left;
+        width: 30%;
+        padding: 20px 0px 20px 0px;
+
+    }
+
+    .mail {
+        float: right;
+        width: 30%;
+        padding: 20px 0px 20px 0px;
+
+    }
+</style>
+<body>
+<div class="table" style="">
+    <div class="row">
+        <div class="cell1">
+            <img width="250" src="http://beta.tapatrip.com/images/Logo.png">
+        </div>
+        <div class="cell2" style="font-size: 2rem;float: right;margin-top: 30px; ">
+            <span>Booking No:{{ booking_number }}</span>
+        </div>
+    </div>
+</div>
+<br/>
+<div style="font-size: 3rem;font-family: roboto;font-weight: normal;">Your booking has been confirmed</div>
+
+<div>
+    <h1>Dear Customer</h1>
+    <span style="font-size: 2rem;">Your booking at {{ hotel_name }} for {{ check_in }} - {{ check_out }} (Booking No. {{ booking_number }}) has been confirmed. You don't need to do anything further just enjoy your stay!
+</span><br/><br/>
+    <span style="font-size: 2rem;">Hotel Confirmation Number: {{ ref_number }}</span>
+</div>
+
+<div class="table">
+    <div class="row">
+        <div class="c1">
+            {{ hotel_img }}
+        </div>
+        <div class="c2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="400" viewBox="0 0 1341.63 615">
+                <text id="Residence_inn_Marriott_London_Kensignton" transform="translate(0 57)" fill="#171717"
+                      font-size="53" font-family="SegoeUI-Bold, Segoe UI" font-weight="700">
+                    <tspan x="0" y="0">{{ hotel_name }}</tspan>
+                </text>
+                <text id="_181-183_Warwick_Road_London_w14_8PU_Greater_London_United_Kingdom"
+                      transform="translate(65.229 141.907)" fill="#bcc4cc" font-size="36"
+                      font-family="SegoeUI, Segoe UI" text-decoration="underline">
+                    <tspan x="0" y="0">{{ address }}</tspan>
+                </text>
+                <g id="maps-and-flags" transform="translate(6.275 105.719)">
+                    <g id="Group_793" data-name="Group 793" transform="translate(0)">
+                        <path id="Path_719" data-name="Path 719"
+                              d="M87.435,0A16.881,16.881,0,0,0,70.573,16.862c0,11.539,15.09,28.479,15.733,29.194a1.519,1.519,0,0,0,2.259,0C89.207,45.341,104.3,28.4,104.3,16.862A16.882,16.882,0,0,0,87.435,0Zm0,25.346a8.484,8.484,0,1,1,8.484-8.484A8.493,8.493,0,0,1,87.435,25.346Z"
+                              transform="translate(-70.573)" fill="#bcc4cc"/>
+                    </g>
+                    <g id="Нөхцөл">
+                        {% for facility in facilities %}
+                            <div>
+                                <span style="font-size: 1.6rem;opacity: 0.8;">{{ facility.facility }}</span>
+                            </div>
+                        {% endfor %}
+                    </g>
+                </g>
+
+            </svg>
+        </div>
+    </div>
+</div>
+<br/><br/>
+<svg
+        xmlns="http://www.w3.org/2000/svg" width="1420" height="4" viewBox="0 0 2011 4">
+    <line id="Line_7" data-name="Line 7" x2="2011" transform="translate(0 2)" fill="none" stroke="#ddd" stroke-width="4"
+          stroke-dasharray="15"/>
+</svg>
+<div class="table">
+    <div class="row">
+        <div class="c3">
+            <h1>Dear Customer</h1>
+        </div>
+        <div class="c4">
+            <span style="font-size: 1.6rem;opacity: 0.8;">Rooms: {{ room_count }}, Duration: {{ day_count }}</span>
+        </div>
+    </div>
+</div>
+<svg
+        xmlns="http://www.w3.org/2000/svg" width="1420" height="4" viewBox="0 0 2011 4">
+    <line id="Line_7" data-name="Line 7" x2="2011" transform="translate(0 2)" fill="none" stroke="#ddd" stroke-width="4"
+          stroke-dasharray="15"/>
+</svg>
+<div class="table">
+    <div class="row">
+        <div class="c3">
+            <h1>Check-in</h1>
+        </div>
+        <div class="c4">
+            <span style="font-size: 1.6rem;opacity: 0.8;">{{ check_in }}</span>
+            <!--<span style="font-size: 1.6rem;opacity: 0.8;margin-left: 100px;">14:00 - 06:00</span>-->
+            <!--<span style="font-size: 1.4rem;opacity: 0.8;margin-left: 100px;">Hotel's local time</span>-->
+        </div>
+    </div>
+</div>
+<div class="table">
+    <div class="row">
+        <div class="c3">
+            <h1>Check-out</h1>
+        </div>
+        <div class="c4">
+            <span style="font-size: 1.6rem;opacity: 0.8;">{{ check_out }}</span>
+            <!--<span style="font-size: 1.6rem;opacity: 0.8;margin-left: 100px;">14:00 - 06:00</span>-->
+            <!--<span style="font-size: 1.4rem;opacity: 0.8;margin-left: 100px;">Hotel's local time</span>		-->
+        </div>
+    </div>
+</div>
+<svg
+        xmlns="http://www.w3.org/2000/svg" width="1420" height="4" viewBox="0 0 2011 4">
+    <line id="Line_7" data-name="Line 7" x2="2011" transform="translate(0 2)" fill="none" stroke="#ddd" stroke-width="4"
+          stroke-dasharray="15"/>
+</svg>
+<div class="table">
+    <div class="row">
+        <div class="c3">
+            <h1>Holder Info</h1>
+        </div>
+        <div>
+            <span style="font-size: 1.6rem;opacity: 0.8;">Name: {{ holders_name }} Surname: {{ holders_surname }}</span>
+        </div>
+    </div>
+</div>
+<svg
+        xmlns="http://www.w3.org/2000/svg" width="1420" height="4" viewBox="0 0 2011 4">
+    <line id="Line_7" data-name="Line 7" x2="2011" transform="translate(0 2)" fill="none" stroke="#ddd" stroke-width="4"
+          stroke-dasharray="15"/>
+</svg>
+<div class="table">
+    <div class="row">
+        <div class="c3">
+            <h1>Guest Names</h1>
+        </div>
+        {% for pax in holder_name %}
+            <div>
+                <span style="font-size: 1.6rem;opacity: 0.8;">Name: {{ pax.name }} Surname: {{ pax.surname }} Age:{{ pax.age }}</span>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<svg
+        xmlns="http://www.w3.org/2000/svg" width="1420" height="4" viewBox="0 0 2011 4">
+    <line id="Line_7" data-name="Line 7" x2="2011" transform="translate(0 2)" fill="none" stroke="#ddd" stroke-width="4"
+          stroke-dasharray="15"/>
+</svg>
+<div class="table" style="background-color: #e0f0ff;padding: 20px 20px 20px 20px;">
+    <div style="font-size: 3rem;font-family: roboto;font-weight: normal;">Payment</div>
+    <div class="row">
+        <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <h1>Payable through {{ invoice_company }}, acting as agent for the service operating company,
+                        details of which can be provided upon request. VAT: {{ vat_number }}
+                        Reference: {{ ref_number }}</h1>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div style="font-size: 3rem;font-family: roboto;font-weight: normal;">Room info</div>
+<span style="font-size: 2.2rem;margin-top: 45px; position: absolute;">{{ room_type }}</span>
+<div class="table">
+    <div class="row">
+        <div class="c3">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="400" height="100"
+                 viewBox="0 0 616 506">
+            </svg>
+        </div>
+    </div>
+</div>
+<!--
+  <div class="table">
+	<div class="row">
+		<div class="c3">
+			    <h1>Room type</h1>
+		</div>
+		<div class="c4">
+			<span style="font-size: 1.6rem;opacity: 0.8;">Deluxe Room</span>
+		</div>
+	</div>
+</div>
+<svg
+	xmlns="http://www.w3.org/2000/svg" width="1420" height="4" viewBox="0 0 2011 4">
+	<line id="Line_7" data-name="Line 7" x2="2011" transform="translate(0 2)" fill="none" stroke="#ddd" stroke-width="4" stroke-dasharray="15"/>
+</svg>
+ -->
+<!--
+<div class="table">
+	<div class="row">
+		<div class="c3">
+			<h1>Bed type</h1>
+		</div>
+		<div class="c4">
+			<span style="font-size: 1.6rem;opacity: 0.8;">2 single bed</span>
+		</div>
+	</div>
+</div>
+
+<svg
+	xmlns="http://www.w3.org/2000/svg" width="1420" height="4" viewBox="0 0 2011 4">
+	<line id="Line_7" data-name="Line 7" x2="2011" transform="translate(0 2)" fill="none" stroke="#ddd" stroke-width="4" stroke-dasharray="15"/>
+</svg>
+ -->
+
+
+<svg
+        xmlns="http://www.w3.org/2000/svg" width="1420" height="4" viewBox="0 0 2011 4">
+    <line id="Line_7" data-name="Line 7" x2="2011" transform="translate(0 2)" fill="none" stroke="#ddd" stroke-width="4"
+          stroke-dasharray="15"/>
+</svg>
+<!--
+
+<div class="table">
+	<div class="row">
+		<div class="c3">
+			<h1>Window</h1>
+		</div>
+		<div class="c4">
+			<span style="font-size: 1.6rem;opacity: 0.8;">With window</span>
+		</div>
+	</div>
+</div>
+<svg
+	xmlns="http://www.w3.org/2000/svg" width="1420" height="4" viewBox="0 0 2011 4">
+	<line id="Line_7" data-name="Line 7" x2="2011" transform="translate(0 2)" fill="none" stroke="#ddd" stroke-width="4" stroke-dasharray="15"/>
+</svg>
+ -->
+
+<div style="font-size: 3rem;font-family: roboto;font-weight: normal;">Hotel Policies</div>
+<!--
+
+<div class="table">
+	<div class="row">
+		<div class="c3">
+			<h1>Check-in and Check ount</h1>
+		</div>
+		<div class="c4">
+			<span style="font-size: 1.6rem;opacity: 0.8;">Check in: from 14:00 Check ount: before 12:00</span>
+		</div>
+	</div>
+</div>
+<svg
+	xmlns="http://www.w3.org/2000/svg" width="1420" height="4" viewBox="0 0 2011 4">
+	<line id="Line_7" data-name="Line 7" x2="2011" transform="translate(0 2)" fill="none" stroke="#ddd" stroke-width="4" stroke-dasharray="15"/>
+</svg>
+
+<div class="table">
+	<div class="row">
+		<div class="c3">
+			<h1>Childern and Extra Beds</h1>
+		</div>
+		<div class="c4">
+			<span style="font-size: 1.6rem;opacity: 0.8;">The hotel does not accept guests below 18 years of age
+staying alone.</span>
+		</div>
+	</div>
+</div>
+ -->
+
+<svg
+        xmlns="http://www.w3.org/2000/svg" width="1420" height="4" viewBox="0 0 2011 4">
+    <line id="Line_7" data-name="Line 7" x2="2011" transform="translate(0 2)" fill="none" stroke="#ddd" stroke-width="4"
+          stroke-dasharray="15"/>
+</svg>
+<div class="table">
+    <div class="row">
+        <div class="c3">
+            <h1>Policies</h1>
+        </div>
+        <div class="c4">
+            <span style="font-size: 1.6rem;opacity: 0.8;">{{ policies }}</span>
+        </div>
+    </div>
+</div>
+<svg
+        xmlns="http://www.w3.org/2000/svg" width="1420" height="4" viewBox="0 0 2011 4">
+    <line id="Line_7" data-name="Line 7" x2="2011" transform="translate(0 2)" fill="none" stroke="#ddd" stroke-width="4"
+          stroke-dasharray="15"/>
+</svg>
+<div style="text-align:center;margin: 0px 0px 0px 0px; height: 4vh;width: 100%">
+    <div class="web">
+        <svg xmlns="http://www.w3.org/2000/svg" width="68.181" height="68.182"
+             viewBox="0 0 68.181 68.182" style="width: 25px; position: absolute;margin-top: -20px;
+">
+            <path id="world-wide-web_1_" data-name="world-wide-web (1)"
+                  d="M66.286,45.306a34.1,34.1,0,0,0,0-22.431,2.456,2.456,0,0,0-.108-.308,34.1,34.1,0,0,0-64.17,0,2.422,2.422,0,0,0-.108.308,34.1,34.1,0,0,0,0,22.431,2.455,2.455,0,0,0,.108.308,34.091,34.091,0,0,0,64.17,0A2.437,2.437,0,0,0,66.286,45.306ZM34.093,63.3c-1.3,0-3.392-2.35-5.141-7.6a53.519,53.519,0,0,1-2.013-8.613H41.247A53.563,53.563,0,0,1,39.234,55.7C37.484,60.946,35.391,63.3,34.093,63.3ZM26.346,42.2c-.235-2.606-.359-5.324-.359-8.106s.124-5.5.359-8.106H41.839c.235,2.606.359,5.324.359,8.106s-.124,5.5-.359,8.106ZM4.889,34.091a29.12,29.12,0,0,1,1.145-8.106h15.41c-.228,2.659-.344,5.385-.344,8.106s.116,5.447.344,8.106H6.034A29.121,29.121,0,0,1,4.889,34.091Zm29.2-29.2c1.3,0,3.392,2.35,5.141,7.6A53.525,53.525,0,0,1,41.247,21.1H26.938a53.514,53.514,0,0,1,2.013-8.612C30.7,7.237,32.794,4.887,34.093,4.887Zm12.648,21.1h15.41a29.254,29.254,0,0,1,0,16.212H46.741c.228-2.659.344-5.385.344-8.106S46.969,28.645,46.741,25.985Zm13.5-4.887H46.18C45.311,15.1,43.82,9.728,41.728,5.9A29.33,29.33,0,0,1,60.242,21.1ZM26.457,5.9C24.365,9.727,22.874,15.1,22,21.1H7.944A29.333,29.333,0,0,1,26.457,5.9ZM7.944,47.084H22c.869,5.994,2.36,11.371,4.452,15.2A29.332,29.332,0,0,1,7.944,47.084Zm33.784,15.2c2.092-3.825,3.583-9.2,4.452-15.2H60.242A29.331,29.331,0,0,1,41.728,62.281Z"
+                  transform="translate(-0.002)" fill="#177ad7"/>
+        </svg>
+        <span style="color: black; position: none;margin: 30px;font-size: 1.6rem">www.tapatrip.com</span>
+    </div>
+    <div class="call">
+        <svg xmlns="http://www.w3.org/2000/svg" width="69.642" height="69.794" viewBox="0 0 69.642 69.794"
+             style="width: 25px; position: absolute;margin-top: -20px;>
+  <g id=" call_1_
+        " data-name="call (1)" transform="translate(0.746 0.912)">
+        <path id="Path_4" data-name="Path 4"
+              d="M67.4,53.618l-13.8-9.2a4.028,4.028,0,0,0-5.394.876l-4.02,5.169a1.718,1.718,0,0,1-2.2.464l-.765-.422c-2.535-1.382-5.689-3.1-12.045-9.46S21.091,31.528,19.709,29l-.419-.765a1.72,1.72,0,0,1,.454-2.211L24.91,22a4.03,4.03,0,0,0,.877-5.394l-9.2-13.8a4.007,4.007,0,0,0-5.4-1.216L5.41,5.058A8.141,8.141,0,0,0,1.7,9.876c-2.078,7.572-.515,20.64,18.736,39.894C35.748,65.082,47.148,69.2,54.984,69.2a20.131,20.131,0,0,0,5.341-.7,8.133,8.133,0,0,0,4.818-3.712l3.47-5.768A4.008,4.008,0,0,0,67.4,53.618Zm-.743,4.238-3.462,5.771a5.873,5.873,0,0,1-3.466,2.686c-6.99,1.919-19.2.33-37.685-18.152S1.971,17.468,3.89,10.477a5.881,5.881,0,0,1,2.69-3.47l5.771-3.462a1.739,1.739,0,0,1,2.344.527l5,7.506,4.2,6.294a1.749,1.749,0,0,1-.379,2.341l-5.167,4.019a3.977,3.977,0,0,0-1.053,5.1l.41.745c1.452,2.663,3.258,5.977,9.849,12.567s9.9,8.4,12.566,9.848l.746.411a3.977,3.977,0,0,0,5.1-1.053l4.019-5.167a1.75,1.75,0,0,1,2.341-.38l13.8,9.2A1.737,1.737,0,0,1,66.655,57.856Z"
+              transform="translate(-1 -1.018)" fill="#1779d4" stroke="#1779d4" stroke-width="1.4"/>
+        </g>
+        </svg>
+        <span style="color: black; position: none;margin: 30px;font-size: 1.6rem">75144444</span>
+    </div>
+    <div class="mail">
+        <svg id="mail_1_" data-name="mail (1)" xmlns="http://www.w3.org/2000/svg" width="83.499"
+             height="58.71" viewBox="0 0 83.499 58.71" style="width: 28px; position: absolute;margin-top: -10px;>
+  <g id=" Group_12
+        " data-name="Group 12" transform="translate(0 0)">
+        <path id="Path_8" data-name="Path 8"
+              d="M76.16,76H7.339A7.35,7.35,0,0,0,0,83.339v44.033a7.35,7.35,0,0,0,7.339,7.339H76.16a7.347,7.347,0,0,0,7.339-7.339V83.339A7.346,7.346,0,0,0,76.16,76Zm-1.028,4.893L46.939,108.937a7.339,7.339,0,0,1-10.383,0L8.367,80.893ZM4.893,126.376V84.338l21.142,21.03Zm3.477,3.442,21.134-21,3.6,3.579a12.231,12.231,0,0,0,17.293,0l3.6-3.583,21.134,21Zm70.237-3.442L57.464,105.368l21.142-21.03Z"
+              transform="translate(0 -76)" fill="#1678d3"/>
+        </g>
+        </svg>
+        <span style="color: black; position: none;margin: 30px;font-size: 1.6rem">customer@tapatrip.com</span>
+    </div>
+</div>
+</body>
+</html>
