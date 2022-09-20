@@ -10,6 +10,7 @@ from django.conf.urls.static import static
 
 from account import urls as account
 from sales import urls as sales
+from surgalt import urls as surgalt
 
 # from tmz import urls as train_urls
 from django.conf.urls.i18n import i18n_patterns
@@ -45,6 +46,7 @@ urlpatterns += [
 
     path('api/account/', include(account)),
     path('api/sales/', include(sales)),
+    path('api/surgalt/', include(surgalt)),
 ]
 # translate hiigdeh url end nemeh
 # urlpatterns += i18n_patterns(

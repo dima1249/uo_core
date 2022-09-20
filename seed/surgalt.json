@@ -1,0 +1,32 @@
+[
+  {
+    "model": "surgalt.teachermodel",
+    "pk": 1,
+    "fields": {
+      "created_at": "2022-09-20T16:55:36.037",
+      "updated_at": "2022-09-20T16:55:36.037",
+      "deleted_at": null,
+      "firstname": "Энх Од",
+      "lastname": "Болд",
+      "nick_name": "ЭНКО",
+      "age": 28,
+      "level": "ДЭД МАСТЕР"
+    }
+  },
+  {
+    "model": "surgalt.coursemodel",
+    "pk": 1,
+    "fields": {
+      "created_at": "2022-09-20T17:00:15.645",
+      "updated_at": "2022-09-20T17:00:15.645",
+      "deleted_at": null,
+      "name": "Цагаан барс",
+      "teacher": 1,
+      "days": "1,3,5",
+      "time": "17:00:00",
+      "type": "A",
+      "max_student_cnt": 16,
+      "current_student_cnt": 12
+    }
+  }
+]

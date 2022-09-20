@@ -1,27 +1,28 @@
-from rest_framework import serializers, fields
-
-from sales.models import VideoModel
-
-TRIP_TYPES = [
-    ("OW", 'OW'),
-    ("RT", 'RT'),
-]
-CABIN_CODE_TYPES = [
-    ('Y', "PremiumEconomy"),
-    ('S', "Economy"),
-    ('C', "Business"),
-    ('J', "PremiumBusiness"),
-    ('F', "First"),
-    ('P', "PremiumFirst"),
-]
+from django_filters import rest_framework as filters
+from rest_framework import serializers
+from sales.models import *
 
 
-class GetPointSerializer(serializers.Serializer):
-    video_id = serializers.IntegerField(required=True)
-
-
-class VideoListSerializer(serializers.ModelSerializer):
+class BrandModelSerializer(serializers.ModelSerializer):
     class Meta:
-        model = VideoModel
+        model = BrandModel
         fields = '__all__'
-        read_only_fields = ['dial_code', 'phone', 'email']
+
+
+
+class ProductCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductCategoryModel
+        fields = '__all__'
+
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SellItemModel
+        fields = '__all__'
+
+
+
+
+

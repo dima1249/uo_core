@@ -1,22 +1,13 @@
-from django.urls import path, include
-from rest_framework import routers
-
-from sales.views import *
-
-router = routers.DefaultRouter()
-
-# Old Section
-# router.register(r'videos', VideoList, 'list_videos')
-# router.register(r'point', GetPoint, 'get_point')
-# router.register(r'user_data', GetPoint, 'get_point')
-# router.register(r'', GetPoint, 'get_point')
-# router.register(r'', GetPoint, 'get_point')
-# router.register(r'', GetPoint, 'get_point')
-
-# router.register(r'videos', VideoList, 'list_videos')
-# router.register(r'videos', VideoList, 'list_videos')
+from django.urls import path
+from .views import *
 
 urlpatterns = [
-    path('rest/', include(router.urls)),
-    # path('test/', test_view),
+    path('brand/', ListCreateBrandAPIView.as_view(), name='get_post_brands'),
+    path('brand/<int:pk>/', RetrieveUpdateDestroyBrandAPIView.as_view(), name='get_delete_update_brand'),
+
+    path('product/', ListCreateProductAPIView.as_view(), name='get_post_products'),
+    path('product/<int:pk>/', RetrieveUpdateDestroyProductAPIView.as_view(), name='get_delete_update_product'),
+
+    path('category/', ListCreateCategoryAPIView.as_view(), name='get_post_categories'),
+    path('category/<int:pk>/', RetrieveUpdateDestroyCategoryAPIView.as_view(), name='get_delete_update_category'),
 ]
