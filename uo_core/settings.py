@@ -73,6 +73,7 @@ INSTALLED_APPS = [
 
     'account.apps.AccountConfig',
     'sales.apps.SalesConfig',
+    'surgalt.apps.SurgaltConfig',
     # 'account.social_auth.apps.SocialAuthConfig',
 ]
 

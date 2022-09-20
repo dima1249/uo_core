@@ -8,7 +8,6 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sales', '0001_initial'),
         ('account', '0002_auto_20220425_1949'),
     ]
 
@@ -17,42 +16,5 @@ class Migration(migrations.Migration):
             model_name='usermodel',
             name='point',
             field=models.FloatField(blank=True, default=0, null=True, verbose_name='Оноо'),
-        ),
-        migrations.CreateModel(
-            name='WatchHistoryModel',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('deleted_at', models.DateTimeField(blank=True, default=None, null=True)),
-                ('point', models.FloatField(blank=True, default=0, null=True, verbose_name='Оноо')),
-                ('user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='history_user', to=settings.AUTH_USER_MODEL, verbose_name='Хэрэглэгч')),
-                ('video', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='history_video', to='sales.videomodel', verbose_name='Үзвэр')),
-            ],
-            options={
-                'verbose_name': 'Түүх',
-                'verbose_name_plural': 'Үзсэн түүхүүд',
-                'db_table': 'watch_histories',
-            },
-        ),
-        migrations.CreateModel(
-            name='TransactionModel',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('deleted_at', models.DateTimeField(blank=True, default=None, null=True)),
-                ('bank_account_number', models.CharField(blank=True, max_length=20, null=True, verbose_name='Утасны дугаар')),
-                ('bank_account_name', models.CharField(blank=True, max_length=20, null=True, verbose_name='Утасны дугаар')),
-                ('bank', models.CharField(blank=True, max_length=20, null=True, verbose_name='Утасны дугаар')),
-                ('status', models.CharField(blank=True, max_length=20, null=True, verbose_name='Статус')),
-                ('point', models.IntegerField(blank=True, default=0, null=True, verbose_name='Оноо')),
-                ('user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='transaction_user', to=settings.AUTH_USER_MODEL, verbose_name='Хэрэглэгч')),
-            ],
-            options={
-                'verbose_name': 'Гүйлгээ',
-                'verbose_name_plural': 'Гүйлгээнүүд',
-                'db_table': 'point_transaction',
-            },
         ),
     ]

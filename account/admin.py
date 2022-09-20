@@ -9,22 +9,6 @@ from django_paranoid.admin import ParanoidAdmin
 from account.models import *
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-# class StaticContentModelAdmin(TranslatableAdmin):
-#     list_display = ('title', 'content',)
-#     fieldsets = (
-#         (None, {
-#             'fields': ('title', 'content',),
-#         }),
-#     )
-#
-#     def save_model(self, request, obj, form, change):
-#         obj.created_by = request.user
-#         super().save_model(request, obj, form, change)
-#
-#
-from account.point_models import WatchHistoryModel
-
-
 class UserModelAdmin(ParanoidAdmin, BaseUserAdmin):
     list_display = ['username', 'first_name',
                     'last_name', 'gender', 'email', 'phone', 'role']
@@ -97,8 +81,3 @@ admin.site.unregister(Group)
 class GenericGroup(GroupAdmin):
     inlines = [UserInLine]
     list_display = ['name']
-
-
-@admin.register(WatchHistoryModel)
-class WatchHistoryAdmin(admin.ModelAdmin):
-    list_display = ('point', 'user', 'video', 'created_at',)

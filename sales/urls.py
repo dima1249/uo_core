@@ -6,12 +6,12 @@ from sales.views import *
 router = routers.DefaultRouter()
 
 # Old Section
-router.register(r'videos', VideoList, 'list_videos')
-router.register(r'point', GetPoint, 'get_point')
-router.register(r'user_data', GetPoint, 'get_point')
-router.register(r'', GetPoint, 'get_point')
-router.register(r'', GetPoint, 'get_point')
-router.register(r'', GetPoint, 'get_point')
+# router.register(r'videos', VideoList, 'list_videos')
+# router.register(r'point', GetPoint, 'get_point')
+# router.register(r'user_data', GetPoint, 'get_point')
+# router.register(r'', GetPoint, 'get_point')
+# router.register(r'', GetPoint, 'get_point')
+# router.register(r'', GetPoint, 'get_point')
 
 # router.register(r'videos', VideoList, 'list_videos')
 # router.register(r'videos', VideoList, 'list_videos')
