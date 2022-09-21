@@ -50,7 +50,7 @@ class RetrieveUpdateDestroyBrandAPIView(RetrieveUpdateDestroyAPIView):
 
 
 class ListCreateProductAPIView(ListCreateAPIView):
-    serializer_class = BrandModelSerializer
+    serializer_class = ProductSerializer
     queryset = SellItemModel.objects.all()
     permission_classes = [AllowAny]
     filter_backends = (filters.DjangoFilterBackend,)

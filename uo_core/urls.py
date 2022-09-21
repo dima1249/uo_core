@@ -17,9 +17,9 @@ from django.conf.urls.i18n import i18n_patterns
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Zumo API",
+        title="UO API",
         default_version='v1',
-        description="Zumo description",
+        description="Uo description",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email="do.damdinsuren@gmail.com"),
         license=openapi.License(name="BSD License"),
@@ -55,6 +55,6 @@ urlpatterns += [
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-admin.site.site_header = "Zumo admin"
-admin.site.site_title = "Zumo admin site"
-admin.site.index_title = "Zumo Admin"
+admin.site.site_header = "Өсөх од Админ"
+admin.site.site_title = "Өсөх од Админ"
+admin.site.index_title = "Өсөх од Админ"
