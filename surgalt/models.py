@@ -23,7 +23,8 @@ class TeacherModel(ParanoidModel):
     nick_name = models.CharField(verbose_name="Дууддаг нэр", max_length=100, blank=True, null=True)
 
     age = models.IntegerField(verbose_name="Нас", blank=True, null=True)
-    level = models.TextField(verbose_name="Спорт Зэрэг", blank=True, null=True)
+    level = models.CharField(verbose_name="Спорт Зэрэг",  max_length=100, blank=True, null=True)
+    story = models.TextField(verbose_name="Намтар", blank=True, null=True)
 
     def __str__(self):
         return '%s' % self.nick_name
@@ -34,7 +35,7 @@ class TeacherModel(ParanoidModel):
     class Meta:
         db_table = 'surgalt_teachers'
         verbose_name = 'Багш'
-        verbose_name_plural = 'Багшнууд'
+        verbose_name_plural = 'Багш нар'
 
 
 class CourseModel(ParanoidModel):
@@ -56,5 +57,5 @@ class CourseModel(ParanoidModel):
 
     class Meta:
         db_table = 'surgalt_course'
-        verbose_name = 'Сургалт'
-        verbose_name_plural = 'Сургалтууд'
+        verbose_name = 'Анги'
+        verbose_name_plural = 'Анги мэдээлэл'

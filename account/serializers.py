@@ -61,15 +61,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
                   'phone',
                   'dial_code',
                   'email',
-                  'point',
-                  'bank_account_number',
-                  'bank_account_name',
-                  'bank',
-                  'home_address',
-                  'id_front',
-                  'id_rear',
-                  'signature',
-                  'selfie',
                   'username'
                   )
         read_only_fields = ['dial_code', 'phone', 'email']
@@ -209,13 +200,14 @@ class LoginSerializer(serializers.Serializer):
             try:
                 user = UserModel.objects.get(email=email)
             except UserModel.DoesNotExist:
-                role = RoleModel.objects.get(code='user')
-                user = UserModel()
-                user.role = role
-                user.phone = phone
-                user.password = make_password(password)
-                user.username = uuid.uuid4().hex
-                user.save()
+                # role = RoleModel.objects.get(code='user')
+                # user = UserModel()
+                # user.role = role
+                # user.phone = phone
+                # user.password = make_password(password)
+                # user.username = uuid.uuid4().hex
+                # user.save()
+                raise serializers.ValidationError("Тухайн И-майлтэй хэрэглэгч байхгүй байна.")
 
         if phone:
             dial_code = data.get('dial_code')

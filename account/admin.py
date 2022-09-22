@@ -9,6 +9,7 @@ from django_paranoid.admin import ParanoidAdmin
 from account.models import *
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
+
 class UserModelAdmin(ParanoidAdmin, BaseUserAdmin):
     list_display = ['username', 'first_name',
                     'last_name', 'gender', 'email', 'phone', 'role']
@@ -21,17 +22,17 @@ class UserModelAdmin(ParanoidAdmin, BaseUserAdmin):
             'first_name', 'last_name', 'gender', 'birthday')}),
         ('Нэвтрэх мэдээлэл', {'fields': (
             'dial_code', 'phone', 'email', 'fb_user_id', 'google_user_id', 'apple_user_id')}),
-        ('Бусад мэдээлэл', {'fields': (
-            'bank_account_number',
-            'bank_account_name',
-            'bank',
-            'home_address',
-            'id_front',
-            'id_rear',
-            'selfie',
-            'signature')}),
-        ('Онооны мэдээлэл', {'fields': (
-            'point',)}),
+        # ('Бусад мэдээлэл', {'fields': (
+        #     'bank_account_number',
+        #     'bank_account_name',
+        #     'bank',
+        #     'home_address',
+        #     'id_front',
+        #     'id_rear',
+        #     'selfie',
+        #     'signature')}),
+        # ('Онооны мэдээлэл', {'fields': (
+        #     'point',)}),
         ('Хандалт', {'fields': (
             'is_active', 'role', 'groups', 'user_permissions')}),
     )
@@ -44,7 +45,7 @@ class UserModelAdmin(ParanoidAdmin, BaseUserAdmin):
         ('Хандалт', {'fields': (
             'is_active', 'role', 'groups', 'user_permissions')}),
     )
-    readonly_fields = ['email', 'fb_user_id', 'google_user_id', 'apple_user_id', 'point']
+    readonly_fields = ['email', 'fb_user_id', 'google_user_id', 'apple_user_id']
     ordering = ['-created_at']
 
     # admin #agent
@@ -81,3 +82,8 @@ admin.site.unregister(Group)
 class GenericGroup(GroupAdmin):
     inlines = [UserInLine]
     list_display = ['name']
+
+
+@admin.register(RoleModel)
+class RoleModelGroup(ParanoidAdmin):
+    pass

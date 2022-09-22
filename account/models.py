@@ -78,23 +78,6 @@ class UserModel(ParanoidModel, AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True, verbose_name="Идэвхитэй эсэх")
     is_staff = models.BooleanField(default=False, verbose_name="Ажилтан эсэх")
 
-    # other field
-
-    point = models.FloatField(default=0, null=True, blank=True, verbose_name="Оноо")
-
-    bank_account_number = models.CharField(verbose_name="Данс дугаар", max_length=20, null=True, blank=True)
-    bank_account_name = models.CharField(verbose_name="Данс нэр", max_length=20, null=True, blank=True)
-    bank = models.CharField(verbose_name="Банк", default="KHAN",
-                            choices=BANKS,
-                            max_length=10)
-
-    home_address = models.CharField(verbose_name="Гэрийн хаяг", max_length=256, null=True, blank=True)
-
-    id_front = models.ImageField(verbose_name="Иргэний үнэмлэх урд тал", max_length=256, null=True, blank=True)
-    id_rear = models.ImageField(verbose_name="Иргэний үнэмлэх ард тал", max_length=256, null=True, blank=True)
-    signature = models.ImageField(verbose_name="Гарын үсэг", max_length=256, null=True, blank=True)
-    selfie = models.ImageField(verbose_name="Зураг", max_length=256, null=True, blank=True)
-
     objects = UserAccountManager()
 
     USERNAME_FIELD = 'username'
