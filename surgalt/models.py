@@ -17,13 +17,22 @@ COURSE_CHOICES = (('A', 'Насанд хүрэгчид'),
                ('O', 'Ахмад настан'),)
 
 
+LEVEL_CHOICES = (('ouhm', 'Олон улс хэмжээний мастер (ОУХМ)'),
+               ('sm', 'Спортын Мастер (СМ)'),
+               ('dm', 'Спортын Мастер (ДМ)'),
+               ('level1', '1-р зэрэг'),
+               ('level2', '2-р зэрэг'),
+               ('level3', '3-р зэрэг'),
+                 ('nolevel', ''),)
+
+
 class TeacherModel(ParanoidModel):
     firstname = models.CharField(verbose_name="Нэр", max_length=100, unique=True)
     lastname = models.CharField(verbose_name="Овог", max_length=100, blank=True, null=True)
     nick_name = models.CharField(verbose_name="Дууддаг нэр", max_length=100, blank=True, null=True)
 
     age = models.IntegerField(verbose_name="Нас", blank=True, null=True)
-    level = models.CharField(verbose_name="Спорт Зэрэг",  max_length=100, blank=True, null=True)
+    level = models.CharField(verbose_name="Спорт Зэрэг",  max_length=100, default='nolevel', choices=LEVEL_CHOICES)
     story = models.TextField(verbose_name="Намтар", blank=True, null=True)
 
     def __str__(self):
