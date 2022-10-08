@@ -31,6 +31,18 @@ STATUS_CHOICES = ((1, 'Хүсэлт илгээсэн'),
                   (3, 'Батлагдсан'),
                   )
 
+TEST_CHOICES = ((1, "Нэг"),
+                  (2, "Хоёр"),
+                  (3, "Гурав"),
+                  (4, "Дөрөв"),
+                  (5, "Тав"),
+                  (6, "Зургаа"),
+                  (7, "Долоо"),
+                  (8, "Найм"),
+                  (9, "Ес"),
+                  (10, "Арав"),
+                  )
+
 
 class TeacherModel(ParanoidModel):
     firstname = models.CharField(verbose_name="Нэр", max_length=100, unique=True)
@@ -97,8 +109,6 @@ class CourseRequestModel(ParanoidModel):
         verbose_name_plural = 'Анги - Бүртгэл'
 
 
-
-
 class CourseStudentModel(ParanoidModel):
     course = models.ForeignKey("surgalt.CourseModel", on_delete=models.PROTECT, verbose_name="Анги")
     student = models.ForeignKey("account.UserModel", on_delete=models.PROTECT, verbose_name="Суралцагч")
@@ -121,6 +131,28 @@ class CourseStudentModel(ParanoidModel):
         verbose_name_plural = 'Анги - Сурагч'
 
 
+class StudentTestModel(ParanoidModel):
+    course = models.ForeignKey("surgalt.CourseModel", on_delete=models.PROTECT, verbose_name="Анги")
+    student = models.ForeignKey("account.UserModel", on_delete=models.PROTECT, verbose_name="Суралцагч")
+
+    test_date = models.DateField(verbose_name="Сургалт орсон өдөр", default=datetime.date.today)
+
+    r1 = models.IntegerField(verbose_name="Таталт", default=5, choices= TEST_CHOICES)
+    r2 = models.IntegerField(verbose_name="Тулгалт", default=5, choices= TEST_CHOICES)
+    r3 = models.IntegerField(verbose_name="Топс", default=5, choices= TEST_CHOICES)
+    r4 = models.IntegerField(verbose_name="Подача", default=5, choices= TEST_CHOICES)
+    r5 = models.IntegerField(verbose_name="Ивэлт", default=5, choices= TEST_CHOICES)
+
+    def __str__(self):
+        return '%s - %s' % (self.course.name, self.student.first_name)
+
+    def __unicode__(self):
+        return '%s - %s' % (self.course.name, self.student.first_name)
+
+    class Meta:
+        db_table = 'surgalt_student_test'
+        verbose_name = 'Анги - Тест'
+        verbose_name_plural = 'Анги - Тест'
 
 
 class CourseTimeTableModel(ParanoidModel):

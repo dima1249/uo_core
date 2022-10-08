@@ -26,6 +26,13 @@ class CourseStudentModelAdmin(ParanoidAdmin):
     list_display = ["course", "student", "active", "start_date", "end_date", ]
 
 
+@admin.register(StudentTestModel)
+class StudentTestModelAdmin(ParanoidAdmin):
+    list_display = ["course", "student", "test_date", ]
+
+
+
+
 class StudentTimeTableInline(admin.TabularInline):
     model = StudentTimeTableModel
     exclude = ["deleted_at"]
