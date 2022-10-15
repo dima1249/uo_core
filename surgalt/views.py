@@ -1,11 +1,12 @@
-from rest_framework import mixins, generics
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView, RetrieveAPIView
+from rest_framework import mixins, generics, permissions
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView, RetrieveAPIView, \
+    CreateAPIView
 from rest_framework.permissions import AllowAny
 from django_filters import rest_framework as filters
 
 from surgalt.filters import CourseFilter
 from surgalt.models import CourseModel, TeacherModel
-from surgalt.serializers import CourseSerializer, TeacherSerializer
+from surgalt.serializers import CourseSerializer, TeacherSerializer, RegisterCourseSerializer
 
 
 class ListCreateCourseAPIView(ListCreateAPIView):
@@ -45,3 +46,7 @@ class RetrieveTeacherAPIView(RetrieveAPIView):
     serializer_class = TeacherSerializer
     queryset = TeacherModel.objects.all()
     permission_classes = [AllowAny]
+
+class RegisterAPIView(CreateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = RegisterCourseSerializer

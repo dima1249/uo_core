@@ -73,7 +73,7 @@ class UserModel(ParanoidModel, AbstractBaseUser, PermissionsMixin):
     google_user_id = models.CharField(max_length=200, verbose_name="google user id", null=True, blank=True)
     apple_user_id = models.CharField(max_length=200, verbose_name="apple user id", null=True, blank=True)
 
-    role = models.ForeignKey("account.RoleModel", on_delete=models.PROTECT, verbose_name="role", null=True)
+    role = models.ForeignKey("account.RoleModel", on_delete=models.PROTECT, verbose_name="role", default=3)
 
     is_active = models.BooleanField(default=True, verbose_name="Идэвхитэй эсэх")
     is_staff = models.BooleanField(default=False, verbose_name="Ажилтан эсэх")

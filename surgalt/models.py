@@ -32,16 +32,16 @@ STATUS_CHOICES = ((1, 'Хүсэлт илгээсэн'),
                   )
 
 TEST_CHOICES = ((1, "Нэг"),
-                  (2, "Хоёр"),
-                  (3, "Гурав"),
-                  (4, "Дөрөв"),
-                  (5, "Тав"),
-                  (6, "Зургаа"),
-                  (7, "Долоо"),
-                  (8, "Найм"),
-                  (9, "Ес"),
-                  (10, "Арав"),
-                  )
+                (2, "Хоёр"),
+                (3, "Гурав"),
+                (4, "Дөрөв"),
+                (5, "Тав"),
+                (6, "Зургаа"),
+                (7, "Долоо"),
+                (8, "Найм"),
+                (9, "Ес"),
+                (10, "Арав"),
+                )
 
 
 class TeacherModel(ParanoidModel):
@@ -91,7 +91,7 @@ class CourseModel(ParanoidModel):
 class CourseRequestModel(ParanoidModel):
     course = models.ForeignKey("surgalt.CourseModel", on_delete=models.PROTECT, verbose_name="Анги")
     student = models.ForeignKey("account.UserModel", on_delete=models.PROTECT, verbose_name="Суралцагч")
-    status = models.IntegerField(verbose_name="Төлөв", choices=STATUS_CHOICES)
+    status = models.IntegerField(verbose_name="Төлөв", choices=STATUS_CHOICES, default=1)
     start_date = models.DateField(verbose_name="Эхлэх өдөр", blank=True, null=True)
     end_date = models.DateField(verbose_name="Дуусах өдөр", blank=True, null=True)
     payment_date = models.DateField(verbose_name="Төлбөр төлсөн өдөр", blank=True, null=True)
@@ -137,11 +137,11 @@ class StudentTestModel(ParanoidModel):
 
     test_date = models.DateField(verbose_name="Сургалт орсон өдөр", default=datetime.date.today)
 
-    r1 = models.IntegerField(verbose_name="Таталт", default=5, choices= TEST_CHOICES)
-    r2 = models.IntegerField(verbose_name="Тулгалт", default=5, choices= TEST_CHOICES)
-    r3 = models.IntegerField(verbose_name="Топс", default=5, choices= TEST_CHOICES)
-    r4 = models.IntegerField(verbose_name="Подача", default=5, choices= TEST_CHOICES)
-    r5 = models.IntegerField(verbose_name="Ивэлт", default=5, choices= TEST_CHOICES)
+    r1 = models.IntegerField(verbose_name="Таталт", default=5, choices=TEST_CHOICES)
+    r2 = models.IntegerField(verbose_name="Тулгалт", default=5, choices=TEST_CHOICES)
+    r3 = models.IntegerField(verbose_name="Топс", default=5, choices=TEST_CHOICES)
+    r4 = models.IntegerField(verbose_name="Подача", default=5, choices=TEST_CHOICES)
+    r5 = models.IntegerField(verbose_name="Ивэлт", default=5, choices=TEST_CHOICES)
 
     def __str__(self):
         return '%s - %s' % (self.course.name, self.student.first_name)
