@@ -235,7 +235,36 @@ DATABASES = {
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+FILE_UPLOAD_STORAGE = env("FILE_UPLOAD_STORAGE", default="local")  # local | s3
+
+if FILE_UPLOAD_STORAGE == "local":
+    MEDIA_ROOT_NAME = "media"
+    MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_ROOT_NAME)
+    MEDIA_URL = f"/{MEDIA_ROOT_NAME}/"
+
+if FILE_UPLOAD_STORAGE == "s3":
+    # Using django-storages
+    # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+    AWS_S3_ACCESS_KEY_ID = env("AWS_S3_ACCESS_KEY_ID")
+    AWS_S3_SECRET_ACCESS_KEY = env("AWS_S3_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+    AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME")
+    # AWS_S3_SIGNATURE_VERSION = env("AWS_S3_SIGNATURE_VERSION", default="s3v4")
+
+    # https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html#canned-acl
+    AWS_DEFAULT_ACL = env("AWS_DEFAULT_ACL", default=None)
+    AWS_S3_CUSTOM_DOMAIN = "%s.s3.%s.amazonaws.com" % (
+        AWS_STORAGE_BUCKET_NAME,
+        AWS_S3_REGION_NAME,
+    )
+    MEDIAFILES_LOCATION = "core/original/media"
+    MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
+
+    #
+    # AWS_PRESIGNED_EXPIRY = env.int("AWS_PRESIGNED_EXPIRY", default=10)  # seconds
 
 REST_FRAMEWORK = {
     'DATETIME_FORMAT': "%Y-%m-%d %H:%M:%S",

@@ -9,6 +9,8 @@ from django.db import models
 from django.utils import timezone
 from django_paranoid.models import ParanoidModel
 
+from uo_core.utills import PathAndRename
+
 GENDER = (
     ("F", "F"),  #
     ("M", "M"),  #
@@ -57,11 +59,15 @@ BANKS = [
 
 class UserModel(ParanoidModel, AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=100, unique=True, verbose_name="Нэвтрэх нэр")
-    # display_name = models.CharField(max_length=50, null=True, verbose_name="Дэлгэцэнд харуулах нэр")
     first_name = models.CharField(max_length=50, null=True, verbose_name="Нэр")
     last_name = models.CharField(max_length=50, null=True, verbose_name="Овог")
     gender = models.CharField(max_length=2, null=True, verbose_name="Хүйс", choices=GENDER)
-    profile_picture = models.CharField(max_length=200, null=True, verbose_name="Зураг")
+    profile_picture = models.ImageField(
+        verbose_name="Зураг",
+        upload_to=PathAndRename("user_pics/"),
+        null=True,
+        blank=True,
+    )
     birthday = models.DateField(null=True, verbose_name='Төрсөн өдөр')
 
     # gadnii hereglegchiig odoohondoo tootsoogui tul max_length-g 11-r(976-99999999) avav

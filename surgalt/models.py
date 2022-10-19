@@ -4,6 +4,8 @@ from django_paranoid.models import ParanoidModel
 from django.db import models
 from multiselectfield import MultiSelectField
 
+from uo_core.utills import PathAndRename
+
 DAY_CHOICES = ((1, 'Monday'),
                (2, 'Tuesday'),
                (3, 'Wednesday'),
@@ -68,9 +70,16 @@ class TeacherModel(ParanoidModel):
 class CourseModel(ParanoidModel):
     name = models.CharField(verbose_name="Нэр", max_length=100, unique=True)
     teacher = models.ForeignKey("surgalt.TeacherModel", on_delete=models.PROTECT, verbose_name="Багш")
+    picture = models.ImageField(
+        verbose_name="Зураг",
+        upload_to=PathAndRename("course_pics/"),
+        null=True,
+        blank=True,
+    )
     # days = models.CharField(verbose_name="Нэр", max_length=100, unique=True)
     days = MultiSelectField(choices=DAY_CHOICES, max_choices=4, min_choices=1)
     time = models.TimeField(verbose_name="Цаг", )
+    payment = models.IntegerField(verbose_name="Төлбөр (Нэг сар)", default=0)
     is_open = models.BooleanField(verbose_name="Нээлттэй эсэх", default=True)
     type = models.CharField(verbose_name="Төрөл", choices=COURSE_CHOICES, max_length=100)
     max_student_cnt = models.IntegerField(verbose_name="Хэдэн сурагч суралцах боломжтой")
