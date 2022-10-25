@@ -1,2 +1,71 @@
-Tracking file by folder pattern:  migrations
-[{"model": "sales.productcategorymodel", "pk": 1, "fields": {"created_at": "2022-09-20T16:45:00.768", "updated_at": "2022-09-20T16:45:00.768", "deleted_at": null, "name": "Хувцас", "desc": ""}}, {"model": "sales.productcategorymodel", "pk": 2, "fields": {"created_at": "2022-09-20T16:45:06.770", "updated_at": "2022-09-20T16:45:06.770", "deleted_at": null, "name": "Хэрэгсэл", "desc": ""}}, {"model": "sales.productcategorymodel", "pk": 3, "fields": {"created_at": "2022-09-20T16:45:10.485", "updated_at": "2022-09-20T16:45:10.485", "deleted_at": null, "name": "Бөмбөг", "desc": ""}}, {"model": "sales.productcategorymodel", "pk": 4, "fields": {"created_at": "2022-09-20T16:45:18.748", "updated_at": "2022-09-20T16:45:18.748", "deleted_at": null, "name": "Ракет", "desc": ""}}, {"model": "sales.brandmodel", "pk": 1, "fields": {"created_at": "2022-09-20T16:47:47.624", "updated_at": "2022-09-20T16:47:47.624", "deleted_at": null, "name": "Butterfly", "desc": "butterfly"}}, {"model": "sales.sellitemmodel", "pk": 1, "fields": {"created_at": "2022-09-20T16:49:50.697", "updated_at": "2022-09-20T16:49:50.697", "deleted_at": null, "picture": "Urilga.jpeg", "title": "X123", "desc": "Чанартай бөмбөг", "category": 3, "brand": 1}}]
+[
+  {
+    "model": "sales.productcategorymodel",
+    "pk": 1,
+    "fields": {
+      "created_at": "2022-09-20T16:45:00.768",
+      "updated_at": "2022-09-20T16:45:00.768",
+      "deleted_at": null,
+      "name": "Хувцас",
+      "desc": ""
+    }
+  },
+  {
+    "model": "sales.productcategorymodel",
+    "pk": 2,
+    "fields": {
+      "created_at": "2022-09-20T16:45:06.770",
+      "updated_at": "2022-09-20T16:45:06.770",
+      "deleted_at": null,
+      "name": "Хэрэгсэл",
+      "desc": ""
+    }
+  },
+  {
+    "model": "sales.productcategorymodel",
+    "pk": 3,
+    "fields": {
+      "created_at": "2022-09-20T16:45:10.485",
+      "updated_at": "2022-09-20T16:45:10.485",
+      "deleted_at": null,
+      "name": "Бөмбөг",
+      "desc": ""
+    }
+  },
+  {
+    "model": "sales.productcategorymodel",
+    "pk": 4,
+    "fields": {
+      "created_at": "2022-09-20T16:45:18.748",
+      "updated_at": "2022-09-20T16:45:18.748",
+      "deleted_at": null,
+      "name": "Ракет",
+      "desc": ""
+    }
+  },
+  {
+    "model": "sales.brandmodel",
+    "pk": 1,
+    "fields": {
+      "created_at": "2022-09-20T16:47:47.624",
+      "updated_at": "2022-09-20T16:47:47.624",
+      "deleted_at": null,
+      "name": "Butterfly",
+      "desc": "butterfly"
+    }
+  },
+  {
+    "model": "sales.sellitemmodel",
+    "pk": 1,
+    "fields": {
+      "created_at": "2022-09-20T16:49:50.697",
+      "updated_at": "2022-09-20T16:49:50.697",
+      "deleted_at": null,
+      "picture": "Urilga.jpeg",
+      "title": "X123",
+      "desc": "Чанартай бөмбөг",
+      "category": 3,
+      "brand": 1
+    }
+  }
+]

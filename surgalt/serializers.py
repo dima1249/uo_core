@@ -28,7 +28,9 @@ class RegisterCourseSerializer(serializers.ModelSerializer):
         print('RegisterCourseSerializer validate', data)
         print('RegisterCourseSerializer student', data['student'])
         # print('RegisterCourseSerializer role', data['student'].role)
-        if data['student'] or 'role' in data['student'] or data['student'].role != 3 or 'birthday' in data['student'] or data['student'].birthday:
+        if data['student'] or 'role' in data['student'] or data['student'].role != 3 or 'birthday' in data['student'] or \
+                data['student'].birthday:
+            print(data['student'])
             raise serializers.ValidationError({"student": "user is not valid"})
 
         return data
