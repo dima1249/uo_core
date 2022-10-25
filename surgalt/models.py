@@ -4,6 +4,7 @@ from django_paranoid.models import ParanoidModel
 from django.db import models
 from multiselectfield import MultiSelectField
 
+from account.models import GENDER, UserModel
 from uo_core.utills import PathAndRename
 
 DAY_CHOICES = ((1, 'Monday'),
@@ -42,8 +43,7 @@ TEST_CHOICES = ((1, "Нэг"),
                 (7, "Долоо"),
                 (8, "Найм"),
                 (9, "Ес"),
-                (10, "Арав"),
-                )
+                (10, "Арав"),)
 
 
 class TeacherModel(ParanoidModel):
@@ -99,7 +99,13 @@ class CourseModel(ParanoidModel):
 
 class CourseRequestModel(ParanoidModel):
     course = models.ForeignKey("surgalt.CourseModel", on_delete=models.PROTECT, verbose_name="Анги")
-    student = models.ForeignKey("account.UserModel", on_delete=models.PROTECT, verbose_name="Суралцагч")
+    created_user = models.ForeignKey("account.UserModel", on_delete=models.PROTECT, verbose_name="Бүртгүүлэгч", default=1)
+
+    first_name = models.CharField(max_length=50, null=True, verbose_name="Нэр")
+    last_name = models.CharField(max_length=50, null=True, verbose_name="Овог")
+    gender = models.CharField(max_length=2, null=True, verbose_name="Хүйс", choices=GENDER)
+    birthday = models.DateField(null=True, verbose_name='Төрсөн өдөр')
+
     status = models.IntegerField(verbose_name="Төлөв", choices=STATUS_CHOICES, default=1)
     start_date = models.DateField(verbose_name="Эхлэх өдөр", blank=True, null=True)
     end_date = models.DateField(verbose_name="Дуусах өдөр", blank=True, null=True)
@@ -107,7 +113,7 @@ class CourseRequestModel(ParanoidModel):
     desc = models.TextField(verbose_name="Тайлбар", blank=True, null=True)
 
     def __str__(self):
-        return '%s - %s' % (self.course.name, self.student.first_name)
+        return '%s - %s' % (self.course.name, self.first_name)
 
     def __unicode__(self):
         return '%s - %s' % (self.course.name, self.student.first_name)
@@ -122,6 +128,12 @@ class CourseStudentModel(ParanoidModel):
     course = models.ForeignKey("surgalt.CourseModel", on_delete=models.PROTECT, verbose_name="Анги")
     student = models.ForeignKey("account.UserModel", on_delete=models.PROTECT, verbose_name="Суралцагч")
     # status = models.IntegerField(verbose_name="Төлөв", choices=STATUS_CHOICES)
+
+    first_name = models.CharField(max_length=50, null=True, verbose_name="Нэр")
+    last_name = models.CharField(max_length=50, null=True, verbose_name="Овог")
+    gender = models.CharField(max_length=2, null=True, verbose_name="Хүйс", choices=GENDER)
+    birthday = models.DateField(null=True, verbose_name='Төрсөн өдөр')
+
     start_date = models.DateField(verbose_name="Эхлэх өдөр", blank=True, null=True)
     end_date = models.DateField(verbose_name="Дуусах өдөр", blank=True, null=True)
     active = models.BooleanField(verbose_name="Идвэхтэй", default=True)
@@ -183,7 +195,7 @@ class CourseTimeTableModel(ParanoidModel):
 
 class StudentTimeTableModel(ParanoidModel):
     course_time = models.ForeignKey("surgalt.CourseTimeTableModel", on_delete=models.PROTECT, verbose_name="Хичээл")
-    student = models.ForeignKey("account.UserModel", on_delete=models.PROTECT, verbose_name="Суралцагч")
+    student = models.ForeignKey("surgalt.CourseStudentModel", on_delete=models.PROTECT, verbose_name="Суралцагч")
     attendance = models.BooleanField(verbose_name="Ирсэн", default=True)
 
     def __str__(self):

@@ -18,7 +18,12 @@ class CourseModelAdmin(ParanoidAdmin):
 
 @admin.register(CourseRequestModel)
 class CourseRequestModelAdmin(ParanoidAdmin):
-    list_display = ["course", "student", "status", "created_at", ]
+    list_display = ["course", "student_info", "status", "created_at"]
+
+    def student_info(self, obj):
+        return "{} {} ({})".format(obj.last_name, obj.first_name, obj.gender)
+
+    student_info.short_description = "Суралцагч"
 
 
 @admin.register(CourseStudentModel)
@@ -29,8 +34,6 @@ class CourseStudentModelAdmin(ParanoidAdmin):
 @admin.register(StudentTestModel)
 class StudentTestModelAdmin(ParanoidAdmin):
     list_display = ["course", "student", "test_date", ]
-
-
 
 
 class StudentTimeTableInline(admin.TabularInline):

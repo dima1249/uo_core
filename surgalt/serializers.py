@@ -20,17 +20,15 @@ class TeacherSerializer(serializers.ModelSerializer):
 
 
 class RegisterCourseSerializer(serializers.ModelSerializer):
-    student = serializers.HiddenField(
+    created_user = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
 
     def validate(self, data):
         print('RegisterCourseSerializer validate', data)
-        print('RegisterCourseSerializer student', data['student'])
         # print('RegisterCourseSerializer role', data['student'].role)
-        if data['student'] or 'role' in data['student'] or data['student'].role != 3 or 'birthday' in data['student'] or \
-                data['student'].birthday:
-            print(data['student'])
+        if data['created_user']:
+            print(data['created_user'])
             raise serializers.ValidationError({"student": "user is not valid"})
 
         return data
@@ -39,8 +37,12 @@ class RegisterCourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CourseRequestModel
-        fields = ['student',
+        fields = ['created_user',
                   'course',
+                  'first_name',
+                  'last_name',
+                  'gender',
+                  'birthday',
                   'start_date',
                   'end_date']
 
