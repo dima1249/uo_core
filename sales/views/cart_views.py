@@ -18,12 +18,14 @@ class CartItemAPIView(ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         user = request.user
+        print ("CartItemAPIView", user)
         cart = get_object_or_404(Cart, user=user)
+        print("CartItemAPIView", cart)
         product = get_object_or_404(SellItemModel, pk=request.data["product"])
         current_item = CartItem.objects.filter(cart=cart, product=product)
 
-        if user == product.user:
-            raise PermissionDenied("This Is Your Product")
+        # if user == product.user:
+        #     raise PermissionDenied("This Is Your Product")
 
         if current_item.count() > 0:
             raise NotAcceptable("You already have this item in your shopping cart")

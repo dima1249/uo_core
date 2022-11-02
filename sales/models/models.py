@@ -5,6 +5,8 @@ from django.db import models
 from django_paranoid.models import ParanoidModel
 from multiselectfield import MultiSelectField
 
+from uo_core.utills import PathAndRename
+
 
 class ProductCategoryModel(ParanoidModel):
     name = models.CharField(max_length=100, unique=True, verbose_name="Нэр")
@@ -39,9 +41,10 @@ class BrandModel(ParanoidModel):
 
 
 class SellItemModel(ParanoidModel):
-    picture = models.ImageField(max_length=256, unique=True, verbose_name="Зураг")
     title = models.CharField(max_length=256, unique=True, verbose_name="Гарчиг")
     desc = models.TextField(blank=True, null=True, verbose_name="Тайлбар")
+    price = models.FloatField(default=0, blank=True, null=True, verbose_name="Үнэ")
+    quantity = models.IntegerField(default=1, blank=True, null=True, verbose_name="Нийт борлуулах тоо ширхэг")
 
     category = models.ForeignKey("sales.ProductCategoryModel", on_delete=models.PROTECT, verbose_name="Төрөл",
                                  null=True,
@@ -60,3 +63,29 @@ class SellItemModel(ParanoidModel):
         db_table = 'sales_items'
         verbose_name = 'Худалдах бараа'
         verbose_name_plural = '01 Худалдах бараанууд'
+
+
+class ProductImageModel(models.Model):
+    title = models.CharField(blank=True, null=True, default='Picture', max_length=100, verbose_name="Зураг гарчиг")
+    picture = models.ImageField(
+        verbose_name="Зураг",
+        upload_to=PathAndRename("product_pics/"), )
+    product = models.ForeignKey("sales.SellItemModel", on_delete=models.PROTECT, verbose_name="Зурагнууд",
+                                null=True,
+                                related_name="pictures")
+
+    order = models.PositiveIntegerField(
+        default=0, blank=False, null=False, verbose_name="эрэмбэ"
+    )
+
+    def __str__(self):
+        return '%s' % self.title
+
+    def __unicode__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['order']
+        db_table = 'sales_item_picture'
+        verbose_name = 'Худалдах барааны зурагнууд'
+        # verbose_name_plural = '01 Худалдах бараанууд'

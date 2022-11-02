@@ -12,8 +12,8 @@ urlpatterns = [
     path('category/<int:pk>/', RetrieveUpdateDestroyCategoryAPIView.as_view(), name='get_delete_update_category'),
 
 
-    # path("cart/", CartItemAPIView.as_view()),
-    # path("cart-item/<int:pk>/", CartItemView.as_view()),
+    path("cart/", CartItemAPIView.as_view()),
+    path("cart-item/<int:pk>/", CartItemView.as_view()),
     #
     # path("checkout/<int:pk>/", CheckoutView.as_view()),
     # path("cart/checkout/<int:pk>/", CheckoutCartView.as_view()),
