@@ -39,7 +39,6 @@ class BrandModel(ParanoidModel):
 
 
 class SellItemModel(ParanoidModel):
-
     picture = models.ImageField(max_length=256, unique=True, verbose_name="Зураг")
     title = models.CharField(max_length=256, unique=True, verbose_name="Гарчиг")
     desc = models.TextField(blank=True, null=True, verbose_name="Тайлбар")
@@ -48,8 +47,9 @@ class SellItemModel(ParanoidModel):
                                  null=True,
                                  related_name="cat_items")
     brand = models.ForeignKey("sales.BrandModel", on_delete=models.PROTECT, verbose_name="Brand",
-                                 null=True,
-                                 related_name="brand_items")
+                              null=True,
+                              related_name="brand_items")
+
     def __str__(self):
         return '%s' % self.title
 
@@ -60,22 +60,3 @@ class SellItemModel(ParanoidModel):
         db_table = 'sales_items'
         verbose_name = 'Худалдах бараа'
         verbose_name_plural = '01 Худалдах бараанууд'
-
-
-# class Order(ParanoidModel):
-#     video = models.ForeignKey("sales.VideoModel", on_delete=models.PROTECT, verbose_name="check time",
-#                               related_name="watch_video")
-#     #
-#     # user = models.ForeignKey("account.UserModel", on_delete=models.PROTECT, verbose_name="check time",
-#     #                          related_name="watch_user")
-#
-#     def __str__(self):
-#         return '%s %s' % (self.video.id, self.user.id)
-#
-#     def __unicode__(self):
-#         return '%s %s' % (self.video.id, self.user.id)
-#
-#     class Meta:
-#         db_table = 'sales_video_watch'
-#         verbose_name = 'Үзвэр ба хэрэглэгч'
-#         verbose_name_plural = 'Үзвэр ба хэрэглэгчид'

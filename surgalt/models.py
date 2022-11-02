@@ -51,6 +51,15 @@ class TeacherModel(ParanoidModel):
     lastname = models.CharField(verbose_name="Овог", max_length=100, blank=True, null=True)
     nick_name = models.CharField(verbose_name="Дууддаг нэр", max_length=100, blank=True, null=True)
 
+    picture = models.ImageField(
+        verbose_name="Зураг",
+        upload_to=PathAndRename("teacher_pics/"),
+        null=True,
+        blank=True,
+    )
+
+    social = models.CharField(verbose_name="Сошиал линк", max_length=200, blank=True, null=True)
+
     age = models.IntegerField(verbose_name="Нас", blank=True, null=True)
     level = models.CharField(verbose_name="Спорт Зэрэг", max_length=100, default='nolevel', choices=LEVEL_CHOICES)
     story = models.TextField(verbose_name="Намтар", blank=True, null=True)

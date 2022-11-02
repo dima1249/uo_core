@@ -14,6 +14,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
 
 class TeacherSerializer(serializers.ModelSerializer):
+    level_name = serializers.ReadOnlyField(source='get_level_display')
     class Meta:
         model = TeacherModel
         fields = '__all__'

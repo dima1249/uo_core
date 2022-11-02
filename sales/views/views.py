@@ -1,8 +1,7 @@
-from rest_framework import mixins, generics
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import AllowAny
+from rest_framework import permissions, status
 from django_filters import rest_framework as filters
-
+from django.utils.translation import ugettext_lazy as _
 from sales.models import *
 from sales.serializers import ProductCategorySerializer, BrandModelSerializer, ProductSerializer
 
@@ -10,7 +9,7 @@ from sales.serializers import ProductCategorySerializer, BrandModelSerializer, P
 class ListCreateCategoryAPIView(ListCreateAPIView):
     serializer_class = ProductCategorySerializer
     queryset = ProductCategoryModel.objects.all()
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
     # pagination_class = CustomPagination
     filter_backends = (filters.DjangoFilterBackend,)
     # filterset_class = CourseFilter
@@ -24,15 +23,13 @@ class ListCreateCategoryAPIView(ListCreateAPIView):
 class RetrieveUpdateDestroyCategoryAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ProductCategorySerializer
     queryset = ProductCategoryModel.objects.all()
-    permission_classes = [AllowAny]
-
-
+    permission_classes = [permissions.AllowAny]
 
 
 class ListCreateBrandAPIView(ListCreateAPIView):
     serializer_class = BrandModelSerializer
     queryset = BrandModel.objects.all()
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
     # pagination_class = CustomPagination
     filter_backends = (filters.DjangoFilterBackend,)
     # filterset_class = CourseFilter
@@ -46,13 +43,13 @@ class ListCreateBrandAPIView(ListCreateAPIView):
 class RetrieveUpdateDestroyBrandAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = BrandModelSerializer
     queryset = BrandModel.objects.all()
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
 
 
 class ListCreateProductAPIView(ListCreateAPIView):
     serializer_class = ProductSerializer
     queryset = SellItemModel.objects.all()
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
     filter_backends = (filters.DjangoFilterBackend,)
 
     def perform_create(self, serializer):
@@ -62,5 +59,4 @@ class ListCreateProductAPIView(ListCreateAPIView):
 class RetrieveUpdateDestroyProductAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ProductSerializer
     queryset = SellItemModel.objects.all()
-    permission_classes = [AllowAny]
-
+    permission_classes = [permissions.AllowAny]
