@@ -108,7 +108,8 @@ class CourseModel(ParanoidModel):
 
 class CourseRequestModel(ParanoidModel):
     course = models.ForeignKey("surgalt.CourseModel", on_delete=models.PROTECT, verbose_name="Анги")
-    created_user = models.ForeignKey("account.UserModel", on_delete=models.PROTECT, verbose_name="Бүртгүүлэгч", default=1)
+    created_user = models.ForeignKey("account.UserModel", on_delete=models.PROTECT, verbose_name="Бүртгүүлэгч",
+                                     default=1)
 
     first_name = models.CharField(max_length=50, null=True, verbose_name="Нэр")
     last_name = models.CharField(max_length=50, null=True, verbose_name="Овог")
@@ -131,6 +132,15 @@ class CourseRequestModel(ParanoidModel):
         db_table = 'surgalt_course_request'
         verbose_name = 'Анги - Бүртгэл'
         verbose_name_plural = 'Анги - Бүртгэл'
+
+        constraints = [
+            models.UniqueConstraint(fields=["course",
+                                            "first_name",
+                                            "last_name",
+                                            "gender",
+                                            "birthday",
+                                            "start_date", ], name="%(app_label)s_%(class)s_unique")
+        ]
 
 
 class CourseStudentModel(ParanoidModel):

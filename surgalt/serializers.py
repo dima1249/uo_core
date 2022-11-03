@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django_filters import rest_framework as filters
 from rest_framework import serializers
 
@@ -15,6 +17,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class TeacherSerializer(serializers.ModelSerializer):
     level_name = serializers.ReadOnlyField(source='get_level_display')
+
     class Meta:
         model = TeacherModel
         fields = '__all__'
@@ -25,16 +28,30 @@ class RegisterCourseSerializer(serializers.ModelSerializer):
         default=serializers.CurrentUserDefault()
     )
 
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
+    gender = serializers.CharField(required=True)
+    birthday = serializers.DateField(required=True)
+    start_date = serializers.DateField(required=True)
+
     def validate(self, data):
         print('RegisterCourseSerializer validate', data)
         # print('RegisterCourseSerializer role', data['student'].role)
-        if data['created_user']:
-            print(data['created_user'])
+        if not data['created_user']:
             raise serializers.ValidationError({"student": "user is not valid"})
 
+        if not "end_date" in data:
+            data['end_date'] = data['start_date'] + timedelta(days=30)
+
+        if data['start_date'] >= data['end_date']:
+            raise serializers.ValidationError({"end_date": "Эхлэх өдрөөс хойш байх естой"})
+        # 'course', 'first_name', 'last_name', 'gender', 'birthday', 'start_date'
+        if CourseRequestModel.objects.filter(course=data['course'], first_name=data['first_name'],
+                                             last_name=data['last_name'], gender=data['gender'],
+                                             birthday=data['birthday'], start_date=data['start_date'],
+                                             status=1).count():
+            raise serializers.ValidationError({"model": "Ижил хүсэлт хүлээгдэж байна."})
         return data
-        # if data['start_date'] > data['end_date']:
-        #     raise serializers.ValidationError({"end_date": "finish must occur after start"})
 
     class Meta:
         model = CourseRequestModel

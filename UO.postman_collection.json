@@ -1,0 +1,159 @@
+{
+	"info": {
+		"_postman_id": "c23d53ee-e9b1-4451-8981-1467fcdc9372",
+		"name": "UO",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "868234"
+	},
+	"item": [
+		{
+			"name": "register mail",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"first_name\": \"доржготов\",\n  \"last_name\": \"дамдинсүрэн\",\n  \"password\": \"q1w2e3r4t5\",\n  \"birthday\": \"2000-09-21\",\n  \"gender\": \"M\",\n  \"email\": \"damdinsuren@gmail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{end_point_local}}/api/account/register/email/",
+					"host": [
+						"{{end_point_local}}"
+					],
+					"path": [
+						"api",
+						"account",
+						"register",
+						"email",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register course",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"course\": 1,\n  \"first_name\": \"Bold\",\n  \"last_name\": \"Bat\",\n  \"gender\": \"F\",\n  \"birthday\": \"2000-11-03\",\n  \"start_date\": \"2022-11-03\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{end_point_local}}/api/surgalt/course/register",
+					"host": [
+						"{{end_point_local}}"
+					],
+					"path": [
+						"api",
+						"surgalt",
+						"course",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = JSON.parse(responseBody);",
+							"pm.environment.set('token', jsonData.result.token);",
+							"console.log(jsonData.result.token)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"damdinsuren@gmail.com\",\n  \"password\": \"q1w2e3r4t5\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{end_point_local}}/api/account/login/",
+					"host": [
+						"{{end_point_local}}"
+					],
+					"path": [
+						"api",
+						"account",
+						"login",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "profile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://3.121.225.218/api/account/profile/",
+					"protocol": "http",
+					"host": [
+						"3",
+						"121",
+						"225",
+						"218"
+					],
+					"path": [
+						"api",
+						"account",
+						"profile",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
