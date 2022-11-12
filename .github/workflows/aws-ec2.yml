@@ -39,4 +39,10 @@ jobs:
             git fetch --all &&
             git reset --hard origin/master &&
             git pull origin master &&
-            source env/bin/activate
+            source env/bin/activate &&
+            python manage.py migrate &&
+            python manage.py collectstatic --noinput &&
+            sudo systemctl daemon-reload &&
+            sudo systemctl restart gunicorn &&
+            sudo systemctl restart nginx
+

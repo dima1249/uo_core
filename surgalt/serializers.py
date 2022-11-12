@@ -3,6 +3,7 @@ from datetime import timedelta
 from django_filters import rest_framework as filters
 from rest_framework import serializers
 
+from account.models import GENDER
 from surgalt.models import CourseModel, TeacherModel, CourseRequestModel
 
 
@@ -28,9 +29,9 @@ class RegisterCourseSerializer(serializers.ModelSerializer):
         default=serializers.CurrentUserDefault()
     )
 
-    first_name = serializers.CharField(required=True)
-    last_name = serializers.CharField(required=True)
-    gender = serializers.CharField(required=True)
+    first_name = serializers.CharField(required=True, max_length=100)
+    last_name = serializers.CharField(required=True, max_length=100)
+    gender = serializers.ChoiceField(required=True, choices=GENDER)
     birthday = serializers.DateField(required=True)
     start_date = serializers.DateField(required=True)
 

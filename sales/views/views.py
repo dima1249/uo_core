@@ -12,8 +12,6 @@ class ListCreateCategoryAPIView(ListCreateAPIView):
     permission_classes = [permissions.AllowAny]
     # pagination_class = CustomPagination
     filter_backends = (filters.DjangoFilterBackend,)
-    # filterset_class = CourseFilter
-
     def perform_create(self, serializer):
         pass
         # Assign the user who created the movie
@@ -50,7 +48,9 @@ class ListCreateProductAPIView(ListCreateAPIView):
     serializer_class = ProductSerializer
     queryset = SellItemModel.objects.all()
     permission_classes = [permissions.AllowAny]
+
     filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = ['category']
 
     def perform_create(self, serializer):
         pass

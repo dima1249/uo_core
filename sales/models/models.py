@@ -72,7 +72,7 @@ class ProductImageModel(models.Model):
         upload_to=PathAndRename("product_pics/"), )
     product = models.ForeignKey("sales.SellItemModel", on_delete=models.PROTECT, verbose_name="Зурагнууд",
                                 null=True,
-                                related_name="pictures")
+                                related_name="image_product")
 
     order = models.PositiveIntegerField(
         default=0, blank=False, null=False, verbose_name="эрэмбэ"
