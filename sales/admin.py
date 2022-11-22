@@ -16,6 +16,31 @@ from sales.models import *
 class ProductCategoryModelAdmin(ParanoidAdmin):
     list_display = ["name", "desc", ]
 
+class CartItemInline(admin.TabularInline):
+    model = CartItem
+    # ordering = ("order",)
+    readonly_fields = ["deleted_at"]
+    exclude = ["deleted_at"]
+    # fields = ["title", "picture"]
+    extra = 1
+
+    def has_change_permission(self, request, obj):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj):
+        return False
+
+
+@admin.register(Cart)
+class CartAdmin(ParanoidAdmin):
+    list_display = ["id", "user", "total", ]
+    inlines = [CartItemInline]
+
+    def has_change_permission(self, request, obj=None):
+        return False
 
 @admin.register(BrandModel)
 class BrandModelAdmin(ParanoidAdmin):

@@ -86,4 +86,8 @@ class GenericGroup(GroupAdmin):
 
 @admin.register(RoleModel)
 class RoleModelGroup(ParanoidAdmin):
-    pass
+    def has_delete_permission(self, request, obj=None):
+        return not bool(obj and obj.id < 3)
+
+    def has_change_permission(self, request, obj=None):
+        return not bool(obj and obj.id <= 4)

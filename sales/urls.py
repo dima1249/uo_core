@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import *
+from .views.check_out_views import CheckoutView, CheckoutCartView
 
 urlpatterns = [
     path('brand/', ListCreateBrandAPIView.as_view(), name='get_post_brands'),
@@ -12,11 +13,13 @@ urlpatterns = [
     path('category/<int:pk>/', RetrieveUpdateDestroyCategoryAPIView.as_view(), name='get_delete_update_category'),
 
 
-    path("cart/", CartItemAPIView.as_view()),
+    path("cart/", CartItemAPIView.as_view()),  # add item
     path("cart-item/<int:pk>/", CartItemView.as_view()),
-    #
-    # path("checkout/<int:pk>/", CheckoutView.as_view()),
-    # path("cart/checkout/<int:pk>/", CheckoutCartView.as_view()),
+
+
+
+    path("checkout/<int:pk>/", CheckoutView.as_view()),
+    path("cart/checkout/<int:pk>/", CheckoutCartView.as_view()),
     #
     # path("order/<int:pk>/", OrderView.as_view()),
     # path("payment/", Payment),

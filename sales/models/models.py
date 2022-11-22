@@ -11,6 +11,11 @@ from uo_core.utills import PathAndRename
 class ProductCategoryModel(ParanoidModel):
     name = models.CharField(max_length=100, unique=True, verbose_name="Нэр")
     desc = models.TextField(verbose_name="Тайлбар", blank=True, null=True)
+    picture = models.ImageField(
+        null=True,
+        blank=True,
+        verbose_name="Зураг",
+        upload_to=PathAndRename("product_categories/"), )
 
     def __str__(self):
         return '%s' % self.name
@@ -54,7 +59,7 @@ class SellItemModel(ParanoidModel):
                               related_name="brand_items")
 
     def __str__(self):
-        return '%s' % self.title
+        return '%s (%s) [%s]' % (self.title, self.brand, self.category)
 
     def __unicode__(self):
         return self.title

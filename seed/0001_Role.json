@@ -4,9 +4,9 @@
     "pk": 1,
     "fields": {
       "created_at": "2022-03-14T17:57:07.827",
-      "updated_at": "2022-03-14T17:57:07.827",
+      "updated_at": "2022-11-13T23:59:04.513",
       "deleted_at": null,
-      "name": "Admin",
+      "name": "Админ",
       "code": "admin"
     }
   },
@@ -15,9 +15,9 @@
     "pk": 2,
     "fields": {
       "created_at": "2022-03-14T17:57:19.928",
-      "updated_at": "2022-03-14T17:57:19.928",
+      "updated_at": "2022-11-13T23:58:53.640",
       "deleted_at": null,
-      "name": "User",
+      "name": "Хэрэглэгч",
       "code": "user"
     }
   },
@@ -30,6 +30,17 @@
       "deleted_at": null,
       "name": "Сурагч",
       "code": "student"
+    }
+  },
+  {
+    "model": "account.rolemodel",
+    "pk": 4,
+    "fields": {
+      "created_at": "2022-11-13T23:56:20.265",
+      "updated_at": "2022-11-13T23:58:45.301",
+      "deleted_at": null,
+      "name": "Багш",
+      "code": "teacher"
     }
   }
 ]

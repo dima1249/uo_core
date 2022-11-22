@@ -1,8 +1,5 @@
 from django.contrib import admin
-
-# Register your models here.
 from django_paranoid.admin import ParanoidAdmin
-
 from surgalt.models import *
 
 
@@ -21,7 +18,7 @@ class CourseRequestModelAdmin(ParanoidAdmin):
     list_display = ["course", "student_info", "status", "created_at"]
 
     def student_info(self, obj):
-        return "{} {} ({})".format(obj.last_name, obj.first_name, obj.gender)
+        return f"{obj.last_name} {obj.first_name} ({obj.gender})"
 
     student_info.short_description = "Суралцагч"
 
