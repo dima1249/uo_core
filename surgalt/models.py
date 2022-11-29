@@ -1,7 +1,13 @@
 import datetime
+import json
 
-from django_paranoid.models import ParanoidModel
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import post_save, pre_save
+from django.forms.models import model_to_dict
+from django_paranoid.models import ParanoidModel
+
+from rest_framework import serializers
 from multiselectfield import MultiSelectField
 
 from account.models import GENDER, UserModel
@@ -31,7 +37,7 @@ LEVEL_CHOICES = (('ouhm', 'Олон улс хэмжээний мастер (ОУ
 STATUS_CHOICES = ((1, 'Хүсэлт илгээсэн'),
                   (2, 'Төлбөр хүлээгдэж байгаа'),
                   (3, 'Бусад'),
-                  (3, 'Батлагдсан'),
+                  (4, 'Батлагдсан'),
                   )
 
 TEST_CHOICES = ((1, "Нэг"),
@@ -106,6 +112,34 @@ class CourseModel(ParanoidModel):
         verbose_name_plural = 'Анги мэдээлэл'
 
 
+class CourseStudentModel(ParanoidModel):
+    course = models.ForeignKey("surgalt.CourseModel", on_delete=models.PROTECT, verbose_name="Анги")
+    created_user = models.ForeignKey("account.UserModel", on_delete=models.PROTECT, verbose_name="Үүсэгсэн хэрэглэгч")
+    # status = models.IntegerField(verbose_name="Төлөв", choices=STATUS_CHOICES)
+
+    first_name = models.CharField(max_length=50, null=True, verbose_name="Нэр")
+    last_name = models.CharField(max_length=50, null=True, verbose_name="Овог")
+    gender = models.CharField(max_length=2, null=True, verbose_name="Хүйс", choices=GENDER)
+    birthday = models.DateField(null=True, verbose_name='Төрсөн өдөр')
+
+    start_date = models.DateField(verbose_name="Эхлэх өдөр", blank=True, null=True)
+    end_date = models.DateField(verbose_name="Дуусах өдөр", blank=True, null=True)
+    active = models.BooleanField(verbose_name="Идвэхтэй", default=True)
+    payment_date = models.DateField(verbose_name="Төлбөр төлсөн өдөр", blank=True, null=True)
+    desc = models.TextField(verbose_name="Тайлбар", blank=True, null=True)
+
+    def __str__(self):
+        return '%s - %s' % (self.course.name, self.first_name)
+
+    def __unicode__(self):
+        return '%s - %s' % (self.course.name, self.student.first_name)
+
+    class Meta:
+        db_table = 'surgalt_course_student'
+        verbose_name = 'Анги - Сурагч'
+        verbose_name_plural = 'Анги - Сурагч'
+
+
 class CourseRequestModel(ParanoidModel):
     course = models.ForeignKey("surgalt.CourseModel", on_delete=models.PROTECT, verbose_name="Анги")
     created_user = models.ForeignKey("account.UserModel", on_delete=models.PROTECT, verbose_name="Бүртгүүлэгч",
@@ -143,32 +177,51 @@ class CourseRequestModel(ParanoidModel):
         ]
 
 
-class CourseStudentModel(ParanoidModel):
-    course = models.ForeignKey("surgalt.CourseModel", on_delete=models.PROTECT, verbose_name="Анги")
-    student = models.ForeignKey("account.UserModel", on_delete=models.PROTECT, verbose_name="Суралцагч")
-    # status = models.IntegerField(verbose_name="Төлөв", choices=STATUS_CHOICES)
-
-    first_name = models.CharField(max_length=50, null=True, verbose_name="Нэр")
-    last_name = models.CharField(max_length=50, null=True, verbose_name="Овог")
-    gender = models.CharField(max_length=2, null=True, verbose_name="Хүйс", choices=GENDER)
-    birthday = models.DateField(null=True, verbose_name='Төрсөн өдөр')
-
-    start_date = models.DateField(verbose_name="Эхлэх өдөр", blank=True, null=True)
-    end_date = models.DateField(verbose_name="Дуусах өдөр", blank=True, null=True)
-    active = models.BooleanField(verbose_name="Идвэхтэй", default=True)
-    payment_date = models.DateField(verbose_name="Төлбөр төлсөн өдөр", blank=True, null=True)
-    desc = models.TextField(verbose_name="Тайлбар", blank=True, null=True)
-
-    def __str__(self):
-        return '%s - %s' % (self.course.name, self.student.first_name)
-
-    def __unicode__(self):
-        return '%s - %s' % (self.course.name, self.student.first_name)
-
+class CourseStudentSerializer(serializers.ModelSerializer):
     class Meta:
-        db_table = 'surgalt_course_student'
-        verbose_name = 'Анги - Сурагч'
-        verbose_name_plural = 'Анги - Сурагч'
+        model = CourseStudentModel
+        fields = '__all__'
+
+
+@receiver(pre_save, sender=CourseRequestModel)
+def update_course_student(sender, instance, *args, **kwargs):
+    if instance.id:
+        previous = CourseRequestModel.objects.get(id=instance.id)
+        if instance.status == 4 and previous.status != instance.status:
+            print('status update', instance.status)
+            students = CourseStudentModel.objects.filter(
+                first_name=instance.first_name,
+                last_name=instance.last_name,
+                gender=instance.gender,
+                birthday=instance.birthday,
+                course=instance.course,
+            )
+            if len(students) > 0:
+                print('students exist ')
+                student = students[0]
+                student.start_date = instance.start_date
+                student.end_date = instance.end_date
+                student.payment_date = instance.payment_date
+                student.save()
+            else:
+                _data = model_to_dict(instance, fields=['first_name',
+                                                        'last_name',
+                                                        'gender',
+                                                        'birthday',
+                                                        'start_date',
+                                                        'end_date',
+                                                        'payment_date',
+                                                        'desc',
+                                                        ])
+                _data['created_user'] = instance.created_user.id
+                _data['course'] = instance.course.id
+
+                print('_data ', _data)
+                course_student_serializer = CourseStudentSerializer(data=_data)
+                if course_student_serializer.is_valid():
+                    course_student_serializer.save()
+                else:
+                    print('courseStudentSerializer Error: ', course_student_serializer.errors)
 
 
 class StudentTestModel(ParanoidModel):

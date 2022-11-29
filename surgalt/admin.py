@@ -16,6 +16,17 @@ class CourseModelAdmin(ParanoidAdmin):
 @admin.register(CourseRequestModel)
 class CourseRequestModelAdmin(ParanoidAdmin):
     list_display = ["course", "student_info", "status", "created_at"]
+    readonly_fields = ["created_user", "deleted_at"]
+
+    fieldsets = (
+        (None, {'fields': ('status',)}),
+        ('Хувийн мэдээлэл', {'fields': (
+            'first_name', 'last_name', 'gender', 'birthday')}),
+        ('Анги мэдээлэл', {'fields': (
+            'course', 'start_date', 'end_date')}),
+        ('Бусад', {'fields': (
+            'payment_date', 'desc')}),
+    )
 
     def student_info(self, obj):
         return f"{obj.last_name} {obj.first_name} ({obj.gender})"
@@ -25,7 +36,9 @@ class CourseRequestModelAdmin(ParanoidAdmin):
 
 @admin.register(CourseStudentModel)
 class CourseStudentModelAdmin(ParanoidAdmin):
-    list_display = ["course", "student", "active", "start_date", "end_date", ]
+    list_display = ["course", "created_user", "active", "start_date", "end_date", ]
+    list_filter = ["course", "created_user", "active",]
+    ordering = ["course", "active", "start_date", "end_date",]
 
 
 @admin.register(StudentTestModel)

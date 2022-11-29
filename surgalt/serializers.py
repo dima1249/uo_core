@@ -4,7 +4,7 @@ from django_filters import rest_framework as filters
 from rest_framework import serializers
 
 from account.models import GENDER
-from surgalt.models import CourseModel, TeacherModel, CourseRequestModel
+from surgalt.models import CourseModel, TeacherModel, CourseRequestModel, CourseStudentModel
 
 
 class CourseSerializer(serializers.ModelSerializer):

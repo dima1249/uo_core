@@ -169,6 +169,7 @@ MIDDLEWARE = [
     'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
+X_FRAME_OPTIONS = "SAMEORIGIN"
 ROOT_URLCONF = 'uo_core.urls'
 
 TEMPLATES = [
