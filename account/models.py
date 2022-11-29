@@ -25,7 +25,7 @@ class UserAccountManager(BaseUserManager):
     def create_user(self, username, password=None):
         user = UserModel()
         user.username = username
-        user.email = 'no-reply@mail.tapatrip.com'
+        user.email = 'no-reply@mail.usukh-od.com'
         # user.user_type = AGENT
         user.is_staff = True
         user.set_password(password)
@@ -89,9 +89,9 @@ class UserModel(ParanoidModel, AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'username'
 
     def __str__(self):
-        if self.email and len(self.email):
-            return '%s' % self.email
-        return '%s' % self.username
+        if self.username and len(self.username):
+            return '%s' % self.username
+        return '%s' % self.email
 
     def __unicode__(self):
         if self.email and len(self.email):

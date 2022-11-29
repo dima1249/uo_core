@@ -10,6 +10,7 @@ from sales.serializers import CartItemSerializer, \
 
 class CartItemAPIView(ListCreateAPIView):
     serializer_class = CartItemSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
