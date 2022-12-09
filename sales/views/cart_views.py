@@ -56,6 +56,7 @@ class CartItemAPIView(ListCreateAPIView):
 
 class CartItemView(RetrieveUpdateDestroyAPIView):
     serializer_class = CartItemSerializer
+    permission_classes = [permissions.IsAuthenticated]
     # method_serializer_classes = {
     #     ('PUT',): CartItemUpdateSerializer
     # }
