@@ -1,32 +1,21 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.generics import (
-    ListAPIView,
-    RetrieveAPIView,
-    CreateAPIView,
-    DestroyAPIView,
-)
 from rest_framework import permissions, status
-from rest_framework.exceptions import PermissionDenied, NotAcceptable, ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from rest_framework.generics import RetrieveAPIView
 from sales.models import SellItemModel, Cart, CartItem
-from sales.serializers import CartProductSerializer, CartItemMiniSerializer, ProductSerializer, CartItemSerializer
+from sales.serializers import CartItemMiniSerializer, ProductSerializer, CartItemSerializer
 
 
-class CheckoutView(APIView):
+class CheckoutView(RetrieveAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = CartItemSerializer
 
     def get(self, request, pk, *args, **kwargs):
-        user = request.user
-        address_id = request.data.get("address")
         ecommerce_feez = 150
-        # user_address = Address.objects.filter(id=address_id, user=user)[0]
         product = get_object_or_404(SellItemModel, pk=pk)
         total = ecommerce_feez + (product.price * product.quantity)
         data = {}
-        # data["address"] = AddressSerializer(user_address).data
         data["product"] = ProductSerializer(
             product, context={"request": request}
         ).data
@@ -36,12 +25,12 @@ class CheckoutView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
-class CheckoutCartView(APIView):
+class CheckoutCartView(RetrieveAPIView):
     permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = CartItemSerializer
 
     def get(self, request, pk, *args, **kwargs):
         user = request.user
-        address_id = request.data.get("address")
         ecommerce_feez = 150
         data = {}
         total = 0
