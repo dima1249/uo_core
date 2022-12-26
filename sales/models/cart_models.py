@@ -24,6 +24,14 @@ class Cart(ParanoidModel):
     def __unicode__(self):
         return self.user
 
+
+    def check_product_quantity(self):
+        for item in self.cart_items.all():
+            if item.product.quantity < item.quantity:
+                return True
+        return False
+
+
     class Meta:
         db_table = 'sales_carts'
         verbose_name = 'Сагс'
@@ -38,7 +46,7 @@ def create_user_cart(sender, created, instance, *args, **kwargs):
 
 
 class CartItem(ParanoidModel):
-    cart = models.ForeignKey(Cart, related_name="cart_item", on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, related_name="cart_items", on_delete=models.CASCADE)
     product = models.ForeignKey(
         SellItemModel, related_name="cart_product", on_delete=models.CASCADE
     )

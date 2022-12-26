@@ -1,12 +1,9 @@
-from django.contrib.auth.models import User
 from django.db import models
 
-# Create your models here.
 from django_paranoid.models import ParanoidModel
 from multiselectfield import MultiSelectField
 
 from account.models import UserModel
-
 
 # uuid = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False)
 # created = models.DateTimeField(auto_now_add=True, db_index=True)
@@ -44,15 +41,22 @@ class Order(ParanoidModel):
     )
     is_paid = models.BooleanField(default=False)
     address = models.ForeignKey(
-        Address, related_name="order_address", on_delete=models.CASCADE
+        Address, related_name="order_address", on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
+
+    class Meta:
+        db_table = 'sales_orders'
+        verbose_name = 'Захиалга'
+        verbose_name_plural = 'Захиалганууд'
 
     @staticmethod
     def create_order(buyer, order_number, address, is_paid=False):
         order = Order()
         order.buyer = buyer
         order.order_number = order_number
-        order.address = address
+        # order.address = address
         order.is_paid = is_paid
         order.save()
         return order
@@ -67,6 +71,11 @@ class OrderItem(ParanoidModel):
     )
     quantity = models.IntegerField()
     total = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        db_table = 'sales_order_items'
+        verbose_name = 'Захиалганд харгалзах бараа'
+        verbose_name_plural = 'Захиалганд харгалзах бараанууд'
 
     @staticmethod
     def create_order_item(order, product, quantity, total):

@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import *
 from .views.check_out_views import CheckoutView, CheckoutCartView
+from .views.order_views import OrderView
 
 urlpatterns = [
     path('brand/', ListCreateBrandAPIView.as_view(), name='get_post_brands'),
@@ -21,6 +22,6 @@ urlpatterns = [
     path("checkout/<int:pk>/", CheckoutView.as_view()),
     path("cart/checkout/<int:pk>/", CheckoutCartView.as_view()),
     #
-    # path("order/<int:pk>/", OrderView.as_view()),
+    path("order/<int:pk>/", OrderView.as_view()),
     # path("payment/", Payment),
 ]

@@ -1,5 +1,11 @@
 from django.contrib import admin
 from django_paranoid.admin import ParanoidAdmin
+
+from django_admin_listfilter_dropdown.filters import (
+    ChoiceDropdownFilter,
+    DropdownFilter,
+)
+
 from surgalt.models import *
 
 
@@ -17,6 +23,11 @@ class CourseModelAdmin(ParanoidAdmin):
 class CourseRequestModelAdmin(ParanoidAdmin):
     list_display = ["course", "student_info", "status", "created_at"]
     readonly_fields = ["created_user", "deleted_at"]
+
+    list_filter = [("course", DropdownFilter),
+                   "created_user", ]
+
+
 
     fieldsets = (
         (None, {'fields': ('status',)}),

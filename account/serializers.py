@@ -66,6 +66,15 @@ class UserProfileSerializer(serializers.ModelSerializer):
         read_only_fields = ['dial_code', 'phone', 'email']
 
 
+class UserMiniSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.ImageField(source="profile_picture")
+    gender = serializers.CharField(source="gender")
+    phone = serializers.CharField(source="phone")
+
+    class Meta:
+        model = UserModel
+        fields = ["username", "profile_picture", "gender", "phone"]
+
 class UserPhoneSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(max_length=255, min_length=8, required=True)
     dial_code = serializers.IntegerField(required=True)
