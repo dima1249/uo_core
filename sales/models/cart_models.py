@@ -24,18 +24,22 @@ class Cart(ParanoidModel):
     def __unicode__(self):
         return self.user
 
-
     def check_product_quantity(self):
+        if self.cart_items.count() == 0:
+            return True
         for item in self.cart_items.all():
             if item.product.quantity < item.quantity:
                 return True
         return False
 
-
     class Meta:
         db_table = 'sales_carts'
         verbose_name = 'Сагс'
         verbose_name_plural = 'Сагснууд'
+
+    def delete_cart_item(self):
+        print("deleted cart_items")
+        self.cart_items.all().delete()
 
 
 @receiver(post_save, sender=User)
@@ -51,8 +55,6 @@ class CartItem(ParanoidModel):
         SellItemModel, related_name="cart_product", on_delete=models.CASCADE
     )
     quantity = models.IntegerField(default=1)
-
-
 
     def __str__(self):
         return '%s' % self.product

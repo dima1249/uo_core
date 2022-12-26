@@ -19,13 +19,14 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     order_items = OrderItemSerializer(read_only=True, many=True)
-
+    status_name = serializers.CharField(source='get_status_display')
     class Meta:
         model = Order
         fields = ["id",
                   "order_number",
                   "order_items",
                   "is_paid",
+                  "status_name",
                   "status"]
         # exclude = "modified"
 

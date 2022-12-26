@@ -46,6 +46,7 @@ class OrderView(ListCreateAPIView):
         #     "Request Order",
         #     "your order: #" + str(order_number) + " has been sent successfully.",
         # )
+        _cart.delete_cart_item()
         self.time()
         print("order_created", order.id)
         serializer = OrderSerializer(order)
@@ -62,7 +63,3 @@ class OrderView(ListCreateAPIView):
                 + str(datetime.timestamp(datetime.now()))[5:8])
 
         return order_number
-
-
-def Payment(request):
-    return render(request, "payment/payment.html", {})
