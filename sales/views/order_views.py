@@ -1,14 +1,12 @@
 import os
 from datetime import datetime
 
-from rest_framework.views import APIView
 from rest_framework import permissions, exceptions, status
 from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404, ListCreateAPIView
 from sales.models import *
-import render
 
-from sales.serializers.order_serializers import OrderItemMiniSerializer, OrderSerializer
+from sales.serializers.order_serializers import OrderSerializer
 from sales.utils import time_calculator
 
 
