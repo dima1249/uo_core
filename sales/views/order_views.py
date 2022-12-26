@@ -34,7 +34,7 @@ class OrderView(ListCreateAPIView):
 
         order_number = self.generate_order_number(_cart.user.id, _cart.id)
 
-        order = Order().create_order(user, order_number, "", True)
+        order = Order().create_order(user, order_number)
         for item in _cart.cart_items.all():
             _total = item.quantity * item.product.price
             order_item = OrderItem().create_order_item(order, item.product, item.quantity, _total)

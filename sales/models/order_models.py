@@ -52,7 +52,7 @@ class Order(ParanoidModel):
         verbose_name_plural = 'Захиалганууд'
 
     @staticmethod
-    def create_order(buyer, order_number, address, is_paid=False):
+    def create_order(buyer, order_number, is_paid=False):
         order = Order()
         order.buyer = buyer
         order.order_number = order_number
