@@ -30,9 +30,10 @@ class Address(ParanoidModel):
 
 class Order(ParanoidModel):
     PENDING_STATE = "p"
-    COMPLETED_STATE = "c"
+    COMPLETED_STATE = "o"
+    CANCELED_STATE = "c"
 
-    ORDER_CHOICES = ((PENDING_STATE, "pending"), (COMPLETED_STATE, "completed"))
+    ORDER_CHOICES = ((PENDING_STATE, "Pending"), (COMPLETED_STATE, "Completed"), (CANCELED_STATE, "Canceled"))
 
     buyer = models.ForeignKey(UserModel, related_name="order", on_delete=models.CASCADE)
     order_number = models.CharField(max_length=250, blank=True, null=True)

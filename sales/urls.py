@@ -20,7 +20,7 @@ urlpatterns = [
 
 
     path("checkout/<int:pk>/", CheckoutView.as_view()),
-    path("cart/checkout/<int:pk>/", CheckoutCartView.as_view()),
+    path("cart/checkout/", CheckoutCartView.as_view()),
     #
     path("order/<int:pk>/", OrderView.as_view()),
     # path("payment/", Payment),

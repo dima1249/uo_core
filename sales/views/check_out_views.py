@@ -29,7 +29,7 @@ class CheckoutCartView(RetrieveAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = CartItemSerializer
 
-    def get(self, request, pk, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         user = request.user
         ecommerce_feez = 150
         data = {}
@@ -46,5 +46,6 @@ class CheckoutCartView(RetrieveAPIView):
         # data["address"] = AddressSerializer(user_address).data
         data["items"] = CartItemMiniSerializer(cart_items, many=True).data
         data["total"] = end_total
+        data["cart_id"] = cart.id
         data["feez"] = ecommerce_feez
         return Response(data, status=status.HTTP_200_OK)
