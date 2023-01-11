@@ -37,6 +37,7 @@ class Order(ParanoidModel):
 
     buyer = models.ForeignKey(UserModel, related_name="order", on_delete=models.CASCADE)
     order_number = models.CharField(max_length=250, blank=True, null=True)
+    phone = models.CharField(max_length=250, blank=True, null=True)
     status = models.CharField(
         max_length=1, choices=ORDER_CHOICES, default=PENDING_STATE
     )
@@ -53,11 +54,12 @@ class Order(ParanoidModel):
         verbose_name_plural = 'Захиалганууд'
 
     @staticmethod
-    def create_order(buyer, order_number, is_paid=False):
+    def create_order(buyer, order_number, phone, is_paid=False):
         order = Order()
         order.buyer = buyer
         order.order_number = order_number
         # order.address = address
+        order.phone = phone
         order.is_paid = is_paid
         order.save()
         return order

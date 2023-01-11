@@ -252,16 +252,47 @@ class ForgotPasswordView(generics.GenericAPIView):
             return CustomResponse(status=True, status_code=status.HTTP_200_OK, message="Амжилттай солигдлоо.")
 
 
-class UserProfileView(generics.GenericAPIView):
-    serializer_class = UserProfileSerializer
+class UserProfileView(generics.ListCreateAPIView):
+    """
+        Хэрэглэгч мэдээлэл засах болон харах  API
+
+    """
+    serializer_class = UserUpdateSerializer
+    queryset = UserModel.objects.none()
 
     # permission_classes = [IsUser]
     permission_classes = [permissions.IsAuthenticated]
-    def post(self, request):
+
+    def get(self, request):
+        serializer = UserProfileSerializer(instance=request.user)
+        return CustomResponse(result={"user": serializer.data}, status=True)
+
+    def create(self, request, *args, **kwargs):
+        user = request.user
+        serializer = self.serializer_class(instance=user, data=request.data, context={'request': request}, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return CustomResponse(serializer.data,
+                                  status_code=status.HTTP_200_OK,
+                                  status=True)
+
+        print('invalid', serializer.errors)
+        return CustomResponse(serializer.errors,
+                              status=False,
+                              status_code=status.HTTP_208_ALREADY_REPORTED,
+                              message=_(gsms.SAVE_ERROR))
+
+
+class UpdateUserProfileView(generics.ListCreateAPIView):
+    serializer_class = UserUpdateSerializer
+
+    # permission_classes = [IsUser]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
         user = request.user
         serializer = UserUpdateSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-
             print('valid', serializer.data)
             # if serializer.validated_data.get("first_name"):
             #     user.first_name = serializer.validated_data.get("first_name")

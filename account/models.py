@@ -87,8 +87,8 @@ class UserModel(ParanoidModel, AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'username'
 
     def __str__(self):
-        if self.username and len(self.username):
-            return '%s' % self.username
+        if self.phone and len(self.phone):
+            return '%s' % self.phone
         return '%s' % self.email
 
     def __unicode__(self):

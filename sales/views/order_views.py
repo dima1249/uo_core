@@ -6,24 +6,35 @@ from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404, ListCreateAPIView
 from sales.models import *
 
-from sales.serializers.order_serializers import OrderSerializer
+from sales.serializers.order_serializers import OrderSerializer, CreateOrderSerializer
 from sales.utils import time_calculator
 
 
 class OrderView(ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = OrderSerializer
+    serializer_class = CreateOrderSerializer
+    # serializer_class = OrderSerializer
 
     def get_queryset(self):
         user = self.request.user
         queryset = Order.objects.filter(buyer=user).order_by('status').order_by('created_at')
         return queryset
 
+    def list(self, request):
+        # Note the use of `get_queryset()` instead of `self.queryset`
+        queryset = self.get_queryset()
+        serializer = OrderSerializer(queryset, many=True)
+        return Response(serializer.data)
+
     @time_calculator
     def time(self):
         return 0
 
     def post(self, request, pk, *args, **kwargs):
+
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         user = request.user
         _cart = get_object_or_404(Cart, pk=pk)
         if _cart.user != request.user:
@@ -34,7 +45,7 @@ class OrderView(ListCreateAPIView):
 
         order_number = self.generate_order_number(_cart.user.id, _cart.id)
 
-        order = Order().create_order(user, order_number)
+        order = Order().create_order(user, order_number, serializer.validated_data.get('phone'))
         for item in _cart.cart_items.all():
             _total = item.quantity * item.product.price
             order_item = OrderItem().create_order_item(order, item.product, item.quantity, _total)

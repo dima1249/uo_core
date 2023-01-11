@@ -36,18 +36,30 @@ class UserSerializer(serializers.Serializer):
     gender = serializers.ChoiceField(choices=GENDER)
 
 
-class UserUpdateSerializer(serializers.Serializer):
+class UserUpdateSerializer(serializers.ModelSerializer):
+
     def update(self, instance, validated_data):
-        pass
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.birthday = validated_data.get('birthday', instance.birthday)
+        instance.gender = validated_data.get('gender', instance.gender)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.email = validated_data.get('email', instance.email)
+        # instance.save()
+        print("done UserUpdateSerializer update")
+        return instance
 
     def create(self, validated_data):
         pass
 
-    first_name = serializers.CharField(max_length=100, min_length=2, required=False)
-    last_name = serializers.CharField(max_length=100, min_length=2, required=False)
-    password = serializers.CharField(max_length=6, min_length=4, required=False)
-    birthday = serializers.DateField(required=False)
-    gender = serializers.ChoiceField(choices=GENDER, required=False)
+    class Meta:
+        model = UserModel
+        fields = ('first_name',
+                  'last_name',
+                  'birthday',
+                  'gender',
+                  'phone',
+                  'email')
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -74,6 +86,7 @@ class UserMiniSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         fields = ["username", "profile_picture", "gender", "phone"]
+
 
 class UserPhoneSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(max_length=255, min_length=8, required=True)

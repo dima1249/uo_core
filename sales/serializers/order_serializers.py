@@ -40,6 +40,9 @@ class OrderSerializer(serializers.ModelSerializer):
         # exclude = "modified"
 
 
+class CreateOrderSerializer(serializers.Serializer):
+    phone = serializers.CharField(max_length=255, min_length=8, required=True)
+
 class OrderMiniSerializer(serializers.ModelSerializer):
     # address = AddressSerializer(required=False)
     buyer = UserMiniSerializer(required=False)

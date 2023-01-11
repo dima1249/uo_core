@@ -68,7 +68,7 @@ class OrderAdmin(ParanoidAdmin):
     inlines = [OrderItemInline]
     # list_filter = [("buyer", DropdownFilter),
     #                "order_number", "status", "is_paid", ]
-    list_display = ["order_number", "status", "is_paid", "buyer", ]
+    list_display = ["order_number", "phone", "status", "is_paid", "buyer", ]
 
 
 # GENERAL

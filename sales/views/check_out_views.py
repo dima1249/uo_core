@@ -8,8 +8,19 @@ from sales.serializers import CartItemMiniSerializer, ProductSerializer, CartIte
 
 
 class CheckoutView(RetrieveAPIView):
+    """
+        CheckoutView FOR cart
+        Тухайн хэрэглэгчийн сагсан дахь бараа болон нийт дүнг бодож
+        харуулна тухайн бараа тоо одоо байгаагаас хэтэрвэл алдаа гарч
+        захиалга үүсгэх боломжгүй болохыг анхаарна уу
+        тоо хэмжээ хэтрэлт шалгахад хэрэглэнэ
+
+    """
+
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = CartItemSerializer
+
+    queryset = SellItemModel.objects.all()
 
     def get(self, request, pk, *args, **kwargs):
         ecommerce_feez = 150
@@ -26,6 +37,11 @@ class CheckoutView(RetrieveAPIView):
 
 
 class CheckoutCartView(RetrieveAPIView):
+    """
+            CheckoutView FOR product
+            {product id} өгөх бөгөөд тухайн барааг тоог нэмж хасах боломжтой эсэх шалгах
+            тоо хэмжээ хэтрэлт шалгахад хэрэглэнэ
+        """
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = CartItemSerializer
 
