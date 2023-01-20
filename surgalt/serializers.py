@@ -4,7 +4,7 @@ from django_filters import rest_framework as filters
 from rest_framework import serializers
 
 from account.models import GENDER
-from surgalt.models import CourseModel, TeacherModel, CourseRequestModel, CourseStudentModel
+from surgalt.models import CourseModel, TeacherModel, CourseRequestModel, CourseStudentModel, StudentVideoModel
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -22,6 +22,35 @@ class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeacherModel
         fields = '__all__'
+
+
+class StudentVideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentVideoModel
+        fields = '__all__'
+
+
+class CourseStudentSerializer(serializers.ModelSerializer):
+    # level_name = serializers.ReadOnlyField(source='get_level_display')
+    course = CourseSerializer()
+    videos = StudentVideoSerializer(many=True)
+
+    class Meta:
+        model = CourseStudentModel
+        fields = [
+            "id",
+            "active",
+            "start_date",
+            "end_date",
+            "first_name",
+            "last_name",
+            "gender",
+            "birthday",
+            "payment_date",
+            "desc",
+            "course",
+            "videos",
+        ]
 
 
 class RegisterCourseSerializer(serializers.ModelSerializer):

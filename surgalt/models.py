@@ -140,6 +140,24 @@ class CourseStudentModel(ParanoidModel):
         verbose_name_plural = 'Анги - Сурагч'
 
 
+class StudentVideoModel(models.Model):
+    student = models.ForeignKey("surgalt.CourseStudentModel", on_delete=models.PROTECT, verbose_name="Сурагч",
+                                related_name='videos')
+    link = models.CharField(max_length=200, null=True, verbose_name="Бичлэг линк")
+    desc = models.CharField(max_length=200, null=True, verbose_name="Тайлбар")
+
+    def __str__(self):
+        return '%s - video %s' % (self.student.first_name, self.id)
+
+    def __unicode__(self):
+        return '%s - video %s' % (self.student.first_name, self.id)
+
+    class Meta:
+        db_table = 'surgalt_course_student_videos'
+        verbose_name = 'Суралцагчийн бичлэг'
+        verbose_name_plural = 'Суралцагчийн бичлэгнүүд'
+
+
 class CourseRequestModel(ParanoidModel):
     course = models.ForeignKey("surgalt.CourseModel", on_delete=models.PROTECT, verbose_name="Анги")
     created_user = models.ForeignKey("account.UserModel", on_delete=models.PROTECT, verbose_name="Бүртгүүлэгч",
@@ -175,12 +193,6 @@ class CourseRequestModel(ParanoidModel):
                                             "birthday",
                                             "start_date", ], name="%(app_label)s_%(class)s_unique")
         ]
-
-
-class CourseStudentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CourseStudentModel
-        fields = '__all__'
 
 
 @receiver(pre_save, sender=CourseRequestModel)

@@ -27,8 +27,6 @@ class CourseRequestModelAdmin(ParanoidAdmin):
     list_filter = [("course", DropdownFilter),
                    "created_user", ]
 
-
-
     fieldsets = (
         (None, {'fields': ('status',)}),
         ('Хувийн мэдээлэл', {'fields': (
@@ -45,11 +43,32 @@ class CourseRequestModelAdmin(ParanoidAdmin):
     student_info.short_description = "Суралцагч"
 
 
+class StudentVideoInline(admin.TabularInline):
+    model = StudentVideoModel
+    extra = 1
+
 @admin.register(CourseStudentModel)
 class CourseStudentModelAdmin(ParanoidAdmin):
     list_display = ["course", "created_user", "active", "start_date", "end_date", ]
-    list_filter = ["course", "created_user", "active",]
-    ordering = ["course", "active", "start_date", "end_date",]
+    list_filter = ["course", "created_user", "active", ]
+    ordering = ["course", "active", "start_date", "end_date", ]
+    inlines = [StudentVideoInline]
+
+    def get_readonly_fields(self, request, obj=None):
+        return super().get_readonly_fields(request, obj=None) \
+               + ("created_user", "active")
+
+    fieldsets = (
+        (None, {'fields': ('active', 'created_user',)}),
+        ('Хувийн мэдээлэл', {'fields': (
+            'first_name', 'last_name', 'gender', 'birthday')}),
+        ('Сургалт Хугацаа', {'fields': (
+            'course', 'start_date', 'end_date', 'payment_date')}),
+        ('Бусад', {'fields': (
+            'desc',)}),
+        # ('Бичлэг', {'fields': (
+        #     'desc',)}),
+    )
 
 
 @admin.register(StudentTestModel)

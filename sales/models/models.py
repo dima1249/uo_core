@@ -70,6 +70,11 @@ class SellItemModel(ParanoidModel):
         verbose_name_plural = '01 Худалдах бараанууд'
 
 
+# class SellItemSizeAttributes(models.Model):
+#     item = models.ForeignKey(SellItemModel)
+#     attr_value = models.IntegerField()
+
+
 class ProductImageModel(models.Model):
     title = models.CharField(blank=True, null=True, default='Picture', max_length=100, verbose_name="Зураг гарчиг")
     picture = models.ImageField(
