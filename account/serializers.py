@@ -45,7 +45,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         instance.gender = validated_data.get('gender', instance.gender)
         instance.phone = validated_data.get('phone', instance.phone)
         instance.email = validated_data.get('email', instance.email)
-        # instance.save()
+        instance.save()
         print("done UserUpdateSerializer update")
         return instance
 

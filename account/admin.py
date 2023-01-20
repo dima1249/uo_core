@@ -11,8 +11,8 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 
 class UserModelAdmin(ParanoidAdmin, BaseUserAdmin):
-    list_display = ['username', 'first_name',
-                    'last_name', 'gender', 'email', 'phone', 'role']
+    list_display = ['phone', 'first_name',
+                    'last_name', 'gender', 'email', 'role']
     list_filter = ['role', 'gender', 'is_active']
     search_fields = ['username', 'email', 'first_name', 'last_name', 'phone', 'fb_user_id', 'google_user_id',
                      'apple_user_id']
