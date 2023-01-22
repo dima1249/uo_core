@@ -1,6 +1,5 @@
 from datetime import timedelta
 
-from django_filters import rest_framework as filters
 from rest_framework import serializers
 
 from account.models import GENDER
@@ -30,7 +29,7 @@ class StudentVideoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CourseStudentSerializer(serializers.ModelSerializer):
+class ShowCourseStudentSerializer(serializers.ModelSerializer):
     # level_name = serializers.ReadOnlyField(source='get_level_display')
     course = CourseSerializer()
     videos = StudentVideoSerializer(many=True)
@@ -50,6 +49,23 @@ class CourseStudentSerializer(serializers.ModelSerializer):
             "desc",
             "course",
             "videos",
+        ]
+
+
+class SaveCourseStudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseStudentModel
+        fields = [
+            "start_date",
+            "end_date",
+            "first_name",
+            "last_name",
+            "gender",
+            "birthday",
+            "payment_date",
+            "desc",
+            "course",
+            "created_user",
         ]
 
 

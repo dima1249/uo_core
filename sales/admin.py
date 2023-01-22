@@ -1,6 +1,9 @@
+import os
+
 from django.contrib import admin
 from django_paranoid.admin import ParanoidAdmin
 from adminsortable2.admin import SortableInlineAdminMixin
+from django.utils.html import format_html
 from django_admin_listfilter_dropdown.filters import (
     ChoiceDropdownFilter,
     DropdownFilter,
@@ -91,6 +94,7 @@ class SellItemModelAdmin(ParanoidAdmin):
     list_display = ["title", "desc", ]
     inlines = [ProductImagesInline]
 
+
 #
 # class ProductAdmin(admin.ModelAdmin):
 #     list_display = ['name', 'slug', 'category', 'price', 'stock', 'available', 'created', 'updated']
@@ -98,3 +102,46 @@ class SellItemModelAdmin(ParanoidAdmin):
 #     list_editable = ['price', 'stock', 'available']
 #     prepopulated_fields = {'slug': ('name',)}
 #     inlines = [ProductImagesInline]
+
+
+our_host_url = os.environ.get('OUR_HOST_URL', 'http://127.0.0.1:8081')
+
+
+@admin.register(QpayInvoiceModel)
+class QpayInvoiceModelAdmin(admin.ModelAdmin):
+    search_fields = ["ref_number", "payment_id"]
+    list_display = ["ref_number", "payment_id", "amount", "is_paid", "updated_at", "recheck"]
+    readonly_fields = [
+        "ref_number",
+        "payment_id",
+        "qpay_qr_code",
+        "qpay_short_url",
+        "amount",
+        "currency",
+        "invoice_name",
+        "phone_number",
+        "invoice_description",
+        "qr_image",
+        "deep_link",
+        "is_paid",
+        "is_company",
+        "company_register",
+        "created_at",
+        "updated_at",
+        "deleted_at",
+        "created_by",
+        "updated_by",
+        "deleted_by",
+    ]
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def recheck(self, obj):
+        if not obj.is_paid:
+            _check_button = (
+                    f'<a class="button btn-primary" href="{our_host_url}/api/payment/v1/bank_check_invoicev2/'
+                    + str(obj.ref_number)
+                    + '/QPAY/">Check</a>&nbsp;'
+            )
+            return format_html(_check_button, "#")

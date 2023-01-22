@@ -24,7 +24,8 @@ class CourseRequestModelAdmin(ParanoidAdmin):
     list_display = ["course", "student_info", "status", "created_at"]
     readonly_fields = ["created_user", "deleted_at"]
 
-    list_filter = [("course", DropdownFilter),
+    list_filter = [
+        # ("course", DropdownFilter),
                    "created_user", ]
 
     fieldsets = (

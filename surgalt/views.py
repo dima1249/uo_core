@@ -6,7 +6,7 @@ from django_filters import rest_framework as filters
 
 from surgalt.filters import CourseFilter
 from surgalt.models import CourseModel, TeacherModel, CourseStudentModel
-from surgalt.serializers import CourseSerializer, TeacherSerializer, RegisterCourseSerializer, CourseStudentSerializer
+from surgalt.serializers import CourseSerializer, TeacherSerializer, RegisterCourseSerializer, ShowCourseStudentSerializer
 
 
 class ListCreateCourseAPIView(ListCreateAPIView):
@@ -24,7 +24,7 @@ class ListCreateCourseAPIView(ListCreateAPIView):
 
 class ListStudentAPIView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = CourseStudentSerializer
+    serializer_class = ShowCourseStudentSerializer
 
     def get_queryset(self):
         user = self.request.user
@@ -33,7 +33,7 @@ class ListStudentAPIView(ListAPIView):
 
 class GetStudentAPIView(RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = CourseStudentSerializer
+    serializer_class = ShowCourseStudentSerializer
     queryset = CourseStudentModel.objects.all()
 
 

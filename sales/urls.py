@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import *
 from .views.check_out_views import CheckoutView, CheckoutCartView
+from .views.gok_views import CreateInvoiceView
 from .views.order_views import OrderView
 
 urlpatterns = [
@@ -23,5 +24,8 @@ urlpatterns = [
     path("cart/checkout/", CheckoutCartView.as_view()),
     #
     path("order/<int:pk>/", OrderView.as_view()),
+
+
+    path("create_invoice/", CreateInvoiceView.as_view()),
     # path("payment/", Payment),
 ]
