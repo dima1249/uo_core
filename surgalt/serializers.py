@@ -3,7 +3,8 @@ from datetime import timedelta
 from rest_framework import serializers
 
 from account.models import GENDER
-from surgalt.models import CourseModel, TeacherModel, CourseRequestModel, CourseStudentModel, StudentVideoModel
+from surgalt.models import CourseModel, TeacherModel, CourseRequestModel, CourseStudentModel, StudentVideoModel, \
+    StudentTestModel
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -29,10 +30,16 @@ class StudentVideoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class StudentTestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentTestModel
+        fields = '__all__'
+
+
 class ShowCourseStudentSerializer(serializers.ModelSerializer):
-    # level_name = serializers.ReadOnlyField(source='get_level_display')
     course = CourseSerializer()
     videos = StudentVideoSerializer(many=True)
+    tests = StudentTestSerializer(many=True)
 
     class Meta:
         model = CourseStudentModel
@@ -49,6 +56,7 @@ class ShowCourseStudentSerializer(serializers.ModelSerializer):
             "desc",
             "course",
             "videos",
+            "tests",
         ]
 
 

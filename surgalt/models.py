@@ -125,10 +125,10 @@ class CourseStudentModel(ParanoidModel):
     desc = models.TextField(verbose_name="Тайлбар", blank=True, null=True)
 
     def __str__(self):
-        return '%s - %s' % (self.course.name, self.first_name)
+        return '%s  %s - [%s]' % (self.last_name, self.first_name, self.course.name)
 
     def __unicode__(self):
-        return '%s - %s' % (self.course.name, self.student.first_name)
+        return '%s  %s - [%s]' % (self.last_name, self.first_name, self.course.name)
 
     class Meta:
         db_table = 'surgalt_course_student'
@@ -192,8 +192,8 @@ class CourseRequestModel(ParanoidModel):
 
 
 class StudentTestModel(ParanoidModel):
-    course = models.ForeignKey("surgalt.CourseModel", on_delete=models.PROTECT, verbose_name="Анги")
-    student = models.ForeignKey("account.UserModel", on_delete=models.PROTECT, verbose_name="Суралцагч")
+    student = models.ForeignKey("surgalt.CourseStudentModel", on_delete=models.PROTECT, verbose_name="Суралцагч",
+                                related_name='tests')
 
     test_date = models.DateField(verbose_name="Сургалт орсон өдөр", default=datetime.date.today)
 
@@ -204,10 +204,10 @@ class StudentTestModel(ParanoidModel):
     r5 = models.IntegerField(verbose_name="Ивэлт", default=5, choices=TEST_CHOICES)
 
     def __str__(self):
-        return '%s - %s' % (self.course.name, self.student.first_name)
+        return '%s - %s %s' % (self.test_date, self.student.first_name, self.student.first_name)
 
     def __unicode__(self):
-        return '%s - %s' % (self.course.name, self.student.first_name)
+        return '%s - %s %s' % (self.test_date, self.student.first_name, self.student.first_name)
 
     class Meta:
         db_table = 'surgalt_student_test'

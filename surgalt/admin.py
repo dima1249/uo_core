@@ -25,8 +25,9 @@ class CourseRequestModelAdmin(ParanoidAdmin):
     readonly_fields = ["created_user", "deleted_at"]
 
     list_filter = [
-        # ("course", DropdownFilter),
-                   "created_user", ]
+        ("course"),
+        # ("created_user", DropdownFilter),
+        "created_user", ]
 
     fieldsets = (
         (None, {'fields': ('status',)}),
@@ -48,10 +49,12 @@ class StudentVideoInline(admin.TabularInline):
     model = StudentVideoModel
     extra = 1
 
+
 @admin.register(CourseStudentModel)
 class CourseStudentModelAdmin(ParanoidAdmin):
     list_display = ["course", "created_user", "active", "start_date", "end_date", ]
     list_filter = ["course", "created_user", "active", ]
+    search_fields = ['first_name', 'last_name']
     ordering = ["course", "active", "start_date", "end_date", ]
     inlines = [StudentVideoInline]
 
@@ -74,7 +77,8 @@ class CourseStudentModelAdmin(ParanoidAdmin):
 
 @admin.register(StudentTestModel)
 class StudentTestModelAdmin(ParanoidAdmin):
-    list_display = ["course", "student", "test_date", ]
+    list_display = ["student", "test_date", ]
+    autocomplete_fields = ["student"]
 
 
 class StudentTimeTableInline(admin.TabularInline):
