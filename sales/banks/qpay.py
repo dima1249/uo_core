@@ -1,17 +1,20 @@
 import requests
 import time
-from datetime import datetime
 import os
 import json
 
-from django.core.cache import cache
-
-from sales.models import QpayInvoiceModel
+from sales.models import QpayInvoiceModel, TransactionModel
 
 
 class QpayV2(object):
     token = None
     token_expires = None
+    _instance = None
+
+    @staticmethod
+    def get_instance():
+        return QpayV2._instance if QpayV2._instance else QpayV2()
+
 
     def __init__(self):
         self.our_server = os.environ.get("OUR_HOST_URL")
@@ -20,34 +23,34 @@ class QpayV2(object):
         self.password = os.environ.get("QPAY_V2_PASSWORD")
         self.invoice_code = os.environ.get("QPAY_V2_INVOICE_CODE")
 
+
     def is_valid(self):
         _last_check = time.time()
-        return cache.get("QPAY_TOKEN") and float(cache.get("QPAY_EXPIRES_IN")) > _last_check
+        return QpayV2.token and float(QpayV2.token_expires if QpayV2.token_expires else 0) > _last_check
+
 
     def get_token(self):
         if self.is_valid():
-            return cache.get("QPAY_TOKEN")
+            return QpayV2.token
         else:
             try:
                 _url = self.server + "/v2/auth/token"
                 _response = requests.post(url=_url, auth=(self.username, self.password))
                 if _response.status_code == requests.codes.ok:
                     _req_data = _response.json()
-                    cache.delete("QPAY_TOKEN")
-                    cache.delete("QPAY_EXPIRES_IN")
                     QpayV2.token = _req_data["access_token"]
                     QpayV2.token_expires = _req_data["expires_in"]
-                    cache.set("QPAY_EXPIRES_IN", QpayV2.token_expires, timeout=None)
-                    cache.set("QPAY_TOKEN", QpayV2.token, timeout=None)
-                    return cache.get("QPAY_TOKEN")
+                    print('token:', QpayV2.token)
+                    print('token_expires:', QpayV2.token_expires)
+                    return QpayV2.token
                 else:
                     print("qpay v2 response status code:", _response.status_code, _response.json())
-                    cache.delete("QPAY_TOKEN")
                     QpayV2.token = None
                     return None
             except Exception as e:
                 print("qpay token error", e)
                 return False
+
 
     def get_header(self):
         header = {
@@ -55,6 +58,7 @@ class QpayV2(object):
             "Authorization": "Bearer " + str(self.get_token()),
         }
         return header
+
 
     def create_invoice(self, ref_number, to_pay):
         total_amount = to_pay
@@ -90,9 +94,9 @@ class QpayV2(object):
             try:
                 call_back_url = (
                         str(self.our_server)
-                        + "/api/payment/v1/bank_check_invoicev2/"
+                        + "/api/sales/bank_check_invoicev2/"
                         + ref_number
-                        + "/QPAY/"
+                        +"/"
                 )
                 _post_data = {
                     "invoice_code": str(self.invoice_code),
@@ -103,6 +107,8 @@ class QpayV2(object):
                     "amount": int(total_amount),
                     "callback_url": str(call_back_url),
                 }
+
+                print('create_invoice', json.dumps(_post_data))
 
                 _url = self.server + "/v2/invoice"
                 _response = requests.post(
@@ -138,176 +144,172 @@ class QpayV2(object):
                 else:
                     print("qpay v2 response status code:", _response.status_code, _response.json())
                     QpayV2.token = None
-                    cache.delete("QPAY_TOKEN")
-                    cache.delete("QPAY_EXPIRES_IN")
                     _result = {"name": "ERROR"}
                     return _result
             except Exception as e:
                 print("qpay error ", e)
                 _result = {"name": "ERROR"}
                 return _result
-    #
-    # def check_invoice(self, booking_model, payment_type_model):
-    #     total_amount = booking_model.to_pay
-    #     if payment_type_model.fee and payment_type_model.fee > 0:
-    #         total_amount = calculate_total_amount(
-    #             booking_model=booking_model,
-    #             fee=payment_type_model.fee,
-    #         )
-    #     _qpay_invoice_model = QpayInvoiceModel.objects.filter(
-    #         ref_number=booking_model.ref_number, is_paid=False
-    #     ).last()
-    #     if _qpay_invoice_model:
-    #         _post_data = {
-    #             "object_type": "INVOICE",
-    #             "object_id": str(_qpay_invoice_model.payment_id),
-    #             "offset": {"page_number": 1, "page_limit": 100},
-    #         }
-    #
-    #         _url = self.server + "/v2/payment/check"
-    #         try:
-    #             _response = requests.post(
-    #                 url=_url, headers=self.get_header(), json=_post_data
-    #             )
-    #             if _response.status_code == requests.codes.ok:
-    #                 _response_data = _response.json()
-    #                 # print(_response_data)
-    #                 if "paid_amount" in _response_data:
-    #                     _payment_info = _response_data["rows"][0]
-    #                     if (
-    #                         "payment_status" in _payment_info
-    #                         and _qpay_invoice_model.amount
-    #                         <= float(_response_data["paid_amount"])
-    #                     ):
-    #                         if _payment_info["payment_status"] == "PAID":
-    #                             if (
-    #                                 _qpay_invoice_model.amount
-    #                                 <= float(_payment_info["payment_amount"])
-    #                                 and not TransactionModel.objects.filter(
-    #                                     ref_number=_qpay_invoice_model.ref_number,
-    #                                     payment_id=_qpay_invoice_model.payment_id,
-    #                                 ).exists()
-    #                             ):
-    #                                 _qpay_invoice_model.is_paid = True
-    #                                 _qpay_invoice_model.qr_image = _response_data
-    #                                 _qpay_invoice_model.save()
-    #                                 _transaction = TransactionModel()
-    #                                 _transaction.ref_number = (
-    #                                     _qpay_invoice_model.ref_number
-    #                                 )
-    #                                 _transaction.payment_id = (
-    #                                     _qpay_invoice_model.payment_id
-    #                                 )
-    #                                 _transaction.payment_type = payment_type_model
-    #                                 _transaction.transaction_type = 1
-    #                                 if "payment_id" in _payment_info:
-    #                                     _transaction.payment_description = (
-    #                                         _payment_info["payment_id"]
-    #                                     )
-    #                                 _transaction.amount = _qpay_invoice_model.amount
-    #                                 _transaction.save()
-    #                                 charge_payment(
-    #                                     ref_number=_transaction.ref_number,
-    #                                     amount=_transaction.amount,
-    #                                 )
-    #                                 _transaction.charge_payment_called = (
-    #                                     _transaction.charge_payment_called + 1
-    #                                 )
-    #                                 _transaction.save()
-    #                                 _result = {
-    #                                     "name": "INVOICE_PAID",
-    #                                     "message": gsms.INVOICE_PAID,
-    #                                 }
-    #                                 return _result
-    #                             else:
-    #                                 _result = {
-    #                                     "name": "INVOICE_ALREADY_PAID",
-    #                                     "message": gsms.INVOICE_ALREADY_CREATED,
-    #                                 }
-    #                                 return _result
-    #                         else:
-    #                             _result = {
-    #                                 "name": "INVOICE_NOT_PAID",
-    #                                 "message": gsms.INVOICE_NOT_PAID,
-    #                             }
-    #                             return _result
-    #                     else:
-    #                         _result = {
-    #                             "name": "INVOICE_NOT_FOUND",
-    #                             "message": gsms.INVOICE_NOT_FOUND,
-    #                         }
-    #                         return _result
-    #                 else:
-    #                     _result = {
-    #                         "name": "INVOICE_NOT_PAID",
-    #                         "message": gsms.INVOICE_NOT_PAID,
-    #                     }
-    #                     return _result
-    #             else:
-    #                 QpayV2.token = None
-    #                 _result = {
-    #                     "name": "INVOICE_NOT_PAID",
-    #                     "message": gsms.INVOICE_NOT_PAID,
-    #                 }
-    #                 return _result
-    #         except Exception as e:
-    #             print("qpay error: ", e)
-    #             _result = {"name": "INVOICE_NOT_PAID", "message": gsms.INVOICE_NOT_PAID}
-    #             return _result
-    #     elif QpayInvoiceModel.objects.filter(
-    #         ref_number=booking_model.ref_number, is_paid=True
-    #     ).exists():
-    #         _result = {
-    #             "name": "INVOICE_ALREADY_PAID",
-    #             "message": gsms.INVOICE_ALREADY_PAID,
-    #         }
-    #         return _result
-    #     else:
-    #         _result = {"name": "INVOICE_NOT_FOUND", "message": gsms.INVOICE_NOT_FOUND}
-    #         return _result
-    #
-    # def cancel_invoices(self, _qpay_invoice_model):
-    #
-    #     if not _qpay_invoice_model.is_paid:
-    #
-    #         _url = self.server + "/v2/invoice/" + str(_qpay_invoice_model.payment_id)
-    #         try:
-    #             _response = requests.delete(url=_url, headers=self.get_header())
-    #             if _response.status_code == requests.codes.ok:
-    #                 _response_data = _response.json()
-    #
-    #                 _qpay_invoice_model.invoice_description = "invoice_canceled"
-    #                 _qpay_invoice_model.qr_image = str(_response_data)
-    #                 _qpay_invoice_model.save()
-    #                 return True
-    #
-    #             else:
-    #                 return False
-    #
-    #         except Exception as e:
-    #             return False
-    #     return False
-    #
-    # def refund_invoice(self, _qpay_invoice_id):
-    #     _qpay_invoice_model = QpayInvoiceModel.objects.filter(payment_id=_qpay_invoice_id).last()
-    #
-    #     if _qpay_invoice_model and _qpay_invoice_model.is_paid:
-    #
-    #         _url = self.server + "/v2/payment/refund/" + str(_qpay_invoice_model.payment_id)
-    #         try:
-    #             _response = requests.delete(url=_url, headers=self.get_header())
-    #             if _response.status_code == requests.codes.ok:
-    #                 _response_data = _response.json()
-    #
-    #                 _qpay_invoice_model.invoice_description = "invoice refunded"
-    #                 _qpay_invoice_model.qr_image = str(_response_data)
-    #                 _qpay_invoice_model.save()
-    #                 return True
-    #
-    #             else:
-    #                 return False
-    #
-    #         except Exception as e:
-    #             return False
-    #     else:
-    #         return False
+
+
+    def check_invoice(self, ref_number):
+        # total_amount = booking_model.to_pay
+        # if payment_type_model.fee and payment_type_model.fee > 0:
+        #     total_amount = calculate_total_amount(
+        #         booking_model=booking_model,
+        #         fee=payment_type_model.fee,
+        #     )
+        _qpay_invoice_model = QpayInvoiceModel.objects.filter(
+            ref_number=ref_number
+        ).last()
+        if _qpay_invoice_model and not _qpay_invoice_model.is_paid:
+            _post_data = {
+                "object_type": "INVOICE",
+                "object_id": str(_qpay_invoice_model.payment_id),
+                "offset": {"page_number": 1, "page_limit": 100},
+            }
+
+            _url = self.server + "/v2/payment/check"
+            try:
+                _response = requests.post(
+                    url=_url, headers=self.get_header(), json=_post_data
+                )
+                if _response.status_code == requests.codes.ok:
+                    _response_data = _response.json()
+                    # print(_response_data)
+                    if "paid_amount" in _response_data:
+                        _payment_info = _response_data["rows"][0]
+                        if (
+                                "payment_status" in _payment_info
+                                and _qpay_invoice_model.amount
+                                <= float(_response_data["paid_amount"])
+                        ):
+                            if _payment_info["payment_status"] == "PAID":
+                                if (
+                                        _qpay_invoice_model.amount
+                                        <= float(_payment_info["payment_amount"])
+                                        and not TransactionModel.objects.filter(
+                                    ref_number=_qpay_invoice_model.ref_number,
+                                    payment_id=_qpay_invoice_model.payment_id,
+                                ).exists()
+                                ):
+                                    _qpay_invoice_model.is_paid = True
+                                    _qpay_invoice_model.qr_image = _response_data
+                                    _qpay_invoice_model.save()
+                                    _transaction = TransactionModel()
+                                    _transaction.ref_number = (
+                                        _qpay_invoice_model.ref_number
+                                    )
+                                    _transaction.payment_id = (
+                                        _qpay_invoice_model.payment_id
+                                    )
+                                    # _transaction.payment_type = payment_type_model
+                                    _transaction.transaction_type = 1
+                                    if "payment_id" in _payment_info:
+                                        _transaction.payment_description = (
+                                            _payment_info["payment_id"]
+                                        )
+                                    _transaction.amount = _qpay_invoice_model.amount
+                                    _transaction.save()
+                                    # charge_payment(
+                                    #     ref_number=_transaction.ref_number,
+                                    #     amount=_transaction.amount,
+                                    # )
+                                    _transaction.charge_payment_called = (
+                                            _transaction.charge_payment_called + 1
+                                    )
+                                    _transaction.save()
+                                    _result = {
+                                        "name": "INVOICE_PAID",
+                                        "message": "INVOICE_PAID",
+                                    }
+                                    return _result
+                                else:
+                                    _result = {
+                                        "name": "INVOICE_ALREADY_PAID",
+                                        "message": "INVOICE_ALREADY_CREATED",
+                                    }
+                                    return _result
+                            else:
+                                _result = {
+                                    "name": "INVOICE_NOT_PAID",
+                                    "message": "INVOICE_NOT_PAID",
+                                }
+                                return _result
+                        else:
+                            _result = {
+                                "name": "INVOICE_NOT_FOUND",
+                                "message": "INVOICE_NOT_FOUND",
+                            }
+                            return _result
+                    else:
+                        _result = {
+                            "name": "INVOICE_NOT_PAID",
+                            "message": "INVOICE_NOT_PAID",
+                        }
+                        return _result
+                else:
+                    QpayV2.token = None
+                    _result = {
+                        "name": "INVOICE_NOT_PAID",
+                        "message": "INVOICE_NOT_PAID",
+                    }
+                    return _result
+            except Exception as e:
+                print("qpay error: ", e)
+                _result = {"name": "INVOICE_NOT_PAID", "message": "INVOICE_NOT_PAID"}
+                return _result
+
+        if _qpay_invoice_model:
+            return {
+                "name": "INVOICE_ALREADY_PAID",
+                "message": "INVOICE_ALREADY_PAID",
+            }
+        return {"name": "INVOICE_NOT_FOUND", "message": "INVOICE_NOT_FOUND"}
+
+
+    def cancel_invoices(self, _qpay_invoice_model):
+        if not _qpay_invoice_model.is_paid:
+
+            _url = self.server + "/v2/invoice/" + str(_qpay_invoice_model.payment_id)
+            try:
+                _response = requests.delete(url=_url, headers=self.get_header())
+                if _response.status_code == requests.codes.ok:
+                    _response_data = _response.json()
+
+                    _qpay_invoice_model.invoice_description = "invoice_canceled"
+                    _qpay_invoice_model.qr_image = str(_response_data)
+                    _qpay_invoice_model.save()
+                    return True
+
+                else:
+                    return False
+
+            except Exception as e:
+                return False
+        return False
+
+
+    def refund_invoice(self, _qpay_invoice_id):
+        _qpay_invoice_model = QpayInvoiceModel.objects.filter(payment_id=_qpay_invoice_id).last()
+
+        if _qpay_invoice_model and _qpay_invoice_model.is_paid:
+
+            _url = self.server + "/v2/payment/refund/" + str(_qpay_invoice_model.payment_id)
+            try:
+                _response = requests.delete(url=_url, headers=self.get_header())
+                if _response.status_code == requests.codes.ok:
+                    _response_data = _response.json()
+
+                    _qpay_invoice_model.invoice_description = "invoice refunded"
+                    _qpay_invoice_model.qr_image = str(_response_data)
+                    _qpay_invoice_model.save()
+                    return True
+
+                else:
+                    return False
+
+            except Exception as e:
+                return False
+        else:
+            return False
