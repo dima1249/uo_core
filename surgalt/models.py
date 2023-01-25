@@ -132,8 +132,8 @@ class CourseStudentModel(ParanoidModel):
 
     class Meta:
         db_table = 'surgalt_course_student'
-        verbose_name = 'Анги - Сурагч'
-        verbose_name_plural = 'Анги - Сурагч'
+        verbose_name = 'Суралцагч'
+        verbose_name_plural = 'Суралцагчид'
 
 
 class StudentVideoModel(models.Model):
@@ -211,8 +211,30 @@ class StudentTestModel(ParanoidModel):
 
     class Meta:
         db_table = 'surgalt_student_test'
-        verbose_name = 'Анги - Тест'
-        verbose_name_plural = 'Анги - Тест'
+        verbose_name = 'Суралцагч - Тест'
+        verbose_name_plural = 'Суралцагч - Тест'
+
+
+class StudentPointHistoryModel(ParanoidModel):
+    student = models.ForeignKey("surgalt.CourseStudentModel", on_delete=models.PROTECT, verbose_name="Суралцагч",
+                                related_name='point_histories')
+
+    commit_date = models.DateTimeField(verbose_name="Огноо", default=datetime.date.today)
+
+    desc = models.TextField(verbose_name="Тайлбар", blank=True, null=True)
+
+    point = models.IntegerField(verbose_name="Оноо", default=1)
+
+    def __str__(self):
+        return '%s - %s %s' % (self.commit_date, self.student.first_name, self.student.first_name)
+
+    def __unicode__(self):
+        return '%s - %s %s' % (self.commit_date, self.student.first_name, self.student.first_name)
+
+    class Meta:
+        db_table = 'surgalt_student_point_history'
+        verbose_name = 'Суралцагч - Оноо'
+        verbose_name_plural = 'Суралцагч - Оноо'
 
 
 class CourseTimeTableModel(ParanoidModel):

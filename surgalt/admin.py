@@ -80,6 +80,16 @@ class StudentTestModelAdmin(ParanoidAdmin):
     list_display = ["student", "test_date", ]
     autocomplete_fields = ["student"]
 
+@admin.register(StudentPointHistoryModel)
+class StudentPointHistoryAdmin(ParanoidAdmin):
+    list_display = ["student", "commit_date", "point"]
+    autocomplete_fields = ["student"]
+    def get_readonly_fields(self, request, obj=None):
+        return super().readonly_fields + ("commit_date",)
+
+    def has_delete_permission(self, request, obj=None):
+        return  False
+
 
 class StudentTimeTableInline(admin.TabularInline):
     model = StudentTimeTableModel

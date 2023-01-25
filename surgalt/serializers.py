@@ -1,10 +1,12 @@
 from datetime import timedelta
 
 from rest_framework import serializers
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
 
 from account.models import GENDER
 from surgalt.models import CourseModel, TeacherModel, CourseRequestModel, CourseStudentModel, StudentVideoModel, \
-    StudentTestModel
+    StudentTestModel, StudentPointHistoryModel
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -33,13 +35,34 @@ class StudentVideoSerializer(serializers.ModelSerializer):
 class StudentTestSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentTestModel
-        fields = '__all__'
+        fields = [
+            "test_date",
+            "r1",
+            "r2",
+            "r3",
+            "r4",
+            "r5",
+        ]
+
+
+class StudentPointHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentPointHistoryModel
+
+        fields = [
+            "commit_date",
+            "desc",
+            "point",
+        ]
 
 
 class ShowCourseStudentSerializer(serializers.ModelSerializer):
     course = CourseSerializer()
     videos = StudentVideoSerializer(many=True)
     tests = StudentTestSerializer(many=True)
+    point_histories = StudentPointHistorySerializer(many=True)
+
+    point = serializers.SerializerMethodField()
 
     class Meta:
         model = CourseStudentModel
@@ -57,7 +80,13 @@ class ShowCourseStudentSerializer(serializers.ModelSerializer):
             "course",
             "videos",
             "tests",
+            "point_histories",
+            "point",
         ]
+
+    def get_point(self, obj):
+        return obj.point_histories.aggregate(point__sum=Coalesce(Sum('point'), 0))['point__sum']
+        # .get('point__sum', 0)
 
 
 class SaveCourseStudentSerializer(serializers.ModelSerializer):
