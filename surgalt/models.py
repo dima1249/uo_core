@@ -1,4 +1,5 @@
 import datetime
+from django.utils import timezone
 import json
 
 from django.db import models
@@ -219,11 +220,11 @@ class StudentPointHistoryModel(ParanoidModel):
     student = models.ForeignKey("surgalt.CourseStudentModel", on_delete=models.PROTECT, verbose_name="Суралцагч",
                                 related_name='point_histories')
 
-    commit_date = models.DateTimeField(verbose_name="Огноо", default=datetime.date.today)
-
-    desc = models.TextField(verbose_name="Тайлбар", blank=True, null=True)
+    commit_date = models.DateTimeField(verbose_name="Огноо", default=timezone.now)
 
     point = models.IntegerField(verbose_name="Оноо", default=1)
+
+    desc = models.TextField(verbose_name="Тайлбар", blank=True, null=True)
 
     def __str__(self):
         return '%s - %s %s' % (self.commit_date, self.student.first_name, self.student.first_name)

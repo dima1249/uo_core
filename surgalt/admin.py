@@ -50,9 +50,18 @@ class StudentVideoInline(admin.TabularInline):
     extra = 1
 
 
-class StudentPointInline(admin.TabularInline):
+class StudentPointInline(admin.StackedInline):
     model = StudentPointHistoryModel
+    readonly_fields = ['deleted_at', 'commit_date']
+
     show_change_link = False
+    extra = 0
+    def has_delete_permission(self, request, obj=None):
+        return False
+    def has_change_permission(self, request, obj=None):
+        return False
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
 
 
 @admin.register(CourseStudentModel)
