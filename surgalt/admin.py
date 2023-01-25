@@ -50,13 +50,19 @@ class StudentVideoInline(admin.TabularInline):
     extra = 1
 
 
+class StudentPointInline(admin.TabularInline):
+    model = StudentPointHistoryModel
+    extra = 1
+
+
 @admin.register(CourseStudentModel)
 class CourseStudentModelAdmin(ParanoidAdmin):
     list_display = ["course", "created_user", "active", "start_date", "end_date", ]
     list_filter = ["course", "created_user", "active", ]
     search_fields = ['first_name', 'last_name']
     ordering = ["course", "active", "start_date", "end_date", ]
-    inlines = [StudentVideoInline]
+    inlines = [StudentVideoInline,
+               StudentPointInline ]
 
     def get_readonly_fields(self, request, obj=None):
         return super().get_readonly_fields(request, obj=None) \
@@ -80,15 +86,17 @@ class StudentTestModelAdmin(ParanoidAdmin):
     list_display = ["student", "test_date", ]
     autocomplete_fields = ["student"]
 
+
 @admin.register(StudentPointHistoryModel)
 class StudentPointHistoryAdmin(ParanoidAdmin):
     list_display = ["student", "commit_date", "point"]
     autocomplete_fields = ["student"]
+
     def get_readonly_fields(self, request, obj=None):
         return super().readonly_fields + ("commit_date",)
 
     def has_delete_permission(self, request, obj=None):
-        return  False
+        return False
 
 
 class StudentTimeTableInline(admin.TabularInline):
