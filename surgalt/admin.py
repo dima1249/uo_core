@@ -52,7 +52,7 @@ class StudentVideoInline(admin.TabularInline):
 
 class StudentPointInline(admin.TabularInline):
     model = StudentPointHistoryModel
-    extra = 1
+    show_change_link = False
 
 
 @admin.register(CourseStudentModel)
