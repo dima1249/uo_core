@@ -18,6 +18,7 @@ urlpatterns = [
     path("cart/checkout/", CheckoutCartView.as_view()),
     #
     path("order/<int:pk>/", OrderView.as_view()),
+    path("order/", OrderViewList.as_view()),
 
     path("create_invoice/", CreateInvoiceView.as_view()),
     # path("check_invoice/", CheckInvoiceView.as_view()),

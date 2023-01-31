@@ -1,9 +1,10 @@
 import os
 from datetime import datetime
 
-from rest_framework import permissions, exceptions, status
+from rest_framework import permissions, exceptions, status, serializers
 from rest_framework.response import Response
-from rest_framework.generics import get_object_or_404, ListCreateAPIView
+from rest_framework.generics import get_object_or_404, ListCreateAPIView, ListAPIView
+
 from sales.models import *
 
 from sales.serializers.order_serializers import OrderSerializer, CreateOrderSerializer
@@ -13,18 +14,16 @@ from sales.utils import time_calculator
 class OrderView(ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = CreateOrderSerializer
-    # serializer_class = OrderSerializer
 
-    def get_queryset(self):
-        user = self.request.user
-        queryset = Order.objects.filter(buyer=user).order_by('status').order_by('created_at')
-        return queryset
-
-    def list(self, request):
+    def get(self, request, pk):
         # Note the use of `get_queryset()` instead of `self.queryset`
-        queryset = self.get_queryset()
-        serializer = OrderSerializer(queryset, many=True)
-        return Response(serializer.data)
+        item = Order.objects.filter(id=pk, buyer=request.user).first()
+        if item:
+            serializer = OrderSerializer(item)
+            return Response(serializer.data)
+        raise serializers.ValidationError(
+            "Not Found"
+        )
 
     @time_calculator
     def time(self):
@@ -72,3 +71,13 @@ class OrderView(ListCreateAPIView):
                 + str(datetime.timestamp(datetime.now()))[5:8])
 
         return order_number
+
+
+class OrderViewList(ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = OrderSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Order.objects.filter(buyer=user).order_by('status').order_by('created_at')
+        return queryset

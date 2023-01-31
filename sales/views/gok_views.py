@@ -22,7 +22,7 @@ class CreateInvoiceSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         pass
 
-    ref_number = serializers.CharField(
+    order_number = serializers.CharField(
         min_length=3,
         required=True, help_text="Захиалгын давтагдашгүй код"
     )
@@ -42,15 +42,24 @@ class CreateInvoiceView(CreateAPIView):
 
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            ref_number = serializer.data.get("ref_number")
-            _result = qpay.create_invoice(
-                ref_number, random.randint(10, 100)
-            )
+            order_number = serializer.data.get("order_number")
 
-            if "name" in _result and _result["name"] == "ERROR":
-                return Response("error", status=status.HTTP_208_ALREADY_REPORTED)
-            return Response(_result, status=status.HTTP_201_CREATED)
-        return Response("error", status=status.HTTP_201_CREATED)
+            item = Order.objects.filter(order_number=order_number).first()
+            if item:
+                order_serializer = OrderSerializer(item)
+                print("order_serializer ", order_serializer.data)
+                _result = qpay.create_invoice(
+                    order_number, order_serializer.data.get('to_pay', 1)
+                )
+                print("qpay.create_invoice _result ", _result)
+
+                if "name" in _result and _result["name"] == "ERROR":
+                    return Response("error", status=status.HTTP_208_ALREADY_REPORTED)
+                return Response(_result, status=status.HTTP_201_CREATED)
+            raise serializers.ValidationError(
+                "Not Found"
+            )
+        return Response(serializer.errors, status=status.HTTP_208_ALREADY_REPORTED)
 
 
 class BankCheckInvoiceV2(
@@ -87,7 +96,6 @@ class BankCheckInvoiceV2(
     def create(self, request, *args, **kwargs):
 
         if "ref_number" in kwargs and "payment_type" in kwargs:
-
             _ref_number_temp = kwargs["ref_number"]
             _ref_number = _ref_number_temp.split("K")[0]
             payment_type_name = kwargs["payment_type"]

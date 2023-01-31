@@ -15,19 +15,16 @@ class QpayV2(object):
     def get_instance():
         return QpayV2._instance if QpayV2._instance else QpayV2()
 
-
     def __init__(self):
-        self.our_server = os.environ.get("OUR_HOST_URL")
+        self.our_server = os.environ.get("OUR_HOST_URL", "http://127.0.0.1:8081")
         self.server = os.environ.get("QPAY_V2_URL")
         self.username = os.environ.get("QPAY_V2_USERNAME")
         self.password = os.environ.get("QPAY_V2_PASSWORD")
         self.invoice_code = os.environ.get("QPAY_V2_INVOICE_CODE")
 
-
     def is_valid(self):
         _last_check = time.time()
         return QpayV2.token and float(QpayV2.token_expires if QpayV2.token_expires else 0) > _last_check
-
 
     def get_token(self):
         if self.is_valid():
@@ -51,7 +48,6 @@ class QpayV2(object):
                 print("qpay token error", e)
                 return False
 
-
     def get_header(self):
         header = {
             "Content-Type": "application/json",
@@ -59,9 +55,11 @@ class QpayV2(object):
         }
         return header
 
-
     def create_invoice(self, ref_number, to_pay):
         total_amount = to_pay
+
+        if total_amount < 2:
+            return {"name": "ERROR", "message": "total_amount is low"}
 
         # if payment_type.fee and payment_type.fee > 0:
         #     total_amount = calculate_total_amount(
@@ -96,14 +94,14 @@ class QpayV2(object):
                         str(self.our_server)
                         + "/api/sales/bank_check_invoicev2/"
                         + ref_number
-                        +"/"
+                        + "/"
                 )
                 _post_data = {
                     "invoice_code": str(self.invoice_code),
                     "sender_invoice_no": str(ref_number),
                     "invoice_receiver_code": "terminal",
                     "invoice_description": str(ref_number),
-                    "sender_branch_code": "TAPATRIP RIVER",
+                    "sender_branch_code": "USUKH-OD WEB",
                     "amount": int(total_amount),
                     "callback_url": str(call_back_url),
                 }
@@ -150,7 +148,6 @@ class QpayV2(object):
                 print("qpay error ", e)
                 _result = {"name": "ERROR"}
                 return _result
-
 
     def check_invoice(self, ref_number):
         # total_amount = booking_model.to_pay
@@ -267,7 +264,6 @@ class QpayV2(object):
             }
         return {"name": "INVOICE_NOT_FOUND", "message": "INVOICE_NOT_FOUND"}
 
-
     def cancel_invoices(self, _qpay_invoice_model):
         if not _qpay_invoice_model.is_paid:
 
@@ -288,7 +284,6 @@ class QpayV2(object):
             except Exception as e:
                 return False
         return False
-
 
     def refund_invoice(self, _qpay_invoice_id):
         _qpay_invoice_model = QpayInvoiceModel.objects.filter(payment_id=_qpay_invoice_id).last()
