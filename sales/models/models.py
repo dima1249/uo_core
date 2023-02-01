@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Sum
 
 # Create your models here.
 from django_paranoid.models import ParanoidModel
@@ -76,6 +77,11 @@ class SellItemModel(ParanoidModel):
                                  related_name="cat_items")
     brand = models.ForeignKey("sales.BrandModel", on_delete=models.PROTECT, verbose_name="Brand",
                               related_name="brand_items")
+
+    @property
+    def total_quantity(self):
+        aggregate_sum = self.attributes.aggregate(Sum('quantity'))
+        return aggregate_sum.get('quantity__sum', 0) if aggregate_sum.get('quantity__sum', 0) else 0
 
     def __str__(self):
         return '%s (%s) [%s]' % (self.title, self.brand, self.category)

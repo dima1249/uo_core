@@ -61,6 +61,7 @@ class ProductSerializer(serializers.ModelSerializer):
     quantities = SellItemAttributeSerializer(many=True, source='attributes')
     types = serializers.SerializerMethodField()
     sizes = serializers.SerializerMethodField()
+    total_quantity = serializers.IntegerField()
     colors = serializers.SerializerMethodField()
 
     # SellItemAttributes
@@ -93,6 +94,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "price",
             # "pictures",
             "category",
+            "total_quantity",
             "category_name",
             "brand",
             "brand_name",
