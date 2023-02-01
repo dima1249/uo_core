@@ -8,7 +8,7 @@ class CartProductSerializer(serializers.ModelSerializer):
         fields = (
             "title",
             # "seller",
-            "quantity",
+            # "quantity",
             "price",
             # "image",
         )

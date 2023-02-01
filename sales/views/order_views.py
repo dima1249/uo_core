@@ -14,6 +14,7 @@ from sales.utils import time_calculator
 class OrderView(ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = CreateOrderSerializer
+    queryset = Order.objects.none()
 
     def get(self, request, pk):
         # Note the use of `get_queryset()` instead of `self.queryset`

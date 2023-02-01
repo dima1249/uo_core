@@ -26,14 +26,63 @@ class ProductImageSerializer(serializers.ModelSerializer):
         exclude = ["product", "order", "id"]
 
 
+class SellItemTypeSerializer(serializers.ModelSerializer):
+    # picture = serializers.ImageField(required=True)
+
+    class Meta:
+        model = SellItemTypeModel
+        exclude = ["id",
+                   "created_at",
+                   "updated_at",
+                   "deleted_at"
+                   ]
+
+
+class SellItemAttributeSerializer(serializers.ModelSerializer):
+    type = SellItemTypeSerializer()
+
+    class Meta:
+        model = SellItemAttributes
+        exclude = ["item", "id"]
+
+
+class SellItemAttributeTypeSerializer(serializers.ModelSerializer):
+    type = SellItemTypeSerializer()
+
+    class Meta:
+        model = SellItemAttributes
+        exclude = ["item", "id"]
+
+
 class ProductSerializer(serializers.ModelSerializer):
     # travel_image = TravelImageSerializer(many=True)
     pictures = ProductImageSerializer(many=True, source='image_product')
 
+    quantities = SellItemAttributeSerializer(many=True, source='attributes')
+    types = serializers.SerializerMethodField()
+    sizes = serializers.SerializerMethodField()
+    colors = serializers.SerializerMethodField()
+
+    # SellItemAttributes
+
     category_name = serializers.ReadOnlyField(source="category.name")
     brand_name = serializers.ReadOnlyField(source="brand.name")
 
-    # insurance_name = serializers.ReadOnlyField(source="insurance.name")
+    def get_types(self, obj):
+        qs = obj.attributes.values('type').distinct().values_list('type', flat=True)
+        return SellItemTypeSerializer(SellItemTypeModel.objects.filter(id__in=qs), many=True).data
+
+    def get_sizes(self, obj):
+        return obj.attributes.exclude(size__isnull=True).values('size', 'size_unit').distinct().all()
+
+    def get_colors(self, obj):
+        return obj.attributes.exclude(color__isnull=True).values('color', 'color_code').distinct().all()
+
+    # def get_types(self, obj):
+    #     qs = obj.attributes.values('type').distinct().values_list('type', flat=True)
+    #     return SellItemTypeSerializer(SellItemTypeModel.objects.filter(id__in=qs), many=True).data
+    #
+    #
 
     class Meta:
         model = SellItemModel
@@ -43,7 +92,6 @@ class ProductSerializer(serializers.ModelSerializer):
             "desc",
             "price",
             # "pictures",
-            "quantity",
             "category",
             "category_name",
             "brand",
