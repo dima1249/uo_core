@@ -1,12 +1,20 @@
-from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Sum
-
-# Create your models here.
 from django_paranoid.models import ParanoidModel
-from multiselectfield import MultiSelectField
 
+from sales.models.COLOR import colors
 from uo_core.utills import PathAndRename
+
+
+UNITS = (
+    ("S", "S"),  #
+    ("L", "L"),  #
+    ("M", "M"),  #
+    ("XL", "XL"),  #
+    ("XXL", "XXL"),  #
+    ("Q", "Q"),  #
+    ("ST", "ST"),  #
+)
 
 
 class ProductCategoryModel(ParanoidModel):
@@ -104,8 +112,8 @@ class SellItemAttributes(models.Model):
                              on_delete=models.PROTECT,
                              verbose_name="Төрөл", )
     size = models.FloatField(blank=True, null=True)
-    size_unit = models.CharField(max_length=20, blank=True, null=True, choices=[])
-    color = models.CharField(max_length=20, blank=True, null=True, choices=[])
+    size_unit = models.CharField(max_length=20, blank=True, null=True, choices=UNITS)
+    color = models.CharField(max_length=20, blank=True, null=True, choices=colors)
     color_code = models.CharField(max_length=20, blank=True, null=True)
     quantity = models.IntegerField(default=1, verbose_name="Нийт борлуулах тоо ширхэг")
     price = models.FloatField(default=0, blank=True, null=True, verbose_name="Үнэ")
