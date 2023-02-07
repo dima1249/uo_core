@@ -1,10 +1,12 @@
 from django.db import models
 from django.db.models import Sum
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ValidationError
+from django.forms import forms
 from django_paranoid.models import ParanoidModel
 
 from sales.models.COLOR import colors
 from uo_core.utills import PathAndRename
-
 
 UNITS = (
     ("S", "S"),  #
@@ -15,6 +17,14 @@ UNITS = (
     ("Q", "Q"),  #
     ("ST", "ST"),  #
 )
+
+
+def validate_zero(value):
+    if value == 0:
+        raise ValidationError(
+            'Invalid zero value',
+            params={'value': value},
+        )
 
 
 class ProductCategoryModel(ParanoidModel):
@@ -56,8 +66,8 @@ class SellItemTypeModel(ParanoidModel):
 
     class Meta:
         db_table = 'sales_product_type'
-        verbose_name = 'Бүтээгдэхүүн Төрөл'
-        verbose_name_plural = 'Бүтээгдэхүүн Төрөлүүд'
+        verbose_name = 'Бүтээгдэхүүн Загвар'
+        verbose_name_plural = 'Бүтээгдэхүүн Загварууд'
 
 
 class BrandModel(ParanoidModel):
@@ -110,13 +120,19 @@ class SellItemAttributes(models.Model):
                              related_name='attributes')
     type = models.ForeignKey(SellItemTypeModel,
                              on_delete=models.PROTECT,
-                             verbose_name="Төрөл", )
+                             verbose_name="Загвар",
+                             blank=True, null=True)
+
     size = models.FloatField(blank=True, null=True)
     size_unit = models.CharField(max_length=20, blank=True, null=True, choices=UNITS)
     color = models.CharField(max_length=20, blank=True, null=True, choices=colors)
     color_code = models.CharField(max_length=20, blank=True, null=True)
-    quantity = models.IntegerField(default=1, verbose_name="Нийт борлуулах тоо ширхэг")
-    price = models.FloatField(default=0, blank=True, null=True, verbose_name="Үнэ")
+    quantity = models.IntegerField(default=1,
+                                   verbose_name="Бэлэн байгаа тоо (<0 захиалах хязгаар)",
+                                   validators=[validate_zero]
+                                   )
+    price = models.FloatField(default=0, blank=True, null=True, verbose_name="Онцгой үнэ",
+                              validators=[MinValueValidator(1), ])
 
     def __str__(self):
         return '%s (%s) [%s]' % (self.item, self.type, self.id)

@@ -31,19 +31,20 @@ class SellItemTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SellItemTypeModel
-        exclude = ["id",
-                   "created_at",
-                   "updated_at",
-                   "deleted_at"
-                   ]
+        exclude = [
+            "created_at",
+            "updated_at",
+            "deleted_at"
+        ]
 
 
 class SellItemAttributeSerializer(serializers.ModelSerializer):
     type = SellItemTypeSerializer()
+    type_id = serializers.IntegerField()
 
     class Meta:
         model = SellItemAttributes
-        exclude = ["item", "id"]
+        exclude = ["item", ]
 
 
 class SellItemAttributeTypeSerializer(serializers.ModelSerializer):

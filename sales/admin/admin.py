@@ -36,13 +36,13 @@ class ProductAttributesInline(admin.TabularInline):
     # readonly_fields = ["deleted_at"]
     # exclude = ["order"]
     fields = [
-
         "quantity",
         "type",
         "size",
         "size_unit",
         "color",
         "color_code",
+        "price",
     ]
     extra = 1
 
