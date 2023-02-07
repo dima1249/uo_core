@@ -48,6 +48,7 @@ class CheckoutCartView(RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         user = request.user
         ecommerce_feez = 150
+        delevery_feez = 5000
         data = {}
         total = 0
         quantity = 0
@@ -55,13 +56,13 @@ class CheckoutCartView(RetrieveAPIView):
         cart = get_object_or_404(Cart, user=user)
         cart_items = CartItem.objects.filter(cart=cart)
         for item in cart_items:
-            total += item.product.price
-            quantity += item.quantity
-        end_total = ecommerce_feez + (total * quantity)
+            total += item.price * item.quantity
+        end_total = ecommerce_feez + total
 
         # data["address"] = AddressSerializer(user_address).data
         data["items"] = CartItemMiniSerializer(cart_items, many=True).data
         data["total"] = end_total
         data["cart_id"] = cart.id
         data["feez"] = ecommerce_feez
+        data["delevery_feez"] = delevery_feez
         return Response(data, status=status.HTTP_200_OK)

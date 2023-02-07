@@ -89,7 +89,8 @@ class BrandModel(ParanoidModel):
 class SellItemModel(ParanoidModel):
     title = models.CharField(max_length=256, unique=True, verbose_name="Гарчиг")
     desc = models.TextField(blank=True, null=True, verbose_name="Тайлбар")
-    price = models.FloatField(default=0, verbose_name="Үнэ (min)")
+    price = models.FloatField(default=1, verbose_name="Үнэ (min)",
+                              validators=[MinValueValidator(1)])
 
     category = models.ForeignKey("sales.ProductCategoryModel", on_delete=models.PROTECT, verbose_name="Төрөл",
                                  related_name="cat_items")
@@ -131,8 +132,15 @@ class SellItemAttributes(models.Model):
                                    verbose_name="Бэлэн байгаа тоо (<0 захиалах хязгаар)",
                                    validators=[validate_zero]
                                    )
-    price = models.FloatField(default=0, blank=True, null=True, verbose_name="Онцгой үнэ",
+    price = models.FloatField(blank=True,
+                              null=True,
+                              verbose_name="Онцгой үнэ",
                               validators=[MinValueValidator(1), ])
+
+    discount = models.FloatField(blank=True,
+                              null=True,
+                              verbose_name="Хөнгөлөлт [%]",
+                              validators=[MinValueValidator(1),MaxValueValidator(100), ])
 
     def __str__(self):
         return '%s (%s) [%s]' % (self.item, self.type, self.id)

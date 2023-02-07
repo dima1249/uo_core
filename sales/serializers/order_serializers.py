@@ -36,6 +36,7 @@ class OrderSerializer(serializers.ModelSerializer):
                   "order_items",
                   "is_paid",
                   "to_pay",
+                  "delivery",
                   "status_name",
                   "status"]
         # exclude = "modified"
@@ -43,6 +44,8 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class CreateOrderSerializer(serializers.Serializer):
     phone = serializers.CharField(max_length=255, min_length=8, required=True)
+    address = serializers.CharField(max_length=255)
+    delivery = serializers.BooleanField(required=True)
 
 class OrderMiniSerializer(serializers.ModelSerializer):
     # address = AddressSerializer(required=False)

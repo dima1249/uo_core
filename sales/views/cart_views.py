@@ -1,3 +1,5 @@
+import math
+
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, get_object_or_404
 from rest_framework import permissions, status
 from rest_framework.response import Response
@@ -19,39 +21,81 @@ class CartItemAPIView(ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         user = request.user
-        print ("CartItemAPIView", user)
         cart = get_object_or_404(Cart, user=user)
-        print("CartItemAPIView", cart)
-        product = get_object_or_404(SellItemModel, pk=request.data["product"])
-        current_item = CartItem.objects.filter(cart=cart, product=product)
+        serializer = CartItemUpdateSerializer(data=request.data)
+        if serializer.is_valid():
+            product = serializer.validated_data.get('product')
+            current_item = CartItem.objects.filter(cart=cart,
+                                                   product=product)
 
-        # if user == product.user:
-        #     raise PermissionDenied("This Is Your Product")
+            size = serializer.validated_data.get('size')
+            color = serializer.validated_data.get('color')
+            type = serializer.validated_data.get('type')
+            quantity = serializer.validated_data.get('quantity')
 
-        if current_item.count() > 0:
-            raise NotAcceptable("You already have this item in your shopping cart")
+            if type:
+                current_item = current_item.filter(type=type)
+            if color:
+                current_item = current_item.filter(color=color)
+            if size:
+                current_item = current_item.filter(size=size)
 
-        try:
-            quantity = int(request.data["quantity"])
-        except Exception as e:
-            raise ValidationError("Please Enter Your Quantity")
+            if current_item.count() > 0:
+                raise NotAcceptable("You already have this item in your shopping cart")
 
-        if quantity > product.quantity:
-            raise NotAcceptable("You order quantity more than the seller have")
+            price = product.price
 
-        cart_item = CartItem(cart=cart, product=product, quantity=quantity)
-        cart_item.save()
-        serializer = CartItemSerializer(cart_item)
-        total = float(product.price) * float(quantity)
-        cart.total = total
-        cart.save()
-        # push_notifications(
-        #     cart.user,
-        #     "New cart product",
-        #     "you added a product to your cart " + product.title,
-        # )
+            attr = SellItemAttributes.objects.filter(item=product)
+            if type:
+                attr = attr.filter(type=type)
+            if color:
+                attr = attr.filter(color=color)
+            if size:
+                attr = attr.filter(size=size)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+            in_store = True
+
+            if attr.count() > 0:
+                _attr = attr.first()
+                print('_attr id', _attr.id)
+                if abs(_attr.quantity) < quantity:
+                    raise NotAcceptable("Product quantity limit exceeds.")
+
+                in_store = _attr.quantity > 0
+                size = _attr.size
+                color = _attr.color
+                type = _attr.type
+
+                if _attr.price and _attr.price > 0:
+                    price = _attr.price
+
+                if _attr.discount and _attr.discount > 0:
+                    price = math.ceil(price * ((100 - _attr.discount) / 100.0))
+
+            else:
+                raise NotAcceptable("No Product.")
+
+            cart_item = CartItem(cart=cart,
+                                 product=product,
+                                 quantity=quantity,
+                                 in_store=in_store,
+                                 size=size,
+                                 color=color,
+                                 type=type,
+                                 price=price,
+                                 )
+            cart_item.save()
+            serializer = CartItemSerializer(cart_item)
+            cart.save()
+            # push_notifications(
+            #     cart.user,
+            #     "New cart product",
+            #     "you added a product to your cart " + product.title,
+            # )
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
 class CartItemView(RetrieveUpdateDestroyAPIView):

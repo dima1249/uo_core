@@ -5,7 +5,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.auth import get_user_model
 
-from sales.models import SellItemModel
+from sales.models import SellItemModel, colors, SellItemTypeModel
 
 User = get_user_model()
 
@@ -27,9 +27,6 @@ class Cart(ParanoidModel):
     def check_product_quantity(self):
         if self.cart_items.count() == 0:
             return True
-        for item in self.cart_items.all():
-            if item.product.quantity < item.quantity:
-                return True
         return False
 
     class Meta:
@@ -55,6 +52,15 @@ class CartItem(ParanoidModel):
         SellItemModel, related_name="cart_product", on_delete=models.CASCADE
     )
     quantity = models.IntegerField(default=1)
+    in_store = models.BooleanField(default=True)
+    size = models.FloatField(blank=True, null=True)
+    color = models.CharField(max_length=20, blank=True, null=True, choices=colors)
+    type = models.ForeignKey(SellItemTypeModel,
+                             on_delete=models.PROTECT,
+                             verbose_name="Загвар",
+                             blank=True, null=True)
+
+    price = models.FloatField(default=0, verbose_name='Ширхэг үнэ')
 
     def __str__(self):
         return '%s' % self.product

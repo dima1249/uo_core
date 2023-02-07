@@ -32,6 +32,7 @@ class ProductImagesInline(admin.TabularInline, SortableInlineAdminMixin):
 
 class ProductAttributesInline(admin.TabularInline):
     model = SellItemAttributes
+    min_num = 1
     # autocomplete_fields = ["color", "size_unit"]
     # readonly_fields = ["deleted_at"]
     # exclude = ["order"]
