@@ -68,10 +68,8 @@ class OrderView(ListCreateAPIView):
     def generate_order_number(self, key1, key2):
         order_number = (
                 ("R00" if os.environ.get("DEBUG") == "TRUE" else "R")
-                + str(key1)
-                + "-"
-                + str(key2)
-                + "-"
+                + ("0000"+str(key1))[-5:]
+                + ("0000"+str(key2))[-5:]
                 + str(datetime.timestamp(datetime.now()))[5:8])
 
         return order_number

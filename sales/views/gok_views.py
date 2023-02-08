@@ -4,7 +4,7 @@ from datetime import datetime
 from django.http import HttpResponse
 from rest_framework import permissions, exceptions, status, serializers, viewsets
 from rest_framework.response import Response
-from rest_framework.generics import get_object_or_404, ListCreateAPIView, CreateAPIView, mixins
+from rest_framework.generics import get_object_or_404, ListCreateAPIView, CreateAPIView, mixins,ListAPIView
 
 from sales.banks.qpay import QpayV2
 from sales.models import *
@@ -62,35 +62,30 @@ class CreateInvoiceView(CreateAPIView):
         return Response(serializer.errors, status=status.HTTP_208_ALREADY_REPORTED)
 
 
-class BankCheckInvoiceV2(
-    mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
-):
+class BankCheckInvoice(CreateAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = CreateInvoiceSerializer
 
     # @csrf_protect
-    def list(self, request, *args, **kwargs):
+    def post(self, request,):
+        serializer = self.get_serializer(data=request.data)
 
-        if "ref_number" in kwargs:
+        if serializer.is_valid():
 
-            _ref_number = kwargs["ref_number"]
-            _booking_model = None
-            # _booking_model = GokProvider.get_booking_model_without_status(_ref_number=_ref_number)
-
-            if _booking_model:
+            order_number = serializer.data["order_number"]
+            order = Order.objects.filter(order_number=order_number)
+            if order:
                 _response_data = qpay.check_invoice(
-                    booking_model=_booking_model
+                    order_number
                 )
-
+                print(_response_data)
                 if _response_data["name"] in ["INVOICE_PAID", "INVOICE_ALREADY_PAID"]:
                     return HttpResponse("done")
                 else:
-                    return HttpResponse("undone")
+                    return HttpResponse("undone", status=status.HTTP_208_ALREADY_REPORTED)
             else:
-                return HttpResponse("undone")
-
-        else:
-            return HttpResponse("undone")
+                return HttpResponse("no item", status=status.HTTP_208_ALREADY_REPORTED)
+        return HttpResponse("invalid", status=status.HTTP_208_ALREADY_REPORTED)
 
     # @csrf_protect
     def create(self, request, *args, **kwargs):

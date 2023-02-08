@@ -21,11 +21,7 @@ urlpatterns = [
     path("order/", OrderViewList.as_view()),
 
     path("create_invoice/", CreateInvoiceView.as_view()),
-    # path("check_invoice/", CheckInvoiceView.as_view()),
-
-    path(r"bank_check_invoicev2/(?P<ref_number>\d+)",
-         BankCheckInvoiceV2, name=
-         "BankCheckInvoiceV2", ),
-    # restRouter.register(r"check_invoice", CheckInvoice, "CheckInvoice")
-    # path("payment/", Payment),
+    path("check_invoice/",
+         BankCheckInvoice.as_view(),
+         name="BankCheckInvoice", ),
 ]

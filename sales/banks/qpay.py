@@ -37,8 +37,8 @@ class QpayV2(object):
                     _req_data = _response.json()
                     QpayV2.token = _req_data["access_token"]
                     QpayV2.token_expires = _req_data["expires_in"]
-                    print('token:', QpayV2.token)
-                    print('token_expires:', QpayV2.token_expires)
+                    # print('token:', QpayV2.token)
+                    # print('token_expires:', QpayV2.token_expires)
                     return QpayV2.token
                 else:
                     print("qpay v2 response status code:", _response.status_code, _response.json())
@@ -150,12 +150,6 @@ class QpayV2(object):
                 return _result
 
     def check_invoice(self, ref_number):
-        # total_amount = booking_model.to_pay
-        # if payment_type_model.fee and payment_type_model.fee > 0:
-        #     total_amount = calculate_total_amount(
-        #         booking_model=booking_model,
-        #         fee=payment_type_model.fee,
-        #     )
         _qpay_invoice_model = QpayInvoiceModel.objects.filter(
             ref_number=ref_number
         ).last()
