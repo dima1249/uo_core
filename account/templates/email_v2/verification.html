@@ -1,0 +1,87 @@
+{% extends 'email_v2/base.html' %}
+{% load i18n %}
+
+
+{% block header %}
+    <table style="width: 100%">
+        <tbody style="width: 100%;">
+            <tr>
+                <td colspan="2" style="height: 1rem;"></td>
+            </tr>
+            <tr>
+                <td style="width: 50%;">
+                    <img src="https://uo-media.s3.eu-central-1.amazonaws.com/email_logo.jpeg" alt="" style="height: 2.5rem;" />
+                </td>
+                <td>
+                    <div style="display: block; font-size: 1.25rem;"><strong>{% trans "Өсөх Од Клуп" %}</strong></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table style="width: 100%;">
+        <tbody>
+            <tr>
+                <td>
+                    <hr style="opacity: 0.3; height: 1rem;    border-left: 0;    border-right: 0;    border-bottom: 0;" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock header %}
+
+{% block main %}
+    <table>
+        <tbody>
+            {% block greeting %}
+                <tr>
+                    <td>
+                        <div style="display: block; font-size: 0.75rem;">{% trans "Сайн байна уу?" %}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+            {% endblock greeting %}
+            {% block body_text %}
+                <tr>
+                    <td ><a style="background: #f81e86; padding: 10px 30px; font-size: 32px; color: #ffffff; border-radius: 0.25rem; border: 1px solid #FFFFFF; display: inline-block;">{{ code }}</a></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div>
+                        {% if type == 'register' %}
+                            {% blocktranslate %} ӨСӨХ ОД КЛУП-ээр үйлчлүүлсэн танд баярлалаа. Та дараагийн удаад нэвтрэхдээ дээрх кодыг нууц үг болгон ашиглана уу! {% endblocktranslate %}
+                        {% else %}
+                            {% blocktranslate %} ӨСӨХ ОД КЛУП-ээр үйлчлүүлсэн танд баярлалаа. Та дээрх 4 оронтой тоог хийж имэйл хаягаа баталгаажуулна уу! {% endblocktranslate %}
+                        {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            {% endblock body_text %}
+            <tr>
+                <td style="height: 1rem;"></td>
+            </tr>
+        </tbody>
+    </table>
+    <table style="width: 100%;">
+        <tbody>
+            <tr>
+                <td>
+                    <hr style="opacity: 0.3; height: 1rem;    border-left: 0;    border-right: 0;    border-bottom: 0;" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block bonus %}{% endblock %}
+
+{% block order %}{% endblock %}
+
+{% block hotel_info %}{% endblock hotel_info %}
+
+{% block payment %}{% endblock payment %}
+
+{% block order_change %}{% endblock order_change %}
+
+{% block ebarimt %}{% endblock ebarimt %}

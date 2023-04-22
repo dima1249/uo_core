@@ -1,0 +1,236 @@
+{% load i18n %}
+{#{% load functions %}#}
+{% get_current_language as LANGUAGE_CODE %}
+{% language LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Bootstrap demo</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+
+    <body>
+        <table style="max-width: 50rem; margin: 0 auto; font-family: Verdana, Geneva, Tahoma, sans-serif; color: #003566; font-size: 0.875rem;">
+            <tbody>
+                <tr>
+                    <td colspan="3"></td>
+                </tr>
+                <tr>
+                    <td style="width: 0.5rem;"></td>
+                    <td>
+                        {% block header %}
+                            <table style="width: 100%">
+                                <tbody style="width: 100%;">
+                                    <tr>
+                                        <td colspan="2" style="height: 1rem;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 50%;">
+                                            <img src="https://tapatrip-bk-media-files-frankfurt.s3.eu-central-1.amazonaws.com/static/email_new/logo.png" alt="" style="height: 2.5rem;" />
+                                        </td>
+                                        <td style="text-align: right; width: 50%;">
+                                            {% block ref_number %}
+                                                <div style="display: block; font-size: 0.75rem;">{% trans "Захиалгын дугаар" %}</div>
+                                                <div style="color: #1679D5;">
+                                                    <strong>{{ ref_number }}</strong>
+                                                </div>
+                                            {% endblock ref_number %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table style="width: 100%;">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <hr style="opacity: 0.3; height: 1rem;    border-left: 0;    border-right: 0;    border-bottom: 0;" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        {% endblock %}
+
+                        {% block main %}
+                            <table>
+                                <tbody>
+                                    {% block greeting %}
+                                    <tr>
+                                        <td>
+                                            <div style="display: block; font-size: 0.75rem;">{% trans "Сайн байна уу?" %}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                    </tr>
+                                    {% endblock greeting %}
+                                    {% block body_text %}
+                                    {% endblock body_text %}
+                                    <tr>
+                                        <td style="height: 1rem;"></td>
+                                    </tr>
+                                    {% block download_ticket %}
+                                        {% if link_to_ticket != None %}
+                                        <tr>
+                                            <td>
+                                                <div style="display: block; font-size: 0.75rem;">{% trans "Та доор товчин дээр даран тасалбараа татаж авна уу." %}</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a href="{{ link_to_ticket }}"><img style="height: 2rem;" src="https://tapatrip-bk-media-files-frankfurt.s3.eu-central-1.amazonaws.com/static/email_new/download-{{LANGUAGE_CODE}}.png" alt="" /></a>
+                                            </td>
+                                        </tr>
+                                        {% endif %}
+                                    {% endblock %}
+                                </tbody>
+                            </table>
+                            <table style="width: 100%;">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <hr style="opacity: 0.3; height: 1rem;    border-left: 0;    border-right: 0;    border-bottom: 0;" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        {% endblock %}
+
+                        {% block help %}
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div>
+                                                <strong>{% trans "Танд тусламж хэрэгтэй бол бидэнтэй холбогдоорой" %}</strong>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="height: 0.5rem;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table style="background-color: aliceblue; width: 100%;">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="4" style="height: 0.5rem;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 0.5rem;"></td>
+                                        <td>
+                                            <img style="height: 2rem; width: 2rem;" src="https://tapatrip-bk-media-files-frankfurt.s3.eu-central-1.amazonaws.com/static/email_new/chat-icon.png" alt="" />
+                                        </td>
+                                        <td style="vertical-align: baseline; font-size: 0.75rem;">{% trans "Манай апп-н чат хэсгийг ашиглан цаг алдалгүй шуурхай тусламж аваарай." %}</td>
+                                        <td style="width: 0.5rem;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 0.5rem;"></td>
+                                        <td colspan="2">
+                                            <a href="https://tapatrip.page.link/aPhX"><img style="height: 2rem;" src="https://tapatrip-bk-media-files-frankfurt.s3.eu-central-1.amazonaws.com/static/email_new/service-{{LANGUAGE_CODE}}.png" alt="" /></a>
+                                        </td>
+                                        <td style="width: 0.5rem;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" style="height: 0.75rem;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table style="width: 100%;">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <hr style="opacity: 0.3; height: 1rem;    border-left: 0;    border-right: 0;    border-bottom: 0;" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        {% endblock %}
+
+                        {% block social %}
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div>
+                                                <strong>{% trans "Өсөх Од клуп сошиал хаягууд" %}</strong>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="height: 0.5rem;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <a href="https://usukh-od.com/"><img style="height: 2rem; width: 2rem;" src="https://tapatrip-bk-media-files-frankfurt.s3.eu-central-1.amazonaws.com/static/email_new/web.png" alt="" /></a>
+                                        </td>
+                                        <td style="width: 0.25rem;"></td>
+                                        <td>
+                                            <a href="mailto:usukhodfamily@gmail.com"><img style="height: 2rem; width: 2rem;" src="https://tapatrip-bk-media-files-frankfurt.s3.eu-central-1.amazonaws.com/static/email_new/mail.png" alt="" /></a>
+                                        </td>
+                                        <td style="width: 0.25rem;"></td>
+                                        <td>
+                                            <a href="https://www.facebook.com/usukhodtabletennis.club"><img style="height: 2rem; width: 2rem;" src="https://tapatrip-bk-media-files-frankfurt.s3.eu-central-1.amazonaws.com/static/email_new/facebook.png" alt="" /></a>
+                                        </td>
+                                        <td style="width: 0.25rem;"></td>
+                                        <td>
+                                            <a href="https://www.instagram.com/usukh_od_tabletennisclub/"><img style="height: 2rem; width: 2rem;" src="https://tapatrip-bk-media-files-frankfurt.s3.eu-central-1.amazonaws.com/static/email_new/instagram.png" alt="" /></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table style="width: 100%;">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <hr style="opacity: 0.3; height: 1rem;    border-left: 0;    border-right: 0;    border-bottom: 0;" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        {% endblock %}
+
+                        {% block footer %}
+                            <table>
+                                <tbody>
+                                    {% block address %}
+                                    <tr>
+                                        <td style="font-size: 0.75rem;">{% trans "Хаяг: Чухаг Спорт Төв, 26-р хорооо Чухаг2 хотхон, Баянзүрх дүүрэг, Улаанбаатар хот, Монгол улс" %}</td>
+                                    </tr>
+                                    {% endblock address %}
+                                    <tr>
+                                        <td style="font-size: 0.75rem;">{% trans "© Зохиогчийн эрхийг хуулийн дагуу Өсөх Од Клуп эзэмшинэ." %}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="height: 2rem;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        {% endblock %}
+                    </td>
+                    <td style="width: 0.5rem;"></td>
+                </tr>
+                <tr>
+                    <td colspan="3"></td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
+{% endlanguage %}

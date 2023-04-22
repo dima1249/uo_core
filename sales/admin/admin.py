@@ -50,5 +50,5 @@ class ProductAttributesInline(admin.TabularInline):
 
 @admin.register(SellItemModel)
 class SellItemModelAdmin(ParanoidAdmin):
-    list_display = ["title", "desc", ]
+    list_display = ["id", "title", "desc", ]
     inlines = [ProductImagesInline, ProductAttributesInline]

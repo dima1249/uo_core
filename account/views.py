@@ -5,6 +5,7 @@ from django.utils.crypto import get_random_string
 from rest_framework import viewsets, mixins, permissions, status, generics
 from rest_framework.views import APIView
 
+from account.mail import Mail
 from uo_core.global_message import GlobalMessage as gsms
 from rest_framework.serializers import Serializer
 from django.utils.translation import gettext_lazy as _
@@ -114,7 +115,6 @@ class RegisterEmailView(mixins.CreateModelMixin, viewsets.GenericViewSet):
 
 
 class GlobalVerificationEmailCode(generics.GenericAPIView):
-    serializer_class = VerificationCodeEmailSerializer
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -248,6 +248,46 @@ class ForgotPasswordView(generics.GenericAPIView):
 
             user.set_password(new_password)
             user.save()
+
+            return CustomResponse(status=True, status_code=status.HTTP_200_OK, message="Амжилттай солигдлоо.")
+
+
+class ForgotView(generics.GenericAPIView):
+    serializer_class = AuthEmailSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data, context=request)
+
+        if serializer.is_valid(raise_exception=True):
+            user = None
+            email = serializer.validated_data.get("email")
+            if email:
+                if confirm_code_email(email):
+                    try:
+                        # user = UserModel.objects.get(email=email)
+                        # _success = Mail.sender("do.damdinsuren@gmail.com", "test", "Hi")
+                        # print("mail sent ", _success)
+
+                        serializer.custom_validate(serializer.validated_data)
+                        _response = serializer.custom_validate(serializer.validated_data)
+                        return CustomResponse(
+                            status=_response.get("status"),
+                            result=_response.get("data")
+                        )
+                    except Exception as e:
+                        raise  e
+                        print(e)
+
+                        return CustomResponse(message="Хэрэглэгч олдсонгүй", status=False,
+                                              status_code=status.HTTP_208_ALREADY_REPORTED)
+                else:
+                    return CustomResponse(message="Хэрэглэгч баталгаажуулаагүй байна", status=False,
+                                          status_code=status.HTTP_208_ALREADY_REPORTED)
+
+            if user is None:
+                return CustomResponse(message="Хэрэглэгч олдсонгүй", status=False,
+                                      status_code=status.HTTP_208_ALREADY_REPORTED)
 
             return CustomResponse(status=True, status_code=status.HTTP_200_OK, message="Амжилттай солигдлоо.")
 

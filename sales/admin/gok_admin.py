@@ -12,6 +12,7 @@ from sales.models import QpayInvoiceModel, TransactionModel
 our_host_url = os.environ.get('OUR_HOST_URL', 'http://127.0.0.1:8081')
 qpay = QpayV2.get_instance()
 
+
 @admin.register(QpayInvoiceModel)
 class QpayInvoiceModelAdmin(admin.ModelAdmin):
     search_fields = ["ref_number", "payment_id"]
@@ -67,7 +68,7 @@ class QpayInvoiceModelAdmin(admin.ModelAdmin):
     def process_check(self, request, order_id):
         res = qpay.check_invoice(order_id)
         print('res', res)
-        if res['name'] in  ["INVOICE_PAID", "INVOICE_ALREADY_PAID"]:
+        if res['name'] in ["INVOICE_PAID", "INVOICE_ALREADY_PAID"]:
             messages.add_message(
                 request, messages.SUCCESS, "Төлбөр төлөгдсөн байна."
             )
@@ -110,58 +111,23 @@ class TransactionModelAdmin(SimpleHistoryAdmin):
     # def has_change_permission(self, request, obj=None):
     #     return False
     def get_readonly_fields(self, request, obj=None):
-        if obj and obj.payment_type:
-            return [
-                "ref_number",
-                "amount",
-                "payment_id",
-                "payment_description",
-                "payment_type",
-                "account_type",
-                "currency",
-                "is_hand_charge",
-                "charge_payment_called",
-                "created_at",
-                "updated_at",
-                "deleted_at",
-                "created_by",
-                "updated_by",
-                "deleted_by",
-            ]
-        elif obj and obj.is_hand_charge:
-            return [
-                "ref_number",
-                "amount",
-                "payment_id",
-                "payment_description",
-                "payment_type",
-                "account_type",
-                "currency",
-                "is_hand_charge",
-                "charge_payment_called",
-                "created_at",
-                "updated_at",
-                "deleted_at",
-                "created_by",
-                "updated_by",
-                "deleted_by",
-            ]
-        else:
-            return [
-                "payment_id",
-                "is_refunded",
-                "payment_type",
-                "account_type",
-                "currency",
-                "is_hand_charge",
-                "charge_payment_called",
-                "created_at",
-                "updated_at",
-                "deleted_at",
-                "created_by",
-                "updated_by",
-                "deleted_by",
-            ]
+        return [
+            "ref_number",
+            "transaction_type",
+            "amount",
+            "payment_id",
+            "payment_description",
+            "account_type",
+            "currency",
+            "is_hand_charge",
+            "charge_payment_called",
+            "created_at",
+            "updated_at",
+            "deleted_at",
+            "created_by",
+            "updated_by",
+            "deleted_by",
+        ]
 
     def save_model(self, request, obj, form, change):
         try:

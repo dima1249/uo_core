@@ -79,7 +79,6 @@ INSTALLED_APPS = [
 
 CKEDITOR_UPLOAD_PATH = 'uo_core_package_pics'
 
-
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'Custom',
@@ -234,7 +233,6 @@ DATABASES = {
     }
 }
 
-
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 FILE_UPLOAD_STORAGE = env("FILE_UPLOAD_STORAGE", default="local")  # local | s3
@@ -315,3 +313,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+if not DEBUG:
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "handlers": {
+            "slack_admins": {
+                "level": "ERROR",
+                "class": "uo_core.slack_logger.SlackExceptionHandler",
+            },
+        },
+        "loggers": {
+            "django": {
+                "handlers": ["slack_admins"],
+                "level": "INFO",
+            },
+        },
+    }

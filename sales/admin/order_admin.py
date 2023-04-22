@@ -1,5 +1,9 @@
 from django.contrib import admin
 from django_paranoid.admin import ParanoidAdmin
+from django_admin_listfilter_dropdown.filters import (
+    DropdownFilter, ChoiceDropdownFilter, RelatedDropdownFilter
+)
+
 from sales.models import *
 
 
@@ -25,6 +29,12 @@ class CartItemInline(admin.TabularInline):
 class CartAdmin(ParanoidAdmin):
     list_display = ["id", "user", "total", ]
     inlines = [CartItemInline]
+    autocomplete_fields = ["user", ]
+    search_fields = ["user"]
+    list_filter = [
+        ("user"),
+        # ("user", DropdownFilter),
+    ]
 
     def has_change_permission(self, request, obj=None):
         return False

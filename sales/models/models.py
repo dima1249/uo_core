@@ -103,7 +103,7 @@ class SellItemModel(ParanoidModel):
         return aggregate_sum.get('quantity__sum', 0) if aggregate_sum.get('quantity__sum', 0) else 0
 
     def __str__(self):
-        return '%s (%s) [%s]' % (self.title, self.brand, self.category)
+        return '[ID %d] %s (B-%s) [C-%s]' % (self.id, self.title, self.brand, self.category)
 
     def __unicode__(self):
         return self.title

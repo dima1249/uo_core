@@ -80,6 +80,7 @@ class OrderItem(ParanoidModel):
     quantity = models.IntegerField()
     total = models.DecimalField(max_digits=10, decimal_places=2)
 
+
     class Meta:
         db_table = 'sales_order_items'
         verbose_name = 'Захиалганд харгалзах бараа'

@@ -12,9 +12,6 @@ from account import urls as account
 from sales import urls as sales
 from surgalt import urls as surgalt
 
-# from tmz import urls as train_urls
-from django.conf.urls.i18n import i18n_patterns
-
 schema_view = get_schema_view(
     openapi.Info(
         title="UO API",

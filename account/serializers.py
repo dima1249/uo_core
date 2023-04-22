@@ -14,6 +14,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.hashers import make_password
 from dateutil.relativedelta import relativedelta
 
+from .utils import send_verification_code
 from .verify import verify_code_email, verify_code_phone, confirm_code_phone, verification_code_email_send
 
 JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
@@ -148,42 +149,32 @@ class VerifyCodePhoneSerializer(serializers.Serializer):
 
 
 class ForgotPasswordSerializer(serializers.Serializer):
-    dial_code = serializers.IntegerField(required=False)
+    verify_code = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
     reapet_password = serializers.CharField(required=True)
+
     email = serializers.EmailField(required=False)
-    phone = serializers.CharField(max_length=16, min_length=8, required=False)
-
-    def validate(self, data):
-        phone = data.get("phone")
-        email = data.get("email")
-        dial_code = data.get("dial_code")
-
-        if not phone and not email:
-            raise serializers.ValidationError("Утас эсвэл емайл хаягаа оруулна уу?")
-
-        if phone and email:
-            raise serializers.ValidationError("Утас эсвэл емайл хаягаа нэгийн оруулна уу?")
-
-        if phone:
-            if not dial_code:
-                raise serializers.ValidationError("dial_code талбарыг бөглөнө үү?")
-
-        return data
 
 
-class VerificationCodeEmailSerializer(serializers.Serializer):
+class AuthEmailSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
 
-    def save(self):
-        data = self.data
-        request = self.context
-        email = data.get('email')
+    def custom_validate(self, data):
+        # self.is_blocked()
+        is_sended = False
+        # is_sended = bool(TapaRedisCache.get_cache(self.get_cache_key(), cache_key="default"))
 
-        send = verification_code_email_send(email, request.user_agent.browser.family, request.user_agent.os.family)
-        if not send:
-            raise serializers.ValidationError(
-                "Код баталгаажуулхад алдаа гарлаа. Мэдээлэлээ шалгаад дахин илгээн үү?")
+        if not is_sended:
+            code = send_verification_code(self.context, **data)
+            # self.login_attempt(bool(code), is_verify=True)
+            # self.clear_attempt(bool(code), is_verify=True)
+
+            # if code:
+            #     TapaRedisCache.set_cache(self.get_cache_key(), code, cache_key="default")
+            # else:
+            #     raise TapaException(ACCOUNT_SEND_ERROR)
+
+        return {"status": not is_sended, "data": data}
 
 
 class VerifyCodeEmailSerializer(serializers.Serializer):

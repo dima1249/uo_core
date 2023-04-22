@@ -1,7 +1,5 @@
 from django.urls import path, include
 from rest_framework import routers
-
-# from account.social_auth.views import GoogleSocialAuthView, FacebookSocialAuthView, AppleSocialAuthView
 from account.social_auth.views import FacebookSocialAuthView, GoogleSocialAuthView
 from account.views import *
 
@@ -19,7 +17,10 @@ urlpatterns = [
     path('global_verification_code/email/', GlobalVerificationEmailCode.as_view()),
     path('verify_code/email/', VerifyEmailCode.as_view()),
     path('guest_jwt/', GuestJWT.as_view()),
+
+    path('forgot/', ForgotView.as_view()),
     path('forgot_password/', ForgotPasswordView.as_view()),
+
     path('profile/', UserProfileView.as_view()),
 
 ]
