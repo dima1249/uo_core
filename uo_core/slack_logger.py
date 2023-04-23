@@ -11,7 +11,6 @@ import os
 
 class SlackExceptionHandler(AdminEmailHandler):
 
-    # replacing default django emit (https://github.com/django/django/blob/master/django/utils/log.py)
     def emit(self, record, *args, **kwargs):
 
         # original AdminEmailHandler "emit" method code (but without actually sending email)
@@ -149,10 +148,8 @@ class SlackExceptionHandler(AdminEmailHandler):
                     webhook_url = 'https://hooks.slack.com/services/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'
                     r = requests.post(webhook_url, data=data)
             else:
-                # https://usukh-od.slack.com/archives/C04Q2ESKU5R
-                webhook_url = "https://hooks.slack.com/services/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"
+                webhook_url = os.environ.get('SLACK_WEB_HOOK', None)
                 r = requests.post(webhook_url, data=data)
 
         except Exception as e:
             print("SlackExceptionHandler", e)
-            pass
