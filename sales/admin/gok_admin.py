@@ -111,12 +111,9 @@ class TransactionModelAdmin(SimpleHistoryAdmin):
     # def has_change_permission(self, request, obj=None):
     #     return False
     def get_readonly_fields(self, request, obj=None):
-        return [
-            "ref_number",
+        readonly_fields = [
             "transaction_type",
-            "amount",
             "payment_id",
-            "payment_description",
             "account_type",
             "currency",
             "is_hand_charge",
@@ -128,6 +125,14 @@ class TransactionModelAdmin(SimpleHistoryAdmin):
             "updated_by",
             "deleted_by",
         ]
+        if obj:
+            readonly_fields = readonly_fields + [
+                "ref_number",
+                "payment_description",
+                "amount",
+            ]
+
+        return readonly_fields
 
     def save_model(self, request, obj, form, change):
         try:

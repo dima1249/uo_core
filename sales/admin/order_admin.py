@@ -58,6 +58,24 @@ class OrderItemInline(admin.TabularInline):
 @admin.register(Order)
 class OrderAdmin(ParanoidAdmin):
     inlines = [OrderItemInline]
-    # list_filter = [("buyer", DropdownFilter),
-    #                "order_number", "status", "is_paid", ]
-    list_display = ["order_number", "phone", "status", "is_paid", "buyer", ]
+    list_filter = [ "status", "is_paid", ]
+    # autocomplete_fields = ["order_number",]
+    search_fields = ['order_number']
+    list_display = ["order_number", "phone", "status", "col_payment", "buyer", ]
+
+    readonly_fields = ['order_number', 'buyer', 'is_paid', 'to_paid', 'deleted_at']
+
+    date_hierarchy = "created_at"
+
+    empty_value_display = "-empty-"
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    @admin.display(
+        description="Төлбөр",
+        ordering="to_paid",
+    )
+    def col_payment(self, obj):
+
+        return f"{obj.to_paid:,} - {obj.to_pay():,}"

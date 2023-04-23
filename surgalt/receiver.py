@@ -47,4 +47,3 @@ def update_course_student(sender, instance, *args, **kwargs):
                     print('courseStudentSerializer Error: ', course_student_serializer.errors)
         else:
             print('status update', instance.status)
-

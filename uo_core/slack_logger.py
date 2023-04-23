@@ -56,9 +56,9 @@ class SlackExceptionHandler(AdminEmailHandler):
         #  if request else 'No Request')
         user_name = 'Anonymous'
         try:
-            if request.user.is_authenticated:
+            if request and hasattr(request, 'user') and request.user.is_authenticated:
                 user_name = request.user.username + ' (' + str(request.user.pk) + ')'
-                
+
             attachments = [
                 {
                     'title': subject,

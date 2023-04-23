@@ -1,7 +1,7 @@
 from django.db import models
-
+from django.db.models import Sum
 from django_paranoid.models import ParanoidModel
-from multiselectfield import MultiSelectField
+from simple_history.models import HistoricalRecords
 
 from account.models import UserModel
 
@@ -43,16 +43,41 @@ class Order(ParanoidModel):
         max_length=1, choices=ORDER_CHOICES, default=PENDING_STATE
     )
     is_paid = models.BooleanField(default=False)
+    to_paid = models.FloatField(default=0, verbose_name='Төлөгдсөн дүн')
     address = models.ForeignKey(
         Address, related_name="order_address", on_delete=models.CASCADE,
         null=True,
         blank=True,
     )
 
+    history = HistoricalRecords()
+
     class Meta:
         db_table = 'sales_orders'
         verbose_name = 'Захиалга'
-        verbose_name_plural = 'Захиалганууд'
+        verbose_name_plural = '02 Захиалганууд'
+
+    def __str__(self):
+        return self.order_number
+
+    def __unicode__(self):
+        return self.order_number
+
+    def check_status(self):
+        to_pay = self.to_pay()
+        if not self.is_paid and to_pay <= self.to_paid:
+            self.is_paid = True
+            self.status = self.COMPLETED_STATE
+            self.save()
+            print("payment completed")
+        else:
+            print(F"payment {self.to_paid} > {to_pay}")
+            print("payment incomplete")
+
+    def to_pay(self):
+        to_pay = self.order_items.aggregate(Sum('total')).get('total__sum', 0)
+        return int(to_pay) if to_pay else 0
+        # return int(to_pay) if to_pay else 0
 
     @staticmethod
     def create_order(buyer, order_number, phone,
@@ -79,7 +104,6 @@ class OrderItem(ParanoidModel):
     )
     quantity = models.IntegerField()
     total = models.DecimalField(max_digits=10, decimal_places=2)
-
 
     class Meta:
         db_table = 'sales_order_items'

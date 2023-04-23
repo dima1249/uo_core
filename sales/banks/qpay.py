@@ -93,11 +93,10 @@ class QpayV2(object):
             return _result
         else:
 
-            order_number =ref_number
+            order_number = ref_number
             ref_number = ref_number[:5] + str(datetime.timestamp(datetime.now()))[1:8] + ref_number[5:]
             ref_number = base64.b64encode(ref_number.encode('ascii')).decode('ascii')
             print("ref_number3", ref_number)
-
 
             # _dref_number = base64.b64decode(ref_number.encode('ascii')).decode('ascii')
             # order_number = _dref_number[:5] + _dref_number[12:]
@@ -110,6 +109,9 @@ class QpayV2(object):
                         + ref_number
                         + "/"
                 )
+                # {{end_point_local}}/api/sales/bank_check_invoicev2/UjAwMDA2ODIyMjkwMDAyMDAwMDE2MDU=
+
+                print("call_back_url", str(call_back_url))
                 _post_data = {
                     "invoice_code": str(self.invoice_code),
                     "sender_invoice_no": str(ref_number),
