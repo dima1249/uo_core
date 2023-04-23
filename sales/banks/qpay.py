@@ -218,14 +218,6 @@ class QpayV2(object):
                                         )
                                     _transaction.amount = _qpay_invoice_model.amount
                                     _transaction.save()
-                                    # charge_payment(
-                                    #     ref_number=_transaction.ref_number,
-                                    #     amount=_transaction.amount,
-                                    # )
-                                    _transaction.charge_payment_called = (
-                                            _transaction.charge_payment_called + 1
-                                    )
-                                    _transaction.save()
                                     _result = {
                                         "name": "INVOICE_PAID",
                                         "message": "INVOICE_PAID",

@@ -3,6 +3,7 @@ from django_paranoid.admin import ParanoidAdmin
 from django_admin_listfilter_dropdown.filters import (
     DropdownFilter, ChoiceDropdownFilter, RelatedDropdownFilter
 )
+from django.utils.html import format_html
 
 from sales.models import *
 
@@ -58,10 +59,10 @@ class OrderItemInline(admin.TabularInline):
 @admin.register(Order)
 class OrderAdmin(ParanoidAdmin):
     inlines = [OrderItemInline]
-    list_filter = [ "status", "is_paid", ]
+    list_filter = ["status", "is_paid", ]
     # autocomplete_fields = ["order_number",]
     search_fields = ['order_number']
-    list_display = ["order_number", "phone", "status", "col_payment", "buyer", ]
+    list_display = ["order_number", "phone", "col_status", "col_payment", "buyer", ]
 
     readonly_fields = ['order_number', 'buyer', 'is_paid', 'to_paid', 'deleted_at']
 
@@ -74,8 +75,23 @@ class OrderAdmin(ParanoidAdmin):
 
     @admin.display(
         description="Төлбөр",
-        ordering="to_paid",
-    )
+        ordering="to_paid")
     def col_payment(self, obj):
-
         return f"{obj.to_paid:,} - {obj.to_pay():,}"
+
+    @admin.display(
+        description="Төлөв",
+        ordering="status")
+    def col_status(self, obj):
+        _color = {
+            "p": "warning",
+            "o": "success",
+            "c": "danger",
+        }
+        _status_button = f'<a class="button btn-{_color[obj.status]}">{obj.get_status_display()}</a>&nbsp;'
+        return format_html(_status_button, "#")
+
+    class Media:
+        css = {
+            "all": ("custom.css",),
+        }

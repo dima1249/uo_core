@@ -234,6 +234,9 @@ DATABASES = {
 }
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, "static_files"),
+    ]
 
 FILE_UPLOAD_STORAGE = env("FILE_UPLOAD_STORAGE", default="local")  # local | s3
 
