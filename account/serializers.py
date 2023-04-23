@@ -4,6 +4,7 @@ from django.contrib.auth.hashers import check_password
 from rest_framework import serializers
 
 from uo_core.utills import get_country_info
+from .message import ACCOUNT_SENT_ALREADY
 from .models import *
 from django.db.models import Q
 from rest_framework_jwt.settings import api_settings
@@ -149,32 +150,33 @@ class VerifyCodePhoneSerializer(serializers.Serializer):
 
 
 class ForgotPasswordSerializer(serializers.Serializer):
-    verify_code = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True)
-    reapet_password = serializers.CharField(required=True)
+    verify_code = serializers.CharField(required=True, min_length=4)
+    new_password = serializers.CharField(required=True,min_length=8)
+    reapet_password = serializers.CharField(required=True,min_length=8)
 
-    email = serializers.EmailField(required=False)
+    email = serializers.EmailField(required=True)
 
 
 class AuthEmailSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
 
-    def custom_validate(self, data):
+    def custom_validate(self, data, user):
         # self.is_blocked()
-        is_sended = False
+        is_sended = bool(user.verify_code)
         # is_sended = bool(TapaRedisCache.get_cache(self.get_cache_key(), cache_key="default"))
-
+        _msg = ACCOUNT_SENT_ALREADY
         if not is_sended:
             code = send_verification_code(self.context, **data)
             # self.login_attempt(bool(code), is_verify=True)
             # self.clear_attempt(bool(code), is_verify=True)
 
-            # if code:
-            #     TapaRedisCache.set_cache(self.get_cache_key(), code, cache_key="default")
-            # else:
-            #     raise TapaException(ACCOUNT_SEND_ERROR)
-
-        return {"status": not is_sended, "data": data}
+            if code:
+                print('code', type(code))
+                user.verify_code = code
+                user.save()
+                is_sended=True
+                _msg = None
+        return {"status": not is_sended, "data": data,"message": _msg}
 
 
 class VerifyCodeEmailSerializer(serializers.Serializer):

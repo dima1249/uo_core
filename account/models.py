@@ -73,6 +73,7 @@ class UserModel(ParanoidModel, AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(verbose_name="Утасны дугаар", max_length=11, null=True, blank=True)
     email = models.CharField(max_length=50, verbose_name="И-мэйл хаяг", null=True, blank=True)
 
+    verify_code = models.CharField(max_length=4, verbose_name="verify code", null=True, blank=True)
     fb_user_id = models.CharField(max_length=100, verbose_name="facebook user id", null=True, blank=True)
     google_user_id = models.CharField(max_length=200, verbose_name="google user id", null=True, blank=True)
     apple_user_id = models.CharField(max_length=200, verbose_name="apple user id", null=True, blank=True)

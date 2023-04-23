@@ -6,6 +6,8 @@ from rest_framework import viewsets, mixins, permissions, status, generics
 from rest_framework.views import APIView
 
 from account.mail import Mail
+from account.message import USER_FIND_ERROR, ACCOUNT_WRONG_REPEAT_PASSWORD, ACCOUNT_EMAIL_VERIFICATION_CODE_ERROR, \
+    ACCOUNT_SAME_PASSWORD_ERROR, ACCOUNT_VALID_PASSWORD_ERROR
 from uo_core.global_message import GlobalMessage as gsms
 from rest_framework.serializers import Serializer
 from django.utils.translation import gettext_lazy as _
@@ -198,6 +200,19 @@ class GuestJWT(generics.CreateAPIView):
 
 
 class ForgotPasswordView(generics.GenericAPIView):
+    """
+           [INFORMATION]
+
+           200 - pass changed
+           403 - REPEAT_PASSWORD error
+           404 - USER_FIND_ERROR (no user with the email)
+           406 - ACCOUNT_EMAIL_VERIFICATION_CODE_ERROR  (incorrect verify code)
+           418 - Invalid  password
+
+           other - error
+
+       """
+
     serializer_class = ForgotPasswordSerializer
     permission_classes = [permissions.AllowAny]
 
@@ -206,45 +221,28 @@ class ForgotPasswordView(generics.GenericAPIView):
 
         if serializer.is_valid(raise_exception=True):
             user = None
-            phone = serializer.validated_data.get("phone")
+            verify_code = serializer.validated_data.get("verify_code")
             email = serializer.validated_data.get("email")
-            dial_code = serializer.validated_data.get("dial_code")
             new_password = serializer.validated_data.get("new_password")
             reapet_password = serializer.validated_data.get("reapet_password")
 
             if new_password is reapet_password:
-                return CustomResponse(message="Давтаж оруулсан нууц үг буруу байна.", status=False,
-                                      status_code=status.HTTP_208_ALREADY_REPORTED)
+                return CustomResponse(message=ACCOUNT_WRONG_REPEAT_PASSWORD, status=False,
+                                      status_code=status.HTTP_403_FORBIDDEN)
 
-            if phone:
-                if confirm_code_phone(phone, dial_code):
-                    try:
-                        user = UserModel.objects.get(dial_code=dial_code, phone=phone)
-                    except:
-                        return CustomResponse(message="Хэрэглэгч олдсонгүй", status=False,
-                                              status_code=status.HTTP_208_ALREADY_REPORTED)
-                else:
-                    return CustomResponse(message="Хэрэглэгч баталгаажуулаагүй байна", status=False,
-                                          status_code=status.HTTP_208_ALREADY_REPORTED)
+            try:
+                user = UserModel.objects.get(email=email)
+            except:
+                return CustomResponse(message=USER_FIND_ERROR, status=False,
+                                      status_code=status.HTTP_404_NOT_FOUND)
 
-            if email:
-                if confirm_code_email(email):
-                    try:
-                        user = UserModel.objects.get(email=email)
-                    except:
-                        return CustomResponse(message="Хэрэглэгч олдсонгүй", status=False,
-                                              status_code=status.HTTP_208_ALREADY_REPORTED)
-                else:
-                    return CustomResponse(message="Хэрэглэгч баталгаажуулаагүй байна", status=False,
-                                          status_code=status.HTTP_208_ALREADY_REPORTED)
-
-            if user is None:
-                return CustomResponse(message="Хэрэглэгч олдсонгүй", status=False,
-                                      status_code=status.HTTP_208_ALREADY_REPORTED)
+            if user.verify_code != verify_code:
+                return CustomResponse(message=ACCOUNT_EMAIL_VERIFICATION_CODE_ERROR, status=False,
+                                      status_code=status.HTTP_406_NOT_ACCEPTABLE)
 
             if check_password(user.password, new_password):
-                return CustomResponse(message="Өмнөх нууц үгээс өөр нууц үг оруулна уу?", status=False,
-                                      status_code=status.HTTP_208_ALREADY_REPORTED)
+                return CustomResponse(message=ACCOUNT_VALID_PASSWORD_ERROR, status=False,
+                                      status_code=status.HTTP_418_IM_A_TEAPOT)
 
             user.set_password(new_password)
             user.save()
@@ -253,6 +251,15 @@ class ForgotPasswordView(generics.GenericAPIView):
 
 
 class ForgotView(generics.GenericAPIView):
+    """
+        [INFORMATION]
+
+        200 - sent code
+        208 - already sent
+
+        other - error
+
+    """
     serializer_class = AuthEmailSerializer
     permission_classes = [permissions.AllowAny]
 
@@ -265,25 +272,21 @@ class ForgotView(generics.GenericAPIView):
             if email:
                 if confirm_code_email(email):
                     try:
-                        # user = UserModel.objects.get(email=email)
-                        # _success = Mail.sender("do.damdinsuren@gmail.com", "test", "Hi")
-                        # print("mail sent ", _success)
-
-                        serializer.custom_validate(serializer.validated_data)
-                        _response = serializer.custom_validate(serializer.validated_data)
+                        user = UserModel.objects.get(email=email)
+                        _response = serializer.custom_validate(serializer.validated_data, user)
                         return CustomResponse(
                             status=_response.get("status"),
-                            result=_response.get("data")
+                            result=_response.get("data"),
+                            message=_response.get("message", None),
+                            status_code=200 if _response.get("status", False) else 208
                         )
-                    except Exception as e:
-                        raise  e
-                        print(e)
 
-                        return CustomResponse(message="Хэрэглэгч олдсонгүй", status=False,
-                                              status_code=status.HTTP_208_ALREADY_REPORTED)
+                    except Exception as e:
+                        return CustomResponse(message=USER_FIND_ERROR, status=False,
+                                              status_code=status.HTTP_404_NOT_FOUND)
                 else:
                     return CustomResponse(message="Хэрэглэгч баталгаажуулаагүй байна", status=False,
-                                          status_code=status.HTTP_208_ALREADY_REPORTED)
+                                          status_code=status.HTTP_404_NOT_FOUND)
 
             if user is None:
                 return CustomResponse(message="Хэрэглэгч олдсонгүй", status=False,
