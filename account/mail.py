@@ -1,9 +1,7 @@
 import email
 import os
 import smtplib
-import requests
 from email.header import Header
-from email.mime.application import MIMEApplication
 from django.template.loader import get_template
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -80,9 +78,9 @@ class Mail(object):
         #                 "Content-Disposition"
         #             ] = 'attachment; filename="%s"' % basename(file_name)
         #             msg.attach(part)
-        to_address = [*set([mail] + cc)] if not DEBUG else [mail]
+        to_address = [mail]
+        # to_address = [*set([mail] + cc)] if not DEBUG else [mail]
 
-        print('sender5')
         try:
             server = smtplib.SMTP(HOST, PORT)
             server.ehlo()

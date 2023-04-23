@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from account.mail import Mail
 from account.message import USER_FIND_ERROR, ACCOUNT_WRONG_REPEAT_PASSWORD, ACCOUNT_EMAIL_VERIFICATION_CODE_ERROR, \
     ACCOUNT_SAME_PASSWORD_ERROR, ACCOUNT_VALID_PASSWORD_ERROR
-from uo_core.global_message import GlobalMessage as gsms
+from uo_core.global_message import GlobalMessage as gsms, GlobalMessage
 from rest_framework.serializers import Serializer
 from django.utils.translation import gettext_lazy as _
 
@@ -277,7 +277,7 @@ class ForgotView(generics.GenericAPIView):
                         return CustomResponse(
                             status=_response.get("status"),
                             result=_response.get("data"),
-                            message=_response.get("message", None),
+                            message=_response.get("message", GlobalMessage.SUCCESS),
                             status_code=200 if _response.get("status", False) else 208
                         )
 
