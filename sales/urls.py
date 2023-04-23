@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from .views import *
 
 urlpatterns = [
@@ -21,7 +21,10 @@ urlpatterns = [
     path("order/", OrderViewList.as_view()),
 
     path("create_invoice/", CreateInvoiceView.as_view()),
+
     path("check_invoice/",
          BankCheckInvoice.as_view(),
          name="BankCheckInvoice", ),
+
+    re_path(r"^bank_check_invoicev2/(?P<order_key>[a-zA-Z0-9]+=)/$", BankCheckInvoiceV2.as_view()),
 ]

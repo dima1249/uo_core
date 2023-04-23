@@ -1,10 +1,8 @@
-import os
-import random
-from datetime import datetime
+import base64
 from django.http import HttpResponse
-from rest_framework import permissions, exceptions, status, serializers, viewsets
+from rest_framework import permissions, status, serializers
 from rest_framework.response import Response
-from rest_framework.generics import get_object_or_404, ListCreateAPIView, CreateAPIView, mixins,ListAPIView
+from rest_framework.generics import get_object_or_404, ListCreateAPIView, CreateAPIView, mixins, ListAPIView
 
 from sales.banks.qpay import QpayV2
 from sales.models import *
@@ -47,11 +45,11 @@ class CreateInvoiceView(CreateAPIView):
             item = Order.objects.filter(order_number=order_number).first()
             if item:
                 order_serializer = OrderSerializer(item)
-                print("order_serializer ", order_serializer.data)
+                # print("order_serializer ", order_serializer.data)
                 _result = qpay.create_invoice(
                     order_number, order_serializer.data.get('to_pay', 1)
                 )
-                print("qpay.create_invoice _result ", _result)
+                # print("qpay.create_invoice _result ", _result)
 
                 if "name" in _result and _result["name"] == "ERROR":
                     return Response("error", status=status.HTTP_208_ALREADY_REPORTED)
@@ -67,7 +65,7 @@ class BankCheckInvoice(CreateAPIView):
     serializer_class = CreateInvoiceSerializer
 
     # @csrf_protect
-    def post(self, request,):
+    def post(self, request, ):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
@@ -87,19 +85,42 @@ class BankCheckInvoice(CreateAPIView):
                 return HttpResponse("no item", status=status.HTTP_208_ALREADY_REPORTED)
         return HttpResponse("invalid", status=status.HTTP_208_ALREADY_REPORTED)
 
-    # @csrf_protect
-    def create(self, request, *args, **kwargs):
 
-        if "ref_number" in kwargs and "payment_type" in kwargs:
-            _ref_number_temp = kwargs["ref_number"]
-            _ref_number = _ref_number_temp.split("K")[0]
-            payment_type_name = kwargs["payment_type"]
+class BankCheckInvoiceV2(ListAPIView):
+    permission_classes = [permissions.AllowAny]
+
+    def list(self, request, *args, **kwargs):
+        if "order_key" in kwargs:
+            order_key = kwargs["order_key"]
+            print('list BankCheckInvoice', order_key)
+
+            _dref_number = base64.b64decode(order_key.encode('ascii')).decode('ascii')
+            order_number = _dref_number[:5] + _dref_number[12:]
+            # print("ref_number4", order_number, _tmp, order_number == _tmp)
+            order = Order.objects.filter(order_number=order_number)
+            if order:
+                _response_data = qpay.check_invoice(
+                    order_number
+                )
+                print(_response_data)
+                if _response_data["name"] in ["INVOICE_PAID", "INVOICE_ALREADY_PAID"]:
+                    return HttpResponse("done")
+                else:
+                    return HttpResponse("undone", status=status.HTTP_208_ALREADY_REPORTED)
+
+        return HttpResponse("invalid", status=status.HTTP_208_ALREADY_REPORTED)
+
+        # if "ref_number" in kwargs and "payment_type" in kwargs:
+        #
+        #     _ref_number_temp = kwargs["ref_number"]
+        #     _ref_number = _ref_number_temp.split("K")[0]
+        #     payment_type_name = kwargs["payment_type"]
         #     _booking_model = GokProvider.get_booking_model_without_status(_ref_number=_ref_number)
         #
-        #     if _booking_model:
-        #         if _booking_model.status != 1:
-        #             MailMessage.warring_bank_check_order(_ref_number=_ref_number, payment_type=payment_type_name)
         #
+        #     if _booking_model:
+        #         # if _booking_model.status != 1:
+        #         #     MailMessage.warring_bank_check_order(_ref_number=_ref_number, payment_type=payment_type_name)
         #         payment_type = PaymentTypeModel.objects.filter(
         #             name=payment_type_name
         #         ).first()
@@ -145,7 +166,6 @@ class BankCheckInvoice(CreateAPIView):
         #             _response_data = monpay.check_invoice(
         #                 booking_model=_booking_model, payment_type_model=payment_type
         #             )
-        #
         #         elif payment_type and payment_type.name == "KHANBANK":
         #             _response_data = khanbank.check_invoice(
         #                 booking_model=_booking_model, payment_type_model=payment_type
@@ -227,66 +247,3 @@ class BankCheckInvoice(CreateAPIView):
         #     }
         #     _body = get_template("payment_response.html").render(_ctx)
         #     return HttpResponse(_body)
-
-
-class CheckInvoice(CreateAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = CreateInvoiceSerializer
-
-    def create(self, request, **kwargs):
-
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-
-            _ref_number = serializer.data.get("ref_number")
-            # _booking_model = GokProvider.get_booking_model_without_status(
-            #     _ref_number=_ref_number
-            # )
-            #
-            # if _booking_model:
-            _response_data = qpay.check_invoice(
-                booking_model=_booking_model
-            )
-
-            if _response_data["name"] == "INVOICE_PAID":
-                # _ctx = {
-                #     "response_title": gsms.PAYMENT_SUCCESS,
-                #     "response_pic": AWS_S3_CUSTOM_DOMAIN
-                #     + "/media/paymentstatus/successful.png",
-                #     "response_description": str(gsms.PAYMENT_SUCCESS_DESCRIPTION)
-                #     + " "
-                #     + str(_booking_model.to_pay)
-                #     + " MNT",
-                # }
-                # _body = get_template("payment_response.html").render(_ctx)
-                # mail_title = _ref_number + " " + str(gsms.ORDER_PAYMENT_PAID)
-                # _message_body = (
-                #     "TAPATRIP.COM "
-                #     + str(_booking_model.ref_number)
-                #     + " Payment successfully: "
-                #     + str(_booking_model.to_pay)
-                #     + " MNT"
-                # )
-                # send_mail_message(to_mail=_booking_model.contact_email,
-                #                   dial_nubmer=_booking_model.contact_dial_number,
-                #                   phone=_booking_model.contact_phone,
-                #                   mail_title=mail_title, mail_body=_body, message_body=_message_body)
-                return Response(_response_data, status=status.HTTP_200_OK)
-
-            elif _response_data["name"] == "INVOICE_ALREADY_PAID":
-                # _ctx = {
-                #     "response_title": gsms.PAYMENT_SUCCESS,
-                #     "response_pic": AWS_S3_CUSTOM_DOMAIN
-                #     + "/media/paymentstatus/successful.png",
-                #     "response_description": str(gsms.PAYMENT_SUCCESS_DESCRIPTION)
-                #     + " "
-                #     + str(_booking_model.to_pay)
-                #     + " MNT",
-                # }
-                # _body = get_template("payment_response.html").render(_ctx)
-                return Response(_response_data, status=status.HTTP_202_ACCEPTED)
-
-            else:
-                return Response(_response_data, status=status.HTTP_208_ALREADY_REPORTED)
-
-        return Response("error", status=status.HTTP_406_NOT_ACCEPTABLE)

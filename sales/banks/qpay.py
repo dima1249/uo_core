@@ -1,7 +1,10 @@
+from datetime import datetime
+
 import requests
 import time
 import os
 import json
+import base64
 
 from sales.models import QpayInvoiceModel, TransactionModel
 
@@ -71,6 +74,7 @@ class QpayV2(object):
                                            amount=total_amount,
                                            is_paid=False).exists():
 
+            print('already created', ref_number)
             _qpay_invoice = QpayInvoiceModel.objects.filter(
                 ref_number=ref_number, amount=total_amount, is_paid=False
             ).last()
@@ -88,6 +92,16 @@ class QpayV2(object):
             }
             return _result
         else:
+
+            order_number =ref_number
+            ref_number = ref_number[:5] + str(datetime.timestamp(datetime.now()))[1:8] + ref_number[5:]
+            ref_number = base64.b64encode(ref_number.encode('ascii')).decode('ascii')
+            print("ref_number3", ref_number)
+
+
+            # _dref_number = base64.b64decode(ref_number.encode('ascii')).decode('ascii')
+            # order_number = _dref_number[:5] + _dref_number[12:]
+            # print("ref_number4", order_number, _tmp, order_number == _tmp)
 
             try:
                 call_back_url = (
@@ -115,7 +129,7 @@ class QpayV2(object):
                 if _response.status_code == requests.codes.ok:
                     _response_data = _response.json()
                     _qpay_invoice = QpayInvoiceModel()
-                    _qpay_invoice.ref_number = ref_number
+                    _qpay_invoice.ref_number = order_number
                     _qpay_invoice.amount = total_amount
                     _qpay_invoice.invoice_name = ref_number
                     _qpay_invoice.invoice_description = ref_number
