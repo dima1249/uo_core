@@ -12,6 +12,7 @@ from account import urls as account
 from sales import urls as sales
 from surgalt import urls as surgalt
 from uo_core.settings import DEBUG
+from uo_core.views import Health
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -38,6 +39,7 @@ urlpatterns = [
 
 urlpatterns += [
     path('bff/', admin.site.urls),
+    path("health/", Health.as_view()),
     # path('ckeditor', include('ckeditor_uploader.urls')),
     # Rest API
 
