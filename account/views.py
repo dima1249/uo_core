@@ -37,10 +37,10 @@ class CustomAuthToken(generics.GenericAPIView):
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             return CustomResponse(message="Амжилттай", status_code=status.HTTP_200_OK, status=True,
                                   result=serializer.validated_data)
-        return CustomResponse(serializer.errors, status=False, status_code=status.HTTP_208_ALREADY_REPORTED)
+        return CustomResponse(message="Мэдээлэлээ шалгана уу.", result=serializer.errors, status=False, status_code=status.HTTP_208_ALREADY_REPORTED)
 
 
 class RegisterPhoneView(mixins.CreateModelMixin, viewsets.GenericViewSet):
@@ -335,7 +335,7 @@ class UpdateUserProfileView(generics.ListCreateAPIView):
     def update(self, request, *args, **kwargs):
         user = request.user
         serializer = UserUpdateSerializer(data=request.data, context={'request': request})
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             print('valid', serializer.data)
             # if serializer.validated_data.get("first_name"):
             #     user.first_name = serializer.validated_data.get("first_name")
@@ -357,8 +357,7 @@ class UpdateUserProfileView(generics.ListCreateAPIView):
                                   status=True,
                                   message=_(gsms.SUCCESS))
 
-        print('invalid', serializer.errors)
-        return CustomResponse(serializer.errors,
+        return CustomResponse(None,
                               status=False,
                               status_code=status.HTTP_208_ALREADY_REPORTED,
                               message=_(gsms.SAVE_ERROR))

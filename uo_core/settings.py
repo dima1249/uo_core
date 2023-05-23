@@ -94,13 +94,21 @@ CKEDITOR_CONFIGS = {
     },
 }
 
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_HEADERS = list(default_headers) + [
-    'accept-language',
-    'x-display-currency',
-    'Accept-Language',
-    'X-Display-Currency',
-]
+if DEBUG:
+
+    CORS_ORIGIN_ALLOW_ALL = True
+    CORS_ALLOW_HEADERS = list(default_headers) + [
+        'accept-language',
+        'x-display-currency',
+        'Accept-Language',
+        'X-Display-Currency',
+    ]
+else:
+    CORS_ALLOW_ALL_ORIGINS = False
+    CORS_ALLOWED_ORIGINS = [
+        "https://tapatrip.com",
+        "https://www.tapatrip.com",
+    ]
 
 """ JWT AND AUTH """
 LOGIN_URL = '/admin/login/'

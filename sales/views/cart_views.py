@@ -30,11 +30,11 @@ class CartItemAPIView(ListCreateAPIView):
 
             size = serializer.validated_data.get('size')
             color = serializer.validated_data.get('color')
-            type = serializer.validated_data.get('type')
+            _type = serializer.validated_data.get('type')
             quantity = serializer.validated_data.get('quantity')
 
-            if type:
-                current_item = current_item.filter(type=type)
+            if _type:
+                current_item = current_item.filter(type=_type)
             if color:
                 current_item = current_item.filter(color=color)
             if size:
@@ -46,8 +46,8 @@ class CartItemAPIView(ListCreateAPIView):
             price = product.price
 
             attr = SellItemAttributes.objects.filter(item=product)
-            if type:
-                attr = attr.filter(type=type)
+            if _type:
+                attr = attr.filter(type=_type)
             if color:
                 attr = attr.filter(color=color)
             if size:
@@ -58,20 +58,19 @@ class CartItemAPIView(ListCreateAPIView):
             if attr.count() > 0:
                 _attr = attr.first()
                 print('_attr id', _attr.id)
-                if abs(_attr.quantity) < quantity:
+                if abs(_attr.quantity) <= quantity:
                     raise NotAcceptable("Product quantity limit exceeds.")
 
                 in_store = _attr.quantity > 0
                 size = _attr.size
                 color = _attr.color
-                type = _attr.type
+                atype = _attr.type
 
                 if _attr.price and _attr.price > 0:
                     price = _attr.price
 
                 if _attr.discount and _attr.discount > 0:
                     price = math.ceil(price * ((100 - _attr.discount) / 100.0))
-
             else:
                 raise NotAcceptable("No Product.")
 
@@ -81,7 +80,7 @@ class CartItemAPIView(ListCreateAPIView):
                                  in_store=in_store,
                                  size=size,
                                  color=color,
-                                 type=type,
+                                 type=_type,
                                  price=price,
                                  )
             cart_item.save()
@@ -93,7 +92,8 @@ class CartItemAPIView(ListCreateAPIView):
             #     "you added a product to your cart " + product.title,
             # )
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            items = CartItem.objects.filter(cart=cart)
+            return Response(CartItemSerializer(items,many=True).data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
 

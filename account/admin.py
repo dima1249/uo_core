@@ -11,8 +11,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 
 class UserModelAdmin(ParanoidAdmin, BaseUserAdmin):
-    list_display = ['phone', 'first_name',
-                    'last_name', 'gender', 'email', 'role']
+    list_display = ['email', 'col_fullname', 'gender', 'phone',  'email', 'role']
     list_filter = ['role', 'gender', 'is_active']
     search_fields = ['username', 'email', 'first_name', 'last_name', 'phone', 'fb_user_id', 'google_user_id',
                      'apple_user_id']
@@ -21,7 +20,7 @@ class UserModelAdmin(ParanoidAdmin, BaseUserAdmin):
         ('Хувийн мэдээлэл', {'fields': (
             'first_name', 'last_name', 'gender', 'birthday')}),
         ('Нэвтрэх мэдээлэл', {'fields': (
-            'dial_code', 'phone', 'email', 'fb_user_id', 'google_user_id', 'apple_user_id')}),
+            'dial_code', 'phone', 'email', 'verify_code', 'fb_user_id', 'google_user_id', 'apple_user_id')}),
         # ('Бусад мэдээлэл', {'fields': (
         #     'bank_account_number',
         #     'bank_account_name',
@@ -45,8 +44,14 @@ class UserModelAdmin(ParanoidAdmin, BaseUserAdmin):
         ('Хандалт', {'fields': (
             'is_active', 'role', 'groups', 'user_permissions')}),
     )
-    readonly_fields = ['email', 'fb_user_id', 'google_user_id', 'apple_user_id']
+    readonly_fields = ['email', 'verify_code', 'fb_user_id', 'google_user_id', 'apple_user_id']
     ordering = ['-created_at']
+
+    @admin.display(
+        description="Нэр",
+        ordering="first_name")
+    def col_fullname(self, obj):
+        return f"{obj.last_name} {obj.first_name}"
 
     # admin #agent
 
