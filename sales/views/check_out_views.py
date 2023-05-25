@@ -3,6 +3,8 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import RetrieveAPIView
+
+from sales.config import DELEVERY_FEEZ
 from sales.models import SellItemModel, Cart, CartItem
 from sales.serializers import CartItemMiniSerializer, ProductSerializer, CartItemSerializer
 
@@ -48,7 +50,6 @@ class CheckoutCartView(RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         user = request.user
         ecommerce_feez = 150
-        delevery_feez = 5000
         data = {}
         total = 0
         quantity = 0
@@ -64,5 +65,5 @@ class CheckoutCartView(RetrieveAPIView):
         data["total"] = end_total
         data["cart_id"] = cart.id
         data["feez"] = ecommerce_feez
-        data["delevery_feez"] = delevery_feez
+        data["delevery_feez"] = DELEVERY_FEEZ
         return Response(data, status=status.HTTP_200_OK)

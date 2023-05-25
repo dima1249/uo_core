@@ -1,9 +1,11 @@
 from rest_framework import serializers
-from sales.models import SellItemModel, CartItem
-from sales.serializers import SellItemTypeSerializer
+from sales.models import SellItemModel, CartItem, SellItemAttributes
+from sales.serializers import SellItemTypeSerializer, ProductImageSerializer
 
 
 class CartProductSerializer(serializers.ModelSerializer):
+    pictures = ProductImageSerializer(many=True, source='image_product')
+
     class Meta:
         model = SellItemModel
         fields = (
@@ -11,6 +13,7 @@ class CartProductSerializer(serializers.ModelSerializer):
             "desc",
             "category",
             "price",
+            "pictures",
             "brand",
         )
 
@@ -34,11 +37,24 @@ class CartItemMiniSerializer(serializers.ModelSerializer):
     product = CartProductSerializer(required=False)
     type = SellItemTypeSerializer()
     type_id = serializers.IntegerField()
+    buy_limit = serializers.SerializerMethodField()
+
+    def get_buy_limit(self, obj):
+        attr = SellItemAttributes.objects.filter(item=obj.product)
+        if obj.type:
+            attr = attr.filter(type=obj.type)
+        if obj.color:
+            attr = attr.filter(color=obj.color)
+        if obj.size:
+            attr = attr.filter(size=obj.size)
+
+        return abs(attr[0].quantity) if len(attr) else 1
 
     class Meta:
         model = CartItem
         fields = ["product",
                   "quantity",
+                  "buy_limit",
                   "price",
                   "in_store",
                   "size",

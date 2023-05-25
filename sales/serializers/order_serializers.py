@@ -47,6 +47,7 @@ class CreateOrderSerializer(serializers.Serializer):
     address = serializers.CharField(max_length=255)
     delivery = serializers.BooleanField(required=True)
 
+
 class OrderMiniSerializer(serializers.ModelSerializer):
     # address = AddressSerializer(required=False)
     buyer = UserMiniSerializer(required=False)
