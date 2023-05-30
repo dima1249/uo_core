@@ -55,6 +55,7 @@ class CartItemMiniSerializer(serializers.ModelSerializer):
         model = CartItem
         fields = ["product",
                   "quantity",
+                  "id",
                   "buy_limit",
                   "price",
                   "in_store",
