@@ -36,6 +36,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 class CartItemMiniSerializer(serializers.ModelSerializer):
     product = CartProductSerializer(required=False)
     type = SellItemTypeSerializer()
+    # type_name = serializers.IntegerField()
     type_id = serializers.IntegerField()
     buy_limit = serializers.SerializerMethodField()
 
@@ -59,6 +60,7 @@ class CartItemMiniSerializer(serializers.ModelSerializer):
                   "in_store",
                   "size",
                   "color",
+                  "color_code",
                   "type",
                   "type_id",
                   ]

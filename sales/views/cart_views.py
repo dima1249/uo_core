@@ -1,13 +1,17 @@
 import math
 
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, get_object_or_404
-from rest_framework import permissions, status
+import requests
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, get_object_or_404, GenericAPIView
+from rest_framework import permissions, status, mixins
 from rest_framework.response import Response
 from rest_framework.exceptions import NotAcceptable, ValidationError, PermissionDenied
 from django.utils.translation import ugettext_lazy as _
 from sales.models import *
 from sales.serializers import CartItemSerializer, \
     CartItemUpdateSerializer
+
+# add item
+from uo_core.custom_response_utils import CustomResponse
 
 
 class CartItemAPIView(ListCreateAPIView):
@@ -51,7 +55,10 @@ class CartItemAPIView(ListCreateAPIView):
             if color:
                 attr = attr.filter(color=color)
             if size:
-                attr = attr.filter(size=size)
+                if isinstance(size, str):
+                    attr = attr.filter(size_unit=size)
+                else:
+                    attr = attr.filter(size=size)
 
             in_store = True
 
@@ -62,8 +69,10 @@ class CartItemAPIView(ListCreateAPIView):
                     raise NotAcceptable("Product quantity limit exceeds.")
 
                 in_store = _attr.quantity > 0
-                size = _attr.size
+
+                size = str(_attr.size) if _attr.size else _attr.size_unit
                 color = _attr.color
+                color_code = _attr.color
                 atype = _attr.type
 
                 if _attr.price and _attr.price > 0:
@@ -80,6 +89,7 @@ class CartItemAPIView(ListCreateAPIView):
                                  in_store=in_store,
                                  size=size,
                                  color=color,
+                                 color_code=color_code,
                                  type=_type,
                                  price=price,
                                  )
@@ -93,11 +103,29 @@ class CartItemAPIView(ListCreateAPIView):
             # )
 
             items = CartItem.objects.filter(cart=cart)
-            return Response(CartItemSerializer(items,many=True).data, status=status.HTTP_201_CREATED)
+            return Response(CartItemSerializer(items, many=True).data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
+class CartClearAPIView(mixins.DestroyModelMixin,
+                       GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            cart = Cart.objects.get(user=request.user)
+            CartItem.objects.filter(cart=cart).delete()
+        except Exception as e:
+            print(e)
+
+            return CustomResponse(status=False,
+                                  message="Error",
+                                  status_code=requests.codes.already_reported, )
+        return CustomResponse(message="DONE")
+
+
+# update item
 class CartItemView(RetrieveUpdateDestroyAPIView):
     serializer_class = CartItemSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -115,9 +143,6 @@ class CartItemView(RetrieveUpdateDestroyAPIView):
 
     def update(self, request, *args, **kwargs):
         cart_item = self.get_object()
-        print(request.data)
-        product = get_object_or_404(SellItemModel, pk=request.data["product"])
-
         if cart_item.cart.user != request.user:
             raise PermissionDenied("Sorry this cart not belong to you")
 
@@ -126,8 +151,8 @@ class CartItemView(RetrieveUpdateDestroyAPIView):
         except Exception as e:
             raise ValidationError("Please, input vaild quantity")
 
-        if quantity > product.quantity:
-            raise NotAcceptable("Your order quantity more than the seller have")
+        # if quantity > abs(cart_item.product.quantity):
+        #     raise NotAcceptable("Your order quantity more than the seller have")
 
         serializer = CartItemUpdateSerializer(cart_item, data=request.data)
         serializer.is_valid(raise_exception=True)

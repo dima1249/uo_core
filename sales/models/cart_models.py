@@ -53,8 +53,9 @@ class CartItem(ParanoidModel):
     )
     quantity = models.IntegerField(default=1)
     in_store = models.BooleanField(default=True)
-    size = models.FloatField(blank=True, null=True)
+    size = models.CharField(max_length=5, blank=True, null=True)
     color = models.CharField(max_length=20, blank=True, null=True, choices=colors)
+    color_code = models.CharField(max_length=20, blank=True, null=True, choices=colors)
     type = models.ForeignKey(SellItemTypeModel,
                              on_delete=models.PROTECT,
                              verbose_name="Загвар",
