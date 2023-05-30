@@ -108,11 +108,10 @@ class CartItemAPIView(ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
-class CartClearAPIView(mixins.DestroyModelMixin,
-                       GenericAPIView):
+class CartClearAPIView(GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def destroy(self, request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
         try:
             cart = Cart.objects.get(user=request.user)
             CartItem.objects.filter(cart=cart).delete()

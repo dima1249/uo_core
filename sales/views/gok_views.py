@@ -87,6 +87,7 @@ class BankCheckInvoice(CreateAPIView):
 
 
 class BankCheckInvoiceV2(ListAPIView):
+    serializer_class = CreateInvoiceSerializer
     permission_classes = [permissions.AllowAny]
 
     def list(self, request, *args, **kwargs):

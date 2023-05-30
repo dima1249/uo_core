@@ -117,6 +117,7 @@ class RegisterEmailView(mixins.CreateModelMixin, viewsets.GenericViewSet):
 
 
 class GlobalVerificationEmailCode(generics.GenericAPIView):
+    serializer_class = VerifyCodeEmailSerializer
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
