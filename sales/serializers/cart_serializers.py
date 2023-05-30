@@ -1,3 +1,5 @@
+import re
+
 from rest_framework import serializers
 from sales.models import SellItemModel, CartItem, SellItemAttributes, Cart
 from sales.serializers import SellItemTypeSerializer, ProductImageSerializer
@@ -59,7 +61,10 @@ class CartItemMiniSerializer(serializers.ModelSerializer):
         if obj.color:
             attr = attr.filter(color=obj.color)
         if obj.size:
-            attr = attr.filter(size=obj.size)
+            if re.match('^\d+$',obj.size):
+                attr = attr.filter(size=float(obj.size))
+            else:
+                attr = attr.filter(size_unit=obj.size)
 
         return abs(attr[0].quantity) if len(attr) else 1
 
