@@ -49,7 +49,7 @@ class CheckoutCartView(RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        ecommerce_feez = 150
+        ecommerce_feez = 0
         data = {}
         total = 0
         quantity = 0
