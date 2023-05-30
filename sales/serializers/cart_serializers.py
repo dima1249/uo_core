@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from sales.models import SellItemModel, CartItem, SellItemAttributes
+from sales.models import SellItemModel, CartItem, SellItemAttributes, Cart
 from sales.serializers import SellItemTypeSerializer, ProductImageSerializer
 
 
@@ -23,7 +23,6 @@ class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
         fields = ["id",
-                  "cart",
                   "product",
                   "quantity",
                   "size",
@@ -32,6 +31,19 @@ class CartItemSerializer(serializers.ModelSerializer):
                   "price",
                   ]
 
+
+class CartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = ["id",
+                  "cart",
+                  "product",
+                  "quantity",
+                  "size",
+                  "color",
+                  "type",
+                  "price",
+                  ]
 
 class CartItemMiniSerializer(serializers.ModelSerializer):
     product = CartProductSerializer(required=False)
@@ -71,10 +83,5 @@ class CartItemUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
 
-        fields = ["product",
-                  "quantity",
-                  "size",
-                  "color",
-                  "type",
-                  ]
+        fields = ["quantity",]
         extra_kwargs = {'quantity': {'required': True}}

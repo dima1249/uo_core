@@ -26,7 +26,7 @@ class CartItemAPIView(ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         user = request.user
         cart = get_object_or_404(Cart, user=user)
-        serializer = CartItemUpdateSerializer(data=request.data)
+        serializer = CartItemSerializer(data=request.data)
         if serializer.is_valid():
             product = serializer.validated_data.get('product')
             current_item = CartItem.objects.filter(cart=cart,
@@ -128,9 +128,10 @@ class CartClearAPIView(GenericAPIView):
 class CartItemView(RetrieveUpdateDestroyAPIView):
     serializer_class = CartItemSerializer
     permission_classes = [permissions.IsAuthenticated]
-    # method_serializer_classes = {
-    #     ('PUT',): CartItemUpdateSerializer
-    # }
+    method_serializer_classes = {
+        ('GET', 'DELETE',): CartItemSerializer,
+        ('PUT',): CartItemUpdateSerializer
+    }
     queryset = CartItem.objects.all()
 
     def retrieve(self, request, *args, **kwargs):
