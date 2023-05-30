@@ -47,6 +47,7 @@ class CartSerializer(serializers.ModelSerializer):
                   "price",
                   ]
 
+
 class CartItemMiniSerializer(serializers.ModelSerializer):
     product = CartProductSerializer(required=False)
     type = SellItemTypeSerializer()
@@ -61,7 +62,7 @@ class CartItemMiniSerializer(serializers.ModelSerializer):
         if obj.color:
             attr = attr.filter(color=obj.color)
         if obj.size:
-            if re.match('^\d+$',obj.size):
+            if re.match('^\d+$', obj.size):
                 attr = attr.filter(size=float(obj.size))
             else:
                 attr = attr.filter(size_unit=obj.size)
@@ -88,5 +89,5 @@ class CartItemUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
 
-        fields = ["quantity",]
+        fields = ["quantity", ]
         extra_kwargs = {'quantity': {'required': True}}

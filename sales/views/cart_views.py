@@ -1,4 +1,5 @@
 import math
+import re
 
 import requests
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, get_object_or_404, GenericAPIView
@@ -6,9 +7,11 @@ from rest_framework import permissions, status, mixins
 from rest_framework.response import Response
 from rest_framework.exceptions import NotAcceptable, ValidationError, PermissionDenied
 from django.utils.translation import ugettext_lazy as _
+
+from sales.config import DELEVERY_FEEZ
 from sales.models import *
 from sales.serializers import CartItemSerializer, \
-    CartItemUpdateSerializer
+    CartItemUpdateSerializer, CartItemMiniSerializer
 
 # add item
 from uo_core.custom_response_utils import CustomResponse
@@ -52,13 +55,19 @@ class CartItemAPIView(ListCreateAPIView):
             attr = SellItemAttributes.objects.filter(item=product)
             if _type:
                 attr = attr.filter(type=_type)
+                print('attr.count()', attr.count())
             if color:
                 attr = attr.filter(color=color)
+                print('attr.count() color', attr.count())
             if size:
-                if isinstance(size, str):
-                    attr = attr.filter(size_unit=size)
+                if re.match(r'^([0-9]*[.])?[0-9]+$', size):
+
+                    # print('attr.count()', attr[0].size, float(size))
+                    attr = attr.filter(size=float(size))
+                    # print('attr.count()', attr.count(), float(size))
                 else:
-                    attr = attr.filter(size=size)
+                    attr = attr.filter(size_unit=size)
+                    # print('attr.count() size_unit', attr.count())
 
             in_store = True
 
@@ -154,10 +163,23 @@ class CartItemView(RetrieveUpdateDestroyAPIView):
         # if quantity > abs(cart_item.product.quantity):
         #     raise NotAcceptable("Your order quantity more than the seller have")
 
+        if quantity == 0:
+            cart_item.delete()
+
         serializer = CartItemUpdateSerializer(cart_item, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+        cart_items = CartItem.objects.filter(cart=cart_item.cart)
+        total = 0
+        for item in cart_items:
+            total += item.price * item.quantity
+        end_total = total
+
+        data = {"items": CartItemMiniSerializer(cart_items, many=True).data,
+                "total": end_total, "cart_id": cart_item.cart.id,
+                "feez": 0, "delevery_feez": DELEVERY_FEEZ}
+        # data["address"] = AddressSerializer(user_address).data
+        return Response(data, status=status.HTTP_200_OK)
 
     def destroy(self, request, *args, **kwargs):
         cart_item = self.get_object()

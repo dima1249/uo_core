@@ -9,6 +9,7 @@ from sales.models.COLOR import colors
 from uo_core.utills import PathAndRename
 
 UNITS = (
+    ("UNIT", "UNIT"),  #
     ("S", "S"),  #
     ("L", "L"),  #
     ("M", "M"),  #
@@ -125,7 +126,7 @@ class SellItemAttributes(models.Model):
                              blank=True, null=True)
 
     size = models.FloatField(blank=True, null=True)
-    size_unit = models.CharField(max_length=20, blank=True, null=True, choices=UNITS)
+    size_unit = models.CharField(max_length=20, default='UNIT', choices=UNITS)
     color = models.CharField(max_length=20, blank=True, null=True, choices=colors)
     color_code = models.CharField(max_length=20, blank=True, null=True)
     quantity = models.IntegerField(default=1,
