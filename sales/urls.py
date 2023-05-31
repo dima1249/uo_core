@@ -25,7 +25,7 @@ urlpatterns = [
     path("checkout/<int:pk>/", CheckoutView.as_view()),
 
     #
-    path("order/<int:pk>/", OrderView.as_view()),
+    path("order/<int:cart_id>/", OrderView.as_view()),
     path("order/", OrderViewList.as_view()),
 
     path("create_invoice/", CreateInvoiceView.as_view()),

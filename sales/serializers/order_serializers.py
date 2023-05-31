@@ -44,8 +44,11 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class CreateOrderSerializer(serializers.Serializer):
     phone = serializers.CharField(max_length=255, min_length=8, required=True)
-    address = serializers.CharField(max_length=255)
     delivery = serializers.BooleanField(required=True)
+    address = serializers.CharField(max_length=255, required=False, allow_null=True, allow_blank=True)
+
+    firstname = serializers.CharField(max_length=40, required=False)
+    lastname = serializers.CharField(max_length=40, required=False)
 
 
 class OrderMiniSerializer(serializers.ModelSerializer):

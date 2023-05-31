@@ -123,7 +123,7 @@ class CartClearAPIView(GenericAPIView):
     def delete(self, request, *args, **kwargs):
         try:
             cart = Cart.objects.get(user=request.user)
-            CartItem.objects.filter(cart=cart).delete()
+            cart.delete_cart_item()
         except Exception as e:
             print(e)
 

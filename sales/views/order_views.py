@@ -9,6 +9,7 @@ from sales.models import *
 
 from sales.serializers.order_serializers import OrderSerializer, CreateOrderSerializer
 from sales.utils import time_calculator
+from uo_core.custom_response_utils import CustomResponse
 
 
 class OrderView(ListCreateAPIView):
@@ -30,46 +31,50 @@ class OrderView(ListCreateAPIView):
     def time(self):
         return 0
 
-    def post(self, request, pk, *args, **kwargs):
+    def post(self, request, cart_id, *args, **kwargs):
 
         serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if serializer.is_valid():
 
-        user = request.user
-        _cart = get_object_or_404(Cart, pk=pk)
-        if _cart.user != request.user:
-            raise exceptions.NotAcceptable("Not your Cart.")
+            user = request.user
+            _cart = get_object_or_404(Cart, pk=cart_id)
+            if _cart.user != request.user:
+                raise exceptions.NotAcceptable("Not your Cart.")
 
-        if _cart.check_product_quantity():
-            raise exceptions.NotAcceptable("quantity of this product is out.")
+            if _cart.check_product_quantity():
+                raise exceptions.NotAcceptable("quantity of this product is out.")
 
-        order_number = self.generate_order_number(_cart.user.id, _cart.id)
+            order_number = self.generate_order_number(_cart.user.id, _cart.id)
 
-        order = Order().create_order(user, order_number,
-                                     serializer.validated_data.get('phone'),
-                                     serializer.validated_data.get('delivery'),
-                                     serializer.validated_data.get('address'))
-        for item in _cart.cart_items.all():
-            _total = item.quantity * item.price
-            order_items = OrderItem().create_order_item(order, item.product, item.quantity, _total)
-        # serializer = OrderItemMiniSerializer(order)
-        # push_notifications(
-        #     user,
-        #     "Request Order",
-        #     "your order: #" + str(order_number) + " has been sent successfully.",
-        # )
-        _cart.delete_cart_item()
-        self.time()
-        print("order_created", order.id)
-        serializer = OrderSerializer(order)
-        # serializer.is_valid(raise_exception=True)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+            order = Order().create_order(user, order_number,
+                                         serializer.validated_data.get('phone'),
+                                         serializer.validated_data.get('delivery'),
+                                         serializer.validated_data.get('address'))
+            for item in _cart.cart_items.all():
+                _total = item.quantity * item.price
+                order_items = OrderItem().create_order_item(order, item.product, item.quantity, _total)
+            # serializer = OrderItemMiniSerializer(order)
+            # push_notifications(
+            #     user,
+            #     "Request Order",
+            #     "your order: #" + str(order_number) + " has been sent successfully.",
+            # )
+            _cart.delete_cart_item()
+            self.time()
+            print("order_created", order.id)
+            serializer = OrderSerializer(order)
+            # serializer.is_valid(raise_exception=True)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        print('ser error', serializer.errors)
+        return CustomResponse(status_code=status.HTTP_201_CREATED,
+                              message='Validation error')
 
     def generate_order_number(self, key1, key2):
         order_number = (
-                ("R00" if os.environ.get("DEBUG") == "TRUE" else "R")
-                + ("0000"+str(key1))[-5:]
-                + ("0000"+str(key2))[-5:]
+                ("R0" if os.environ.get("DEBUG") == "TRUE" else "R")
+                + ("1"+str(key1))[-5:]
+                + ("2"+str(key2))[-5:]
                 + str(datetime.timestamp(datetime.now()))[5:8])
 
         return order_number
