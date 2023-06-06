@@ -31,13 +31,13 @@ class OrderView(ListCreateAPIView):
     def time(self):
         return 0
 
-    def post(self, request, cart_id, *args, **kwargs):
+    def post(self, request, pk, *args, **kwargs):
 
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
 
             user = request.user
-            _cart = get_object_or_404(Cart, pk=cart_id)
+            _cart = get_object_or_404(Cart, pk=pk)
             if _cart.user != request.user:
                 raise exceptions.NotAcceptable("Not your Cart.")
 
