@@ -46,11 +46,7 @@ class Order(ParanoidModel):
     )
     is_paid = models.BooleanField(default=False)
     to_paid = models.FloatField(default=0, verbose_name='Төлөгдсөн дүн')
-    address = models.ForeignKey(
-        Address, related_name="order_address", on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
+    address = models.TextField(blank=True, null=True)
 
     history = HistoricalRecords()
 
@@ -91,7 +87,7 @@ class Order(ParanoidModel):
         order = Order()
         order.buyer = buyer
         order.order_number = order_number
-        # order.address = address
+        order.address = address
         order.firstname = firstname
         order.lastname = lastname
         order.phone = phone
