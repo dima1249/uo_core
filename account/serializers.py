@@ -65,6 +65,14 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    cart_count = serializers.SerializerMethodField()
+
+    def get_cart_count(self, obj):
+        try:
+            return obj.user_cart.get_product_count()
+        except Exception:
+            return 0
+
     class Meta:
         model = UserModel
         fields = ('id',
@@ -75,6 +83,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
                   'phone',
                   'dial_code',
                   'email',
+                  'cart_count',
                   'username'
                   )
         read_only_fields = ['dial_code', 'phone', 'email']
@@ -151,8 +160,8 @@ class VerifyCodePhoneSerializer(serializers.Serializer):
 
 class ForgotPasswordSerializer(serializers.Serializer):
     verify_code = serializers.CharField(required=True, min_length=4)
-    new_password = serializers.CharField(required=True,min_length=8)
-    reapet_password = serializers.CharField(required=True,min_length=8)
+    new_password = serializers.CharField(required=True, min_length=8)
+    reapet_password = serializers.CharField(required=True, min_length=8)
 
     email = serializers.EmailField(required=True)
 
@@ -174,9 +183,9 @@ class AuthEmailSerializer(serializers.Serializer):
                 print('code', type(code))
                 user.verify_code = code
                 user.save()
-                is_sended=True
+                is_sended = True
                 _msg = None
-        return {"status": not is_sended, "data": data,"message": _msg}
+        return {"status": not is_sended, "data": data, "message": _msg}
 
 
 class VerifyCodeEmailSerializer(serializers.Serializer):

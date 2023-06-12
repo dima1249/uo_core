@@ -37,6 +37,8 @@ class Order(ParanoidModel):
 
     buyer = models.ForeignKey(UserModel, related_name="order", on_delete=models.CASCADE)
     order_number = models.CharField(max_length=250, blank=True, null=True)
+    firstname = models.CharField(max_length=250, default="", null=True)
+    lastname = models.CharField(max_length=250, default="", null=True)
     phone = models.CharField(max_length=250, blank=True, null=True)
     delivery = models.BooleanField(default=True)
     status = models.CharField(
@@ -83,11 +85,15 @@ class Order(ParanoidModel):
     def create_order(buyer, order_number, phone,
                      delivery,
                      address="",
+                     firstname='',
+                     lastname='',
                      is_paid=False):
         order = Order()
         order.buyer = buyer
         order.order_number = order_number
         # order.address = address
+        order.firstname = firstname
+        order.lastname = lastname
         order.phone = phone
         order.delivery = delivery
         order.is_paid = is_paid

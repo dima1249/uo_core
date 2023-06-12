@@ -29,6 +29,9 @@ class Cart(ParanoidModel):
             return True
         return False
 
+    def get_product_count(self):
+        return self.cart_items.count()
+
     class Meta:
         db_table = 'sales_carts'
         verbose_name = 'Сагс'

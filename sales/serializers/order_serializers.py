@@ -36,6 +36,9 @@ class OrderSerializer(serializers.ModelSerializer):
                   "order_items",
                   "is_paid",
                   "to_pay",
+                  "phone",
+                  "firstname",
+                  "lastname",
                   "delivery",
                   "status_name",
                   "status"]
