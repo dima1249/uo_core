@@ -65,8 +65,6 @@ INSTALLED_APPS = [
     'admin_auto_filters',
     'django_admin_listfilter_dropdown',
     'multiselectfield',
-    'graphene_django',
-    'graphene_django_optimizer',
     'storages',
     'rangefilter',
     'simple_history',
