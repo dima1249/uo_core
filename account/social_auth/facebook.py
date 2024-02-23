@@ -1,4 +1,4 @@
-import facebook
+# import facebook
 from account.message import *
 
 class Facebook:
@@ -7,8 +7,9 @@ class Facebook:
     def validate(auth_token):
         
         try:
-            graph = facebook.GraphAPI(access_token=auth_token)
-            profile = graph.request('/me?fields=name,email,first_name,last_name,picture')
-            return profile
+            # graph = facebook.GraphAPI(access_token=auth_token)
+            # profile = graph.request('/me?fields=name,email,first_name,last_name,picture')
+            # return profile
+            return TOKEN_EXPIRED_ERROR
         except:
             return TOKEN_EXPIRED_ERROR
