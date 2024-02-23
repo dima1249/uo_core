@@ -10,7 +10,6 @@ from uuid import uuid4
 
 import requests
 from django.utils.deconstruct import deconstructible
-from rest_framework_jwt.utils import jwt_payload_handler
 from user_agents import parse
 
 # email shalgah regex (config file-s unshdag bolgoh)
@@ -216,14 +215,6 @@ def check_is_phone_number(phone):
     else:
         print("invalid phone number")
         return False
-
-
-def device_info_added_jwt_payload_handler(user, device):
-    payload = jwt_payload_handler(user)
-    payload['device_ip'] = device.ip
-    payload['device_name'] = device.name
-    payload['device_os'] = device.os
-    return payload
 
 
 def get_country_info(request=None, device_ip=None):
