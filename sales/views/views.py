@@ -1,7 +1,6 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import permissions, status
 from django_filters import rest_framework as filters
-from django.utils.translation import ugettext_lazy as _
 from sales.models import *
 from sales.serializers import ProductCategorySerializer, BrandModelSerializer, ProductSerializer
 

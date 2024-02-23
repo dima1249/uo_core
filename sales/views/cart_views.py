@@ -6,7 +6,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework import permissions, status, mixins
 from rest_framework.response import Response
 from rest_framework.exceptions import NotAcceptable, ValidationError, PermissionDenied
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from sales.config import DELEVERY_FEEZ
 from sales.models import *
