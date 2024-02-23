@@ -1,14 +1,14 @@
 import uuid
 
 from account.models import UserModel, RoleModel
-from rest_framework_jwt.settings import api_settings
+# from rest_framework_jwt.settings import api_settings
 
 from account.serializers import UserProfileSerializer
 
-JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
-JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
-JWT_DECODE_HANDLER = api_settings.JWT_DECODE_HANDLER
-JWT_EXPIRED_TIME = api_settings.JWT_EXPIRATION_DELTA
+# JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
+# JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
+# JWT_DECODE_HANDLER = api_settings.JWT_DECODE_HANDLER
+# JWT_EXPIRED_TIME = api_settings.JWT_EXPIRATION_DELTA
 
 
 def register_social_user_apple(first_name, last_name, sub, email):
@@ -35,8 +35,9 @@ def register_social_user_apple(first_name, last_name, sub, email):
     user.is_staff = False
     user.save()
 
-    payload = JWT_PAYLOAD_HANDLER(user)
-    jwt_token = JWT_ENCODE_HANDLER(payload)
+    # payload = JWT_PAYLOAD_HANDLER(user)
+    # jwt_token = JWT_ENCODE_HANDLER(payload)
+    jwt_token = "JWT_ENCODE_HANDLER(payload)"
 
     return {
         'user': UserProfileSerializer(instance=user).data,
@@ -65,8 +66,9 @@ def register_social_user(provider, user_id, email, name, picture=None):
     user.is_staff = False
     user.save()
 
-    payload = JWT_PAYLOAD_HANDLER(user)
-    jwt_token = JWT_ENCODE_HANDLER(payload)
+    # payload = JWT_PAYLOAD_HANDLER(user)
+    # jwt_token = JWT_ENCODE_HANDLER(payload)
+    jwt_token = "JWT_ENCODE_HANDLER(payload)"
 
     return {
         'user': UserProfileSerializer(instance=user).data,
