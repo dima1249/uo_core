@@ -10,13 +10,7 @@ from rest_framework.exceptions import ValidationError
 from . import google, facebook
 from .register import register_social_user, register_social_user_apple
 from account.message import *
-from rest_framework_jwt.settings import api_settings
 
-
-JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
-JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
-JWT_DECODE_HANDLER = api_settings.JWT_DECODE_HANDLER
-JWT_EXPIRED_TIME = api_settings.JWT_EXPIRATION_DELTA
 
 class FacebookSocialAuthSerializer(serializers.Serializer):
 

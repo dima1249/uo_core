@@ -7,21 +7,14 @@ from uo_core.utills import get_country_info
 from .message import ACCOUNT_SENT_ALREADY
 from .models import *
 from django.db.models import Q
-from rest_framework_jwt.settings import api_settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from account import message as msms
-from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.hashers import make_password
 from dateutil.relativedelta import relativedelta
 
 from .utils import send_verification_code
 from .verify import verify_code_email, verify_code_phone, confirm_code_phone, verification_code_email_send
-
-JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
-JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
-JWT_DECODE_HANDLER = api_settings.JWT_DECODE_HANDLER
-JWT_EXPIRED_TIME = api_settings.JWT_EXPIRATION_DELTA
 
 
 class UserSerializer(serializers.Serializer):
@@ -199,6 +192,36 @@ class VerifyCodeEmailSerializer(serializers.Serializer):
         verify = verify_code_email(email, code)
         if not verify:
             raise serializers.ValidationError("Код баталгаажуулхад алдаа гарлаа. Мэдээлэлээ шалгаад дахин илгээн үү??")
+
+
+# USER AUTH
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user, monpay_token=None):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token["monpay_token"] = monpay_token
+        token["user_id"] = user.id
+        token["email"] = user.email
+        return token
+
+
+def get_token_info(request):
+    from rest_framework_simplejwt.authentication import JWTAuthentication
+    JWT_authenticator = JWTAuthentication()
+
+    response = JWT_authenticator.authenticate(request)
+
+    if response is not None:
+        # unpacking
+        user, token = response
+        return token
+    else:
+        None
 
 
 class LoginSerializer(serializers.Serializer):
