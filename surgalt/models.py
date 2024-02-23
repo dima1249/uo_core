@@ -6,6 +6,7 @@ from django.db import models
 from django_paranoid.models import ParanoidModel
 
 from multiselectfield import MultiSelectField
+from multiselectfield.utils import get_max_length
 
 from account.models import GENDER, UserModel
 from uo_core.utills import PathAndRename
@@ -89,7 +90,8 @@ class CourseModel(ParanoidModel):
         blank=True,
     )
     # days = models.CharField(verbose_name="Нэр", max_length=100, unique=True)
-    days = MultiSelectField(choices=DAY_CHOICES, max_choices=4, min_choices=1)
+    days = MultiSelectField(choices=DAY_CHOICES, max_choices=4, min_choices=1,
+                            max_length=get_max_length(DAY_CHOICES, None))
     time = models.TimeField(verbose_name="Цаг", )
     payment = models.IntegerField(verbose_name="Төлбөр (Нэг сар)", default=0)
     is_open = models.BooleanField(verbose_name="Нээлттэй эсэх", default=True)

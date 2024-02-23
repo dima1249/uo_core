@@ -1,7 +1,7 @@
 import os
 
 from django.contrib import admin, messages
-from django.conf.urls import url
+from django.urls import re_path
 from django.shortcuts import redirect
 from django.utils.html import format_html
 from simple_history.admin import SimpleHistoryAdmin
@@ -46,7 +46,7 @@ class QpayInvoiceModelAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
-            url(
+            re_path(
                 r"^(?P<order_id>.+)/check/$",
                 self.process_check,
                 name="invoice_check",
