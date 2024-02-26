@@ -46,7 +46,24 @@ class ProductCategoryModel(ParanoidModel):
     class Meta:
         db_table = 'sales_product_cat'
         verbose_name = 'Бүтээгдэхүүн ангилал'
-        verbose_name_plural = 'Бүтээгдэхүүн ангилалууд'
+        verbose_name_plural = 'P1 Бүтээгдэхүүн ангилалууд'
+
+
+class BrandModel(ParanoidModel):
+    name = models.CharField(max_length=100, unique=True, verbose_name="Нэр")
+    desc = models.TextField(verbose_name="Тайлбар", blank=True, null=True)
+
+    def __str__(self):
+        return '%s' % self.name
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'sales_brand'
+        verbose_name = 'Brand'
+        verbose_name_plural = 'P1 Brands'
+
 
 
 class SellItemTypeModel(ParanoidModel):
@@ -68,23 +85,7 @@ class SellItemTypeModel(ParanoidModel):
     class Meta:
         db_table = 'sales_product_type'
         verbose_name = 'Бүтээгдэхүүн Загвар'
-        verbose_name_plural = 'Бүтээгдэхүүн Загварууд'
-
-
-class BrandModel(ParanoidModel):
-    name = models.CharField(max_length=100, unique=True, verbose_name="Нэр")
-    desc = models.TextField(verbose_name="Тайлбар", blank=True, null=True)
-
-    def __str__(self):
-        return '%s' % self.name
-
-    def __unicode__(self):
-        return self.name
-
-    class Meta:
-        db_table = 'sales_brand'
-        verbose_name = 'Brand'
-        verbose_name_plural = 'Brands'
+        verbose_name_plural = 'P2 Бүтээгдэхүүн Загварууд'
 
 
 class SellItemModel(ParanoidModel):
@@ -112,7 +113,7 @@ class SellItemModel(ParanoidModel):
     class Meta:
         db_table = 'sales_items'
         verbose_name = 'Худалдах бараа'
-        verbose_name_plural = '01 Худалдах бараанууд'
+        verbose_name_plural = 'P3 Худалдах бараанууд'
 
 
 class SellItemAttributes(models.Model):

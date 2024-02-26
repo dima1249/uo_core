@@ -53,7 +53,7 @@ class Order(ParanoidModel):
     class Meta:
         db_table = 'sales_orders'
         verbose_name = 'Захиалга'
-        verbose_name_plural = '02 Захиалганууд'
+        verbose_name_plural = 'B1 Захиалганууд'
 
     def __str__(self):
         return self.order_number

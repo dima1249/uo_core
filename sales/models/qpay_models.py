@@ -48,7 +48,7 @@ class QpayInvoiceModel(ParanoidModel):
     class Meta:
         db_table = 'sales_qpay_invoice'
         verbose_name = 'Qpay invoice'
-        verbose_name_plural = 'Qpay invoices'
+        verbose_name_plural = 'B3 Qpay invoices'
 
 
 class TransactionModel(ParanoidModel):
@@ -85,4 +85,4 @@ class TransactionModel(ParanoidModel):
     class Meta:
         db_table = 'gok_transaction'
         verbose_name = 'Transaction'
-        verbose_name_plural = 'Transactions'
+        verbose_name_plural = 'B2 Transactions'
