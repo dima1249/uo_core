@@ -109,12 +109,10 @@ class RegisterEmailView(mixins.CreateModelMixin, viewsets.GenericViewSet):
                 user.set_password(password)
                 user.save()
 
-                payload = JWT_PAYLOAD_HANDLER(user)
-                jwt_token = JWT_ENCODE_HANDLER(payload)
-                update_last_login(None, user)
+                refresh = MyTokenObtainPairSerializer.get_token(user)
 
                 return CustomResponse(status=True, status_code=status.HTTP_200_OK,
-                                      result={'token': jwt_token, 'user': UserProfileSerializer(instance=user).data})
+                                      result={'token': str(refresh.access_token), 'user': UserProfileSerializer(instance=user).data})
 
             return CustomResponse(message="Баталгаажуулаагүй хэрэглэгч байна.", status=False,
                                   status_code=status.HTTP_208_ALREADY_REPORTED)

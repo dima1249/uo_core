@@ -18,6 +18,7 @@ from .verify import verify_code_email, verify_code_phone, confirm_code_phone, ve
 JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
 JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
+
 class UserSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         pass
@@ -201,11 +202,10 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
-    def get_token(cls, user, monpay_token=None):
+    def get_token(cls, user):
         token = super().get_token(user)
 
         # Add custom claims
-        token["monpay_token"] = monpay_token
         token["user_id"] = user.id
         token["email"] = user.email
         return token
@@ -283,15 +283,14 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("Нэвтрэх боломжгүй хэрэглэгч.")
 
         try:
-            payload = JWT_PAYLOAD_HANDLER(user)
-            jwt_token = JWT_ENCODE_HANDLER(payload)
+            refresh = MyTokenObtainPairSerializer.get_token(user)
             update_last_login(None, user)
         except UserModel.DoesNotExist:
             raise serializers.ValidationError(msms.USER_FIND_ERROR)
         return {
             'user': UserProfileSerializer(instance=user).data,
             'role': user.role.code,
-            'token': jwt_token,
+            'token': str(refresh.access_token),
         }
 
     def verify_phone_code(self):

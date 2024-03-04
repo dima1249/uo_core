@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'django_json_widget',
     'admin_auto_filters',
     'django_admin_listfilter_dropdown',
+    'rest_framework_simplejwt',
     'multiselectfield',
     'storages',
     'rangefilter',
@@ -105,8 +106,8 @@ if True:
 else:
     CORS_ALLOW_ALL_ORIGINS = False
     CORS_ALLOWED_ORIGINS = [
-        "https://tapatrip.com",
-        "https://www.tapatrip.com",
+        "https://usukh-od.com",
+        "https://www.usukh-od.com",
     ]
 
 """ JWT AND AUTH """
@@ -139,7 +140,6 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }
-
 
 AUTH_USER_MODEL = 'account.UserModel'
 
@@ -246,8 +246,8 @@ DATABASES = {
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, "static_files"),
-    ]
+    os.path.join(BASE_DIR, "static_files"),
+]
 
 FILE_UPLOAD_STORAGE = env("FILE_UPLOAD_STORAGE", default="local")  # local | s3
 
