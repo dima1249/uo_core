@@ -1,7 +1,6 @@
-import uuid
-
 from django.contrib.auth.hashers import check_password
 from rest_framework import serializers
+from rest_framework_jwt.settings import api_settings
 
 from uo_core.utills import get_country_info
 from .message import ACCOUNT_SENT_ALREADY
@@ -16,6 +15,8 @@ from dateutil.relativedelta import relativedelta
 from .utils import send_verification_code
 from .verify import verify_code_email, verify_code_phone, confirm_code_phone, verification_code_email_send
 
+JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
+JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
 class UserSerializer(serializers.Serializer):
     def update(self, instance, validated_data):

@@ -1,22 +1,25 @@
 import requests
 from django.contrib.auth import logout
-from django.contrib.auth.models import update_last_login
-from django.utils.crypto import get_random_string
 from rest_framework import viewsets, mixins, permissions, status, generics
 from rest_framework.views import APIView
+from rest_framework_jwt.settings import api_settings
 
-from account.mail import Mail
-from account.message import USER_FIND_ERROR, ACCOUNT_WRONG_REPEAT_PASSWORD, ACCOUNT_EMAIL_VERIFICATION_CODE_ERROR, \
-    ACCOUNT_SAME_PASSWORD_ERROR, ACCOUNT_VALID_PASSWORD_ERROR
+from account.message import (USER_FIND_ERROR,
+                             ACCOUNT_WRONG_REPEAT_PASSWORD,
+                             ACCOUNT_EMAIL_VERIFICATION_CODE_ERROR,
+                             ACCOUNT_VALID_PASSWORD_ERROR)
 from uo_core.global_message import GlobalMessage as gsms, GlobalMessage
 from rest_framework.serializers import Serializer
 from django.utils.translation import gettext_lazy as _
-
-from account.models import *
 from account.serializers import *
 
 from account.verify import confirm_code_phone
 from uo_core.custom_response_utils import CustomResponse
+
+JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
+JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
+JWT_DECODE_HANDLER = api_settings.JWT_DECODE_HANDLER
+JWT_EXPIRED_TIME = api_settings.JWT_EXPIRATION_DELTA
 
 
 def confirm_code_email(email):
@@ -40,7 +43,8 @@ class CustomAuthToken(generics.GenericAPIView):
         if serializer.is_valid(raise_exception=True):
             return CustomResponse(message="Амжилттай", status_code=status.HTTP_200_OK, status=True,
                                   result=serializer.validated_data)
-        return CustomResponse(message="Мэдээлэлээ шалгана уу.", result=serializer.errors, status=False, status_code=status.HTTP_208_ALREADY_REPORTED)
+        return CustomResponse(message="Мэдээлэлээ шалгана уу.", result=serializer.errors, status=False,
+                              status_code=status.HTTP_208_ALREADY_REPORTED)
 
 
 class RegisterPhoneView(mixins.CreateModelMixin, viewsets.GenericViewSet):
