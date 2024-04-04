@@ -71,18 +71,25 @@ class BankCheckInvoice(CreateAPIView):
         if serializer.is_valid():
 
             order_number = serializer.data["order_number"]
-            order = Order.objects.filter(order_number=order_number)
+            try:
+                order = Order.objects.get(order_number=order_number)
+            except Exception as e:
+                order = None
             if order:
-                _response_data = qpay.check_invoice(
-                    order_number
-                )
-                print(_response_data)
-                if _response_data["name"] in ["INVOICE_PAID", "INVOICE_ALREADY_PAID"]:
-                    return HttpResponse("done")
-                else:
+                if order.status   ==  Order.PENDING_STATE:
+                    _response_data = qpay.check_invoice(
+                        order_number
+                    )
+                    print(_response_data)
+                    if _response_data["name"] in ["INVOICE_PAID", "INVOICE_ALREADY_PAID"]:
+                        return HttpResponse("done")
                     return HttpResponse("undone", status=status.HTTP_208_ALREADY_REPORTED)
-            else:
-                return HttpResponse("no item", status=status.HTTP_208_ALREADY_REPORTED)
+                if order.status == Order.COMPLETED_STATE:
+                    return HttpResponse("done", )
+                return HttpResponse("Order Canceled", status=status.HTTP_208_ALREADY_REPORTED)
+
+            return HttpResponse("no item", status=status.HTTP_208_ALREADY_REPORTED)
+
         return HttpResponse("invalid", status=status.HTTP_208_ALREADY_REPORTED)
 
 
