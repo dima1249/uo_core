@@ -107,17 +107,32 @@ class OrderItem(ParanoidModel):
     quantity = models.IntegerField()
     total = models.DecimalField(max_digits=10, decimal_places=2)
 
+    in_store = models.BooleanField(default=True)
+    size = models.CharField(max_length=5, blank=True, null=True)
+    color = models.CharField(max_length=20, blank=True, null=True)
+    color_code = models.CharField(max_length=20, blank=True, null=True)
+
+
+    price = models.FloatField(default=0, verbose_name='Ширхэг үнэ')
+
     class Meta:
         db_table = 'sales_order_items'
         verbose_name = 'Захиалганд харгалзах бараа'
         verbose_name_plural = 'Захиалганд харгалзах бараанууд'
 
     @staticmethod
-    def create_order_item(order, product, quantity, total):
+    def create_order_item(order, cartItem):
         order_item = OrderItem()
         order_item.order = order
-        order_item.product = product
-        order_item.quantity = quantity
-        order_item.total = total
+        order_item.product = cartItem.product
+        order_item.quantity = cartItem.quantity
+        order_item.total = cartItem.quantity * cartItem.price
+
+        order_item.in_store = cartItem.in_store
+        order_item.size = cartItem.size
+        order_item.color = cartItem.color
+        order_item.color_code = cartItem.color_code
+        # type
+        # price
         order_item.save()
         return order_item
