@@ -63,7 +63,7 @@ class UserModelAdmin(ParanoidAdmin, BaseUserAdmin):
             if "admin" == _code:
                 obj.is_staff = True
                 obj.is_superuser = True
-            elif 'agent' == _code:
+            elif 'teacher' == _code:
                 obj.is_staff = True
                 obj.is_superuser = False
             else:
