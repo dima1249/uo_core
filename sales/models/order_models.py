@@ -8,7 +8,7 @@ from account.models import UserModel
 # uuid = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False)
 # created = models.DateTimeField(auto_now_add=True, db_index=True)
 # modified = models.DateTimeField(auto_now=True)
-from sales.models import SellItemModel
+from sales.models import SellItemModel, SellItemTypeModel
 
 
 class Address(ParanoidModel):
@@ -113,7 +113,12 @@ class OrderItem(ParanoidModel):
     color_code = models.CharField(max_length=20, blank=True, null=True)
 
 
-    price = models.FloatField(default=0, verbose_name='Ширхэг үнэ')
+    price = models.FloatField(default=0, blank=True, null=True, verbose_name='Ширхэг үнэ')
+
+    type = models.ForeignKey(SellItemTypeModel,
+                             on_delete=models.PROTECT,
+                             verbose_name="Загвар",
+                             blank=True, null=True)
 
     class Meta:
         db_table = 'sales_order_items'
@@ -132,6 +137,8 @@ class OrderItem(ParanoidModel):
         order_item.size = cartItem.size
         order_item.color = cartItem.color
         order_item.color_code = cartItem.color_code
+        order_item.type = cartItem.type
+        order_item.price = cartItem.price
         # type
         # price
         order_item.save()
