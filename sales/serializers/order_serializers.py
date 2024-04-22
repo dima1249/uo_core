@@ -25,7 +25,7 @@ class OrderSerializer(serializers.ModelSerializer):
     def get_to_pay(self, obj):
         _to_pay = 0
         for item in obj.order_items.all():
-            _to_pay = _to_pay = item.total
+            _to_pay = _to_pay + item.total
         return _to_pay
 
     class Meta:

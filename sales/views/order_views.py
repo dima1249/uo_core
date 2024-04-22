@@ -54,7 +54,7 @@ class OrderView(ListCreateAPIView):
                                          serializer.validated_data.get('lastname'))
             for item in _cart.cart_items.all():
                 _total = item.quantity * item.price
-                order_items = OrderItem().create_order_item(order, item.product, item.quantity, _total)
+                order_items = OrderItem().create_order_item(order, item)
             # serializer = OrderItemMiniSerializer(order)
             # push_notifications(
             #     user,
