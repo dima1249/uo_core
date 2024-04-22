@@ -107,7 +107,7 @@ class OrderItem(ParanoidModel):
     quantity = models.IntegerField()
     total = models.DecimalField(max_digits=10, decimal_places=2)
 
-    in_store = models.BooleanField(default=True)
+    in_store = models.BooleanField(default=True, null=True)
     size = models.CharField(max_length=5, blank=True, null=True)
     color = models.CharField(max_length=20, blank=True, null=True)
     color_code = models.CharField(max_length=20, blank=True, null=True)

@@ -74,7 +74,7 @@ class CartItemAPIView(ListCreateAPIView):
             if attr.count() > 0:
                 _attr = attr.first()
                 print('_attr id', _attr.id)
-                if abs(_attr.quantity) <= quantity:
+                if abs(_attr.quantity) < quantity:
                     raise NotAcceptable("Product quantity limit exceeds.")
 
                 in_store = _attr.quantity > 0
