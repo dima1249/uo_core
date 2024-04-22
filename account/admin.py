@@ -33,7 +33,7 @@ class UserModelAdmin(ParanoidAdmin, BaseUserAdmin):
         # ('Онооны мэдээлэл', {'fields': (
         #     'point',)}),
         ('Хандалт', {'fields': (
-            'is_active', 'role', 'groups', 'user_permissions')}),
+            'is_active', 'is_staff', 'role', 'groups', 'user_permissions')}),
     )
     add_fieldsets = (
         (None, {'fields': ('username', 'password1', 'password2')}),
