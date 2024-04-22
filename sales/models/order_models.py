@@ -2,13 +2,11 @@ from django.db import models
 from django.db.models import Sum
 from django_paranoid.models import ParanoidModel
 from simple_history.models import HistoricalRecords
-
 from account.models import UserModel
-
-# uuid = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False)
-# created = models.DateTimeField(auto_now_add=True, db_index=True)
-# modified = models.DateTimeField(auto_now=True)
 from sales.models import SellItemModel, SellItemTypeModel
+
+
+DELIVERY_FEE = 5000
 
 
 class Address(ParanoidModel):
@@ -74,7 +72,9 @@ class Order(ParanoidModel):
 
     def to_pay(self):
         to_pay = self.order_items.aggregate(Sum('total')).get('total__sum', 0)
-        return int(to_pay) if to_pay else 0
+        to_pay = (int(to_pay) if to_pay else 0) + (DELIVERY_FEE if self.delivery else 0)
+
+        return to_pay
         # return int(to_pay) if to_pay else 0
 
     @staticmethod

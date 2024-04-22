@@ -5,8 +5,6 @@ from sales.models import *
 # UserMiniSerializer
 from sales.serializers import ProductSerializer, CartProductSerializer
 
-DELIVERY_FEE = 5000
-
 
 class OrderItemSerializer(serializers.ModelSerializer):
     product = CartProductSerializer()
@@ -25,10 +23,7 @@ class OrderSerializer(serializers.ModelSerializer):
     to_pay = serializers.SerializerMethodField()
 
     def get_to_pay(self, obj):
-        _to_pay = 0
-        for item in obj.order_items.all():
-            _to_pay = _to_pay + item.total
-        return _to_pay + (DELIVERY_FEE if obj.delivery else 0)
+        return obj.to_pay()
 
     class Meta:
         model = Order
